@@ -5,31 +5,32 @@ import { Card } from "@/components/ui/card";
 
 const activities = [
   {
-    title: "Lake Cruises",
-    image:
-      "https://images.unsplash.com/photo-1516132006923-6cf348e5dee2?q=80&w=2070&auto=format&fit=crop",
-    description:
-      "Staying with us means you’re minutes away from the Lake District’s most iconic gems! Wander the charming streets of Windermere & Bowness, step into the world of Beatrix Potter, or hike historic trails in Grasmere and Coniston. Discover Keswick’s adventure spirit, cruise stunning lakes, or tour grand National Trust estates and castles. From literary heritage to outdoor thrills, shopping, dining, and family fun – every day brings a new adventure right on your doorstep.",
-  },
-  {
-    title: "Hiking Trails",
+    title: "Places of interest",
     image:
       "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070&auto=format&fit=crop",
+    
     description:
-      "Staying with us means you’re minutes away from the Lake District’s most iconic gems! Wander the charming streets of Windermere & Bowness, step into the world of Beatrix Potter, or hike historic trails in Grasmere and Coniston. Discover Keswick’s adventure spirit, cruise stunning lakes, or tour grand National Trust estates and castles. From literary heritage to outdoor thrills, shopping, dining, and family fun – every day brings a new adventure right on your doorstep.",
+      "Staying with us means you’re minutes away from the Lake District’s most iconic gems! Wander the charming streets of Windermere & Bowness, step into the world of Beatrix Potter, or hike historic trails in Grasmere and Coniston. Discover Keswick’s adventure spirit, cruise stunning lakes, or tour grand National Trust estates and castles.",
   },
   {
-    title: "Kayaking",
+    title: "Cruises & Ferries",
+      image:
+      "https://images.unsplash.com/photo-1516132006923-6cf348e5dee2?q=80&w=2070&auto=format&fit=crop",
+    description:
+      "Set sail on England’s largest lake with unforgettable cruises, ferries, and boat hires! Enjoy scenic public cruises, quick car ferries, self-drive boats, or luxury private charters. With family-friendly routes, combo tickets to top attractions, and even dog-friendly options, Windermere offers the perfect lake adventure for relaxation, fun, and breathtaking views.",
+  },
+  {
+    title: "Outdoor activites",
     image:
       "https://images.unsplash.com/photo-1530866495561-507c9faab2ed?q=80&w=2070&auto=format&fit=crop",
     description:
-      "Staying with us means you’re minutes away from the Lake District’s most iconic gems! Wander the charming streets of Windermere & Bowness, step into the world of Beatrix Potter, or hike historic trails in Grasmere and Coniston. Discover Keswick’s adventure spirit, cruise stunning lakes, or tour grand National Trust estates and castles. From literary heritage to outdoor thrills, shopping, dining, and family fun – every day brings a new adventure right on your doorstep.",
+      "Discover thrilling outdoor experiences just minutes away! From peaceful kayaking and paddleboarding on Lake Windermere to adrenaline-pumping ghyll scrambling through waterfalls and ravines, there’s something for every adventurer. With expert guides, top-class equipment, and breathtaking scenery, the Lake District promises unforgettable memories for families, friends, and explorers of all abilities.",
   },
   {
     title: "Family walks",
     image: "activities/4.png",
     description:
-      "Staying with us means you’re minutes away from the Lake District’s most iconic gems! Wander the charming streets of Windermere & Bowness, step into the world of Beatrix Potter, or hike historic trails in Grasmere and Coniston. Discover Keswick’s adventure spirit, cruise stunning lakes, or tour grand National Trust estates and castles. From literary heritage to outdoor thrills, shopping, dining, and family fun – every day brings a new adventure right on your doorstep.",
+      "From gentle lakeside strolls to thrilling climbs, the Lake District offers unforgettable family walks for all ages. Enjoy pushchair-friendly paths around Buttermere and Tarn Hows, scenic climbs like Catbells and Orrest Head, or adventurous treks up Helvellyn and Scafell Pike. Stunning views, fresh air, and cosy tea stops make every walk a perfect family memory.",
   },
 ];
 

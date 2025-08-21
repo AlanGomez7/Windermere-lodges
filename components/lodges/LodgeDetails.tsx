@@ -134,9 +134,9 @@ function Gallery({
               <circle cx="12" cy="12" r="12" fill="#fff"/>
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="3"
                 d="m15 19-7-7 7-7"
               />
             </svg>
@@ -161,9 +161,9 @@ function Gallery({
               <circle cx="12" cy="12" r="12" fill="#fff"/>
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="3"
                 d="m9 5 7 7-7 7"
               />
             </svg>
@@ -530,7 +530,7 @@ export function LodgeDetails({ lodge }: { lodge: any }) {
         {/* All sections always visible except FAQ */}
         <div className="mt-8">
           {/* Amenities */}
-          <div className="mb-8">
+          {/* <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Amenities</h2>
             <div className="flex space-x-6 overflow-x-auto pb-4">
               {amenitiesToDisplay.map((amenity: string, i: number) => {
@@ -577,7 +577,7 @@ export function LodgeDetails({ lodge }: { lodge: any }) {
                 );
               })}
             </div>
-          </div>
+          </div> */}
           {/* About */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">About {lodge.name}</h2>

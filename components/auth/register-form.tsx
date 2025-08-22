@@ -32,11 +32,6 @@ const formSchema = z.object({
 export function RegisterForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState({
-    message: "",
-    status: 200,
-    ok: true,
-  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,6 +43,7 @@ export function RegisterForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     fetch("http://localhost:3000/api/auth/register", {
       method: "POST",
       headers: {
@@ -61,9 +57,10 @@ export function RegisterForm() {
           toast.success(r.message);
           router.push("/auth/login");
         } else {
-          toast.error(r.message)
+          toast.error(r.message);
         }
-      });
+      })
+      .finally(() => setIsLoading(false));
   }
 
   return (

@@ -570,7 +570,7 @@ export function LodgeDetails({ lodge }: { lodge: any }) {
             <p className="text-gray-700">{lodge.about}</p>
           </div>
             {/* Rating & Review */}
-            <RatingsAndReviews/>
+            <RatingsAndReviews lodge={lodge}/>
           {/* Location */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Location</h2>

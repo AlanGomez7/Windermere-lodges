@@ -109,7 +109,7 @@ export function LodgeList({ properties }: { properties: any }) {
                 <div className="relative">
                   <div className="aspect-w-16 aspect-h-9 relative h-48">
                     <Image
-                      src={lodge.image || "/placeholder.svg"}
+                      src={lodge.images[0] || "/placeholder.svg"}
                       alt={lodge.name}
                       fill
                       className="object-cover"
@@ -153,7 +153,7 @@ export function LodgeList({ properties }: { properties: any }) {
                   </div>
 
                   <p className="text-gray-600 text-sm mb-4">
-                    {lodge.description}
+                    {lodge.address}
                   </p>
 
                   <div className="flex flex-wrap gap-2 pt-6 mb-4">

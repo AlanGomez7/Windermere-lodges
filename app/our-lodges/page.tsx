@@ -1,10 +1,14 @@
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
-import { PageHeader } from "@/components/page-header"
-import { LodgeList } from "@/components/lodges/lodge-list"
-import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+import { PageHeader } from "@/components/page-header";
+import { LodgeList } from "@/components/lodges/lodge-list";
+import { ChatbotButton } from "@/components/chatbot/chatbot-button";
+import { fetchProperties } from "@/lib/api";
+import { Suspense } from "react";
 
 export default function OurLodgesPage() {
+  const lodges = fetchProperties();
+  
   return (
     <main className="min-h-screen bg-white">
       <Navbar />
@@ -17,13 +21,14 @@ export default function OurLodgesPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-row">
-            <LodgeList />
+            <Suspense fallback={<>loading....</>}>
+              <LodgeList properties={lodges}/>
+            </Suspense>
           </div>
         </div>
       </section>
       <Footer />
       <ChatbotButton />
     </main>
-  )
+  );
 }
-

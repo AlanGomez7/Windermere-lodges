@@ -1,8 +1,6 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { HttpError } from "@/lib/utils";
-import { Prisma } from "@prisma/client";
 // import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function createUser(userDetails: any) {
@@ -14,5 +12,14 @@ export async function createUser(userDetails: any) {
     return response;
   } catch (error) {
     throw error;
+  }
+}
+
+export async function getProperties(){
+  try{
+    const response = prisma.property.findMany();
+    return response
+  }catch(err){
+    throw err
   }
 }

@@ -5,11 +5,12 @@ import { ActivitiesList } from "@/components/activities/activities-list"
 import { ActivitiesMap } from "@/components/activities/activities-map"
 import { SeasonalActivities } from "@/components/activities/seasonal-activities"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+import NavbarWrapper from "@/components/navbar-wrapper"
 
 export default function ActivitiesPage() {
   return (
     <main className="min-h-screen bg-white">
-      <Navbar />
+      <NavbarWrapper />
       <PageHeader
         title="Lake District Activities"
         description="Explore the endless adventures awaiting you"

@@ -3,11 +3,12 @@ import Footer from "@/components/footer"
 import { PageHeader } from "@/components/page-header"
 import { GalleryTabs } from "@/components/gallery/gallery-tabs"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+import NavbarWrapper from "@/components/navbar-wrapper"
 
 export default function GalleryPage() {
   return (
     <main className="min-h-screen bg-white">
-      <Navbar />
+      <NavbarWrapper />
       <PageHeader
         title="Our Gallery"
         description="Experience the beauty of Windermere Lodges"

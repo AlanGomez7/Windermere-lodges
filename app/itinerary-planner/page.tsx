@@ -6,6 +6,7 @@ import Footer from "@/components/footer"
 import { PageHeader } from "@/components/page-header"
 import { ItineraryBuilder } from "@/components/itinerary/itinerary-builder"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+import NavbarWrapper from '@/components/navbar-wrapper';
 
 const defaultItinerary = {
   preferences: {
@@ -21,7 +22,7 @@ export default function ItineraryPlannerPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Navbar />
+      <NavbarWrapper />
       <PageHeader
         title="Plan Your Itinerary"
         description="Create your perfect Lake District adventure"

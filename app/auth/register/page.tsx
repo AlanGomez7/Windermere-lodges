@@ -9,13 +9,14 @@ import { SocialLogin } from "@/components/auth/social-login"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
 import { useToast } from "@/hooks/use-toast"
 import { RegisterForm } from "@/components/auth/register-form"
+import NavbarWrapper from "@/components/navbar-wrapper"
 
 
 export default function RegisterPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Navbar />
+      <NavbarWrapper />
       <PageHeader
         title="Register"
         description="Hey! welcome to windermere lodges"

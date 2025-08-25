@@ -1,14 +1,14 @@
-import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { PageHeader } from "@/components/page-header"
 import { AmenitiesDetails } from "@/components/amenities/amenities-details"
 import { AmenitiesGallery } from "@/components/amenities/amenities-gallery"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+import NavbarWrapper from "@/components/navbar-wrapper"
 
 export default function AmenitiesPage() {
   return (
     <main className="min-h-screen bg-white">
-      <Navbar />
+      <NavbarWrapper />
       <PageHeader
         title="Lodge Amenities"
         description="Luxury features for an unforgettable stay"

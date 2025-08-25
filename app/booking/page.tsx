@@ -6,13 +6,14 @@ import Footer from "@/components/footer"
 import { PageHeader } from "@/components/page-header"
 import { BookingSteps } from "@/components/booking/booking-steps"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+import NavbarWrapper from '@/components/navbar-wrapper';
 
 export default function BookingPage() {
   const [currentStep, setCurrentStep] = useState(1);
 
   return (
     <main className="min-h-screen bg-white">
-      <Navbar />
+      <NavbarWrapper />
       <PageHeader
         title="Book Your Stay"
         description="Secure your perfect Lake District getaway"

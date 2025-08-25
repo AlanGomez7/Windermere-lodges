@@ -31,6 +31,7 @@ import { VisuallyHidden } from "../ui/visually-hidden";
 import { galleryImagesByLodge } from "../gallery/gallery-data";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import RatingsAndReviews from "./ratings-and-reviews";
+import NavbarWrapper from "../navbar-wrapper";
 
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
@@ -338,7 +339,7 @@ export function LodgeDetails({ lodge }: { lodge: any }) {
 
   return (
     <>
-      <Navbar />
+      <NavbarWrapper />
       <PageHeader
         title={lodge.headerTitle}
         description={lodge.headerDescription}

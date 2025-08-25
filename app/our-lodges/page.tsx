@@ -5,13 +5,14 @@ import { LodgeList } from "@/components/lodges/lodge-list";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import { fetchProperties } from "@/lib/api";
 import { Suspense } from "react";
+import NavbarWrapper from "@/components/navbar-wrapper";
 
 export default function OurLodgesPage() {
   const lodges = fetchProperties();
   
   return (
     <main className="min-h-screen bg-white">
-      <Navbar />
+      <NavbarWrapper />
       <PageHeader
         title="Our Lodges"
         description="Discover your perfect Lake District retreat"

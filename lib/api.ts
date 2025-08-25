@@ -23,3 +23,13 @@ export const registerUser = async (values: any) => {
   const res = response.json();
   return res;
 };
+
+export const submitReview = async (reviews: any) => {
+  await fetch(`${baseUrl}/api/create-review`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reviews),
+  });
+};

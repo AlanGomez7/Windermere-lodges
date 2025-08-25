@@ -32,6 +32,7 @@ import { galleryImagesByLodge } from "../gallery/gallery-data";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import RatingsAndReviews from "./ratings-and-reviews";
 import NavbarWrapper from "../navbar-wrapper";
+import ReviewWrapper from "./review-wrapper";
 
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
@@ -118,7 +119,7 @@ function Gallery({
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle cx="12" cy="12" r="12" fill="#fff"/>
+              <circle cx="12" cy="12" r="12" fill="#fff" />
               <path
                 stroke="currentColor"
                 strokeLinecap="round"
@@ -145,7 +146,7 @@ function Gallery({
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle cx="12" cy="12" r="12" fill="#fff"/>
+              <circle cx="12" cy="12" r="12" fill="#fff" />
               <path
                 stroke="currentColor"
                 strokeLinecap="round"
@@ -311,7 +312,7 @@ function Gallery({
   );
 }
 
-export function LodgeDetails({ lodge }: { lodge: any }) {
+export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const router = useRouter();
   const [showFAQ, setShowFAQ] = useState<number | null>(null);
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
@@ -570,8 +571,8 @@ export function LodgeDetails({ lodge }: { lodge: any }) {
             <h2 className="text-2xl font-bold mb-4">About {lodge.name}</h2>
             <p className="text-gray-700">{lodge.about}</p>
           </div>
-            {/* Rating & Review */}
-            <RatingsAndReviews lodge={lodge}/>
+          {/* Rating & Review */}
+          <RatingsAndReviews lodge={lodge} user={session} />
           {/* Location */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Location</h2>
@@ -583,7 +584,7 @@ export function LodgeDetails({ lodge }: { lodge: any }) {
               loading="lazy"
             ></iframe>
           </div>
-          
+
           {/* Rules and Policies */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Rules & Policies</h2>

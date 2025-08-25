@@ -1,15 +1,18 @@
-"use client"
+"use client";
 
 import { Star, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Textarea } from "../ui/textarea";
+import { submitReview } from "@/lib/api";
 
 export default function RatingsAndReviews({ lodge }: { lodge: any }) {
-  console.log(lodge)
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
-  const [review, setReview] = useState<string>('')
+  const [review, setReview] = useState<string>("");
+
+  const [err,setErr] = useState(false);
+
   const ratingSummary = {
     average: 4.0,
     label: "Very Good",
@@ -22,19 +25,25 @@ export default function RatingsAndReviews({ lodge }: { lodge: any }) {
       { stars: 1, label: "Poor", count: 13, color: "bg-amber-400" },
     ],
   };
-  const maxCount = Math.max(...ratingSummary.breakdown.map((b) => b.count));
 
-    const handleClick = (value: number) => {
+  const maxCount = Math.max(...ratingSummary.breakdown.map((b) => b.count));
+  const handleClick = (value: number) => {
     if (rating === value) {
-      setRating(0) ; // deselect if the same star is clicked
+      setRating(0); // deselect if the same star is clicked
     } else {
       setRating(value);
     }
   };
 
-  const handleSubmit = ()=>{
-    console.log(review, rating, lodge?.id)
-  }
+  const handleSubmit = async() => {
+
+    if(rating === 0){
+      setErr(true);
+      return
+    }
+
+    const response = await submitReview("hello");
+  };
 
   return (
     <>
@@ -134,7 +143,7 @@ export default function RatingsAndReviews({ lodge }: { lodge: any }) {
             <Textarea
               name="name"
               value={review}
-              onChange={(e)=>setReview(e.target.value)}
+              onChange={(e) => setReview(e.target.value)}
               placeholder="Share us about the experience you had"
               required
               className="min-h-40 w-full border rounded-lg px-4 py-2 placeholder:text-lg mt-8"

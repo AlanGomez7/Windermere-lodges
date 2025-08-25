@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export default async function GET(req: NextRequest) {
-    console.log(req.body);
+export async function POST(req: Request) {
+    try{
+        const t=await req.json();
+        return NextResponse.json({message: t},{status: 200})
+    }catch(err){
+        return NextResponse.json({message: "received"},{status: 400})
 
-    NextResponse.json({message: "received"},{status: 200})
+    }
+
 }

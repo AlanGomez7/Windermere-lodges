@@ -46,10 +46,10 @@ export function LoginForm() {
       setIsLoading(true)
       const response = await credentialLogin(values);
 
-      if (response.user) {
-        router.push("/");
+      if (!!response.error) {
+        console.log("a;jfkad")
       } else {
-        setError(response.error.message);
+        router.push("/");
       }
 
     } catch (err) {

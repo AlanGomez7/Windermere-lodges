@@ -1,30 +1,49 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { auth } from "@/auth"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { auth } from "@/auth";
+import LogoutButton from "./logout-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import DropDown from "./ui/dropdown";
 
-const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
-  const pathname = usePathname()
-
+const Navbar = ({ session }: { session: any }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  
+  const getInitials = (name: string) => {
+    return name
+    .split(" ")
+    .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+    };
+    
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
-        setIsScrolled(true)
+        setIsScrolled(true);
       } else {
-        setIsScrolled(false)
+        setIsScrolled(false);
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -33,20 +52,23 @@ const Navbar = () => {
     // { name: "Activities", href: "/activities" },
     { name: "Gallery", href: "/gallery" },
     { name: "Contact", href: "/contact" },
-  ]
+  ];
 
   return (
     <nav
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300",
-        isScrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4",
+        isScrolled ? "bg-white shadow-md py-2" : "bg-transparent py-4"
       )}
     >
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center">
             <span
-              className={cn("text-2xl font-bold transition-colors", isScrolled ? "text-emerald-700" : "text-white")}
+              className={cn(
+                "text-2xl font-bold transition-colors",
+                isScrolled ? "text-emerald-700" : "text-white"
+              )}
             >
               Windermere Lodges
             </span>
@@ -61,7 +83,8 @@ const Navbar = () => {
                 className={cn(
                   "font-medium transition-colors hover:text-emerald-500",
                   isScrolled ? "text-gray-700" : "text-white",
-                  pathname === link.href && (isScrolled ? "text-emerald-600" : "text-emerald-300"),
+                  pathname === link.href &&
+                    (isScrolled ? "text-emerald-600" : "text-emerald-300")
                 )}
               >
                 {link.name}
@@ -70,28 +93,43 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Link href="/auth/login">
-              <Button
-                variant="ghost"
-                className={cn(
-                  isScrolled ? "text-gray-700 hover:text-emerald-600" : "text-white hover:text-emerald-300",
-                )}
-              >
-                Login
+            {session ? (
+              <DropDown user={session?.user} isMobile={false}/>
+            ) : (
+              <Link href="/auth/login">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    isScrolled
+                      ? "text-gray-700 hover:text-emerald-600"
+                      : "text-white hover:text-emerald-300"
+                  )}
+                >
+                  Login
+                </Button>
+              </Link>
+            )}
+            {/* <Link href="/booking">
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                Book Now
               </Button>
-            </Link>
-            <Link href="/booking">
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">Book Now</Button>
-            </Link>
+            </Link> */}
           </div>
 
           {/* Mobile Navigation Toggle */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={cn("p-2 rounded-md", isScrolled ? "text-gray-700" : "text-white")}
+              className={cn(
+                "p-2 rounded-md",
+                isScrolled ? "text-gray-700" : "text-white"
+              )}
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -106,7 +144,9 @@ const Navbar = () => {
                   href={link.href}
                   className={cn(
                     "px-4 py-2 rounded-md font-medium",
-                    pathname === link.href ? "bg-emerald-50 text-emerald-600" : "text-gray-700 hover:bg-gray-100",
+                    pathname === link.href
+                      ? "bg-emerald-50 text-emerald-600"
+                      : "text-gray-700 hover:bg-gray-100"
                   )}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -114,22 +154,27 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="border-t border-gray-200 pt-4 mt-2 space-y-3">
-                <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">
-                    Login
+                {!session ? (
+                  <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">
+                      Login
+                    </Button>
+                  </Link>
+                ) : (
+                  <DropDown user={session?.user} isMobile={true}/>
+                )}
+                {/* <Link href="/booking" onClick={() => setIsMenuOpen(false)}>
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                    Book Now
                   </Button>
-                </Link>
-                <Link href="/booking" onClick={() => setIsMenuOpen(false)}>
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700">Book Now</Button>
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
         )}
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;

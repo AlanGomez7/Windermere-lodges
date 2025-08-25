@@ -1,10 +1,10 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { HttpError } from "@/lib/utils";
 // import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function createUser(userDetails: any) {
-  console.log(userDetails);
   try {
     const response = await prisma.user.create({
       data: userDetails,
@@ -15,11 +15,41 @@ export async function createUser(userDetails: any) {
   }
 }
 
-export async function getProperties(){
-  try{
+export const credentialCheck = async (credentials: {
+  email: string;
+  password: string;
+}) => {
+  const { email, password } = credentials;
+
+  const dbUser = await prisma.user.findFirst({
+    where: {
+      email,
+    },
+  });
+  // console.log(user);
+
+  // additionaly need to add bcrypt compare
+  if (!dbUser) {
+    return null;
+  }
+
+  if (dbUser.email === email && dbUser.password === password) {
+    return {
+      id: dbUser.id,
+      name: dbUser.name,
+      email: dbUser.email,
+      image: dbUser.avatar ?? null, // if you store it
+    };
+  }else{
+    return null
+  }
+};
+
+export async function getProperties() {
+  try {
     const response = prisma.property.findMany();
-    return response
-  }catch(err){
-    throw err
+    return response;
+  } catch (err) {
+    throw err;
   }
 }

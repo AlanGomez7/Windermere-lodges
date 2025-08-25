@@ -5,7 +5,7 @@ import { HttpError } from "@/lib/utils";
 
 export async function doSocialLogin(formData: any) {
   const action = formData.get("action");
-  await signIn(action, { redirectTo: "/" });
+  const response = await signIn(action, { redirectTo: "/" });
 }
 
 export async function doLogout() {
@@ -14,16 +14,14 @@ export async function doLogout() {
 
 export async function credentialLogin(credentials: any) {
   try {
-    console.log(credentials, "server actions");
     const response = await signIn("credentials", {
       email: credentials.email,
       password: credentials.password,
       redirect: false,
-    });
-
-    return response;
+    },);
+    return response
   } catch (err) {
-    console.log(err, "server actions")
+    console.log(err, "fadkfjakldjf")
     throw new HttpError("Something went wrong", 500);
   }
 }

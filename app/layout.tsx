@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
+import { auth } from "@/auth";
 export const metadata: Metadata = {
   title: "Windermere Lodges",
   description: "Created by coffee_coders",
@@ -13,6 +14,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body>

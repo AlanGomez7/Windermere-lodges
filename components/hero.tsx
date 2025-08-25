@@ -62,7 +62,7 @@ export const Hero = () => {
           alt="liliaz"
           key={idx}
           fill
-          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ${
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat brightness-[0.4] transition-opacity duration-700 ${
             idx === current ? "opacity-100 z-0" : "opacity-0 z-0"
           }`}
         />

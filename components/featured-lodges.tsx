@@ -44,6 +44,8 @@ const lodges = [
     features: ["Ground floor accommodation", "Ground floor bedroom", "Off Road Parking", "Garden / Patio", "+4"],
     isNew: false,
   },
+
+  
 ]
 
 export const FeaturedLodges = () => {

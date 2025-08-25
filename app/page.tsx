@@ -1,4 +1,3 @@
-import Navbar from "@/components/navbar"
 import { Hero } from "@/components/hero"
 import { BookingSection } from "@/components/booking-section"
 import { FeaturedLodges } from "@/components/featured-lodges"
@@ -7,11 +6,12 @@ import { Activities } from "@/components/activities"
 import { Testimonials } from "@/components/testimonials"
 import Footer from "@/components/footer"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+import NavbarWrapper from "@/components/navbar-wrapper"
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
-      <Navbar />
+      <NavbarWrapper/>
       <Hero />
       <BookingSection />
       <FeaturedLodges />

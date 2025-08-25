@@ -16,6 +16,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import toast from "react-hot-toast";
+import { register } from "module";
+import { registerUser } from "@/lib/api";
 
 const formSchema = z.object({
   name: z.string().min(5, {
@@ -44,23 +46,14 @@ export function RegisterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    fetch("http://localhost:3000/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    })
-      .then((r) => r.json())
-      .then((r) => {
-        if (r.ok) {
-          toast.success(r.message);
-          router.push("/auth/login");
-        } else {
-          toast.error(r.message);
-        }
-      })
-      .finally(() => setIsLoading(false));
+    const result = await registerUser(values);
+    if (result.ok) {
+      toast.success(result.message);
+      router.push("/auth/login");
+    } else {
+      toast.error(result.message);
+    }
+    setIsLoading(false)
   }
 
   return (

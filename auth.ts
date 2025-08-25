@@ -1,10 +1,8 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import CredentialProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
-import { getErrorMessage, HttpError } from "./lib/utils";
+import { credentialCheck } from "./app/queries/auth";
 
-const prisma = new PrismaClient();
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
@@ -23,32 +21,24 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const { email } = credentials;
+        const email = credentials.email as string;
+        const password = credentials.password as string;
+        // const { email } = credential;
 
-        try {
-          const user = await prisma.user.findFirst({
-            where: {
-              email,
-            },
-          });
-          if (user) {
-            if (user?.password === credentials.password) {
-              return user
-            }else{
-                throw new HttpError("User not found", 404);
-            }
-
-          }
-
-          return user;
-          
-        } catch (err) {
-          console.log(err)
-          throw new HttpError("something went wrong", 500)
-        }
+        const user = await credentialCheck({ email, password });
+        return user;
       },
     }),
 
     Google,
   ],
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = (user as any).role; // Add role to token
+      }
+      return token;
+    },
+  },
 });

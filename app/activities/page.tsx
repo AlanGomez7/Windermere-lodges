@@ -10,7 +10,7 @@ import NavbarWrapper from "@/components/navbar-wrapper"
 export default function ActivitiesPage() {
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Lake District Activities"
         description="Explore the endless adventures awaiting you"

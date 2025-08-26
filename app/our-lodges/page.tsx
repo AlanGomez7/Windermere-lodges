@@ -12,7 +12,7 @@ export default function OurLodgesPage() {
   
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Our Lodges"
         description="Discover your perfect Lake District retreat"

@@ -22,7 +22,7 @@ export default function ItineraryPlannerPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Plan Your Itinerary"
         description="Create your perfect Lake District adventure"

@@ -340,7 +340,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
   return (
     <>
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title={lodge.headerTitle}
         description={lodge.headerDescription}

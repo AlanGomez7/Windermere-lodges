@@ -11,7 +11,7 @@ import NavbarWrapper from "@/components/navbar-wrapper"
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper/>
+      {/* <NavbarWrapper/> */}
       <Hero />
       <BookingSection />
       <FeaturedLodges />

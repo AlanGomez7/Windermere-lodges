@@ -9,7 +9,7 @@ import NavbarWrapper from "@/components/navbar-wrapper"
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Contact Us"
         description="We're here to help plan your perfect getaway"

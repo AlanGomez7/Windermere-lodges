@@ -14,7 +14,7 @@ export default function LoginPage() {
   const { toast } = useToast()
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Login"
         description="Access your account to manage bookings"

@@ -8,7 +8,7 @@ import NavbarWrapper from "@/components/navbar-wrapper"
 export default function AmenitiesPage() {
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Lodge Amenities"
         description="Luxury features for an unforgettable stay"

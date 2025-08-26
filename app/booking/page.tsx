@@ -13,7 +13,7 @@ export default function BookingPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Book Your Stay"
         description="Secure your perfect Lake District getaway"

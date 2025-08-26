@@ -8,7 +8,7 @@ import NavbarWrapper from "@/components/navbar-wrapper"
 export default function GalleryPage() {
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Our Gallery"
         description="Experience the beauty of Windermere Lodges"

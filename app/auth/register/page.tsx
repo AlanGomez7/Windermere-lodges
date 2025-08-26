@@ -16,7 +16,7 @@ export default function RegisterPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Register"
         description="Hey! welcome to windermere lodges"

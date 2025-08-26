@@ -1,22 +1,5 @@
 "use client";
-
-import {
-  Wifi,
-  Tv,
-  Coffee,
-  Utensils,
-  Car,
-  Waves,
-  DumbbellIcon,
-  Gamepad,
-} from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import lakeAccess from "../public/icons/Access to the lake.svg";
 import beerGarden from "../public/icons/Beer Garden.svg";
 import wifi from "../public/icons/wifi.svg";
@@ -27,7 +10,8 @@ import park from "../public/icons/park.svg";
 import picnic from "../public/icons/Picnic Areas.svg";
 import woodland from "../public/icons/Woodland walks.svg";
 import takeaway from "../public/icons/takeaway.svg";
-
+import bar from "../public/icons/bar.svg"
+import games from "../public/icons/ball.svg"
 
 import Image from "next/image";
 
@@ -35,6 +19,14 @@ const amenities = [
   {
     icon: lakeAccess,
     title: "Lake view",
+  },
+  {
+    title: "Games",
+    icon: games
+  },
+  {
+    title: "Bar",
+    icon: bar,
   },
   {
     icon: woodland,
@@ -78,8 +70,10 @@ export const Amenities = () => {
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Our Facilities</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+          Our Facilities
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
           {amenities.map((amenity, index) => {
             const Icon = amenity.icon;
             return (

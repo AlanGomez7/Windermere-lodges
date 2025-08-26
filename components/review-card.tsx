@@ -6,7 +6,7 @@ export default function ReviewCard({testimonial}:{testimonial: any}) {
   return (
     <Card
       key={testimonial.id}
-      className="testimonial-card flex-shrink-0 w-[350px]"
+      className="testimonial-card flex-shrink-0 w-[350px] shadow-md"
     >
       <CardHeader className="flex flex-row items-center gap-4 p-4">
         <Avatar className="h-12 w-12">

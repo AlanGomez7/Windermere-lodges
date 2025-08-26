@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { getErrorMessage } from "@/lib/utils";
 import { credentialLogin } from "@/app/actions/auth";
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -31,7 +32,7 @@ type loginType = Zod.infer<typeof formSchema>;
 export function LoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [error,setError] = useState('')
+  const [error, setError] = useState("");
 
   const form = useForm<loginType>({
     resolver: zodResolver(formSchema),
@@ -42,26 +43,23 @@ export function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setIsLoading(true)
-      const response = await credentialLogin(values);
+    setIsLoading(true);
+    const response = await credentialLogin(values);
 
-      if (!!response.error) {
-        console.log("a;jfkad")
-      } else {
-        router.push("/");
-      }
-
-    } catch (err) {
-      const e = getErrorMessage(err);
-      setError('Invalid credentials')
-    }finally{
-      setIsLoading(false);
+    if (!!response.error) {
+      setError(response.error);
+    } else {
+      router.push("/");
     }
+
+    setIsLoading(false);
   }
 
   return (
     <Form {...form}>
+      {error && <div className="flex justify-center">
+        <p className="text-red-600">{error}</p>
+      </div>}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}

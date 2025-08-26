@@ -80,10 +80,10 @@ export const FeaturedLodges = () => {
                 </div>
               </div>
 
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <CardTitle>{lodge.name}</CardTitle>
-                  <Badge variant="secondary">£{lodge.price}/night</Badge>
+              <CardHeader className="flex justify-start">
+                <div className="">
+                  <CardTitle className="text-2xl font-bold">{lodge.name}</CardTitle>
+                  {/* <Badge variant="secondary">£{lodge.price}/night</Badge> */}
                 </div>
                 <CardDescription>{lodge.description}</CardDescription>
               </CardHeader>

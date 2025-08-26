@@ -11,8 +11,6 @@ import image2 from "../public/Main-banners/windermere2.jpg";
 import image3 from "../public/Main-banners/windermere3.jpg";
 import image4 from "../public/Main-banners/windermere4.jpg";
 
-// "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop",
-// "https://images.unsplash.com/photo-1464983953574-0892a716854b?q=80&w=1920&auto=format&fit=crop"
 const sliderImages = [image1, image2, image3, image4];
 
 export const Hero = () => {

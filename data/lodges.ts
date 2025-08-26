@@ -51,6 +51,7 @@ export const lodges = [
     headerDescription: "We're here to help plan your perfect getaway",
     headerImage: '/Glenridding/1.jpeg',
   },
+  
   {
     id: '2',
     name: "Water's Reach",

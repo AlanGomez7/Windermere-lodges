@@ -1,11 +1,11 @@
 "use server";
 
 import { signIn, signOut } from "@/auth";
-import { HttpError } from "@/lib/utils";
+import { AuthError } from "next-auth";
 
 export async function doSocialLogin(formData: any) {
   const action = formData.get("action");
-  const response = await signIn(action, { redirectTo: "/" });
+  await signIn(action, { redirectTo: "/" });
 }
 
 export async function doLogout() {
@@ -21,8 +21,10 @@ export async function credentialLogin(credentials: any) {
     },);
     return response
   } catch (err) {
-    console.log(err, "fadkfjakldjf")
-    throw new HttpError("Something went wrong", 500);
+    if(err instanceof AuthError){
+      return {error: "Invalid credentials"}
+    }
+    return {error: "something went wrong"}
   }
 }
 

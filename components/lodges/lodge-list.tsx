@@ -168,7 +168,7 @@ export function LodgeList({ properties }: { properties: any }) {
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 pt-8 gap-3 text-xs">
+                  <div className="flex pt-8 gap-5 text-xs">
                     <div className="flex items-center">
                       <Users className="h-4 w-4 mr-2 text-gray-500" />
                       <span>{lodge.guests} Guests</span>
@@ -177,10 +177,6 @@ export function LodgeList({ properties }: { properties: any }) {
                       <BedDouble className="h-4 w-4 mr-2 text-gray-500" />
                       <span>{lodge.rooms} Bedrooms</span>
                     </div>
-                    {/* <div className="flex items-center">
-                      <Bath className="h-4 w-4 mr-2 text-gray-500" />
-                      <span>{lodge.bathrooms} Bathrooms</span>
-                    </div> */}
                     <div className="flex items-center">
                       <Maximize className="h-4 w-4 mr-2 text-gray-500" />
                       <span>{lodge.size} sq ft</span>

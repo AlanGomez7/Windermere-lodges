@@ -19,37 +19,55 @@ export const credentialCheck = async (credentials: {
   email: string;
   password: string;
 }) => {
-  const { email, password } = credentials;
+  try{
 
-  const dbUser = await prisma.user.findFirst({
-    where: {
-      email,
-    },
-  });
-  // console.log(user);
-
-  // additionaly need to add bcrypt compare
-  if (!dbUser) {
-    return null;
-  }
-
-  if (dbUser.email === email && dbUser.password === password) {
-    return {
-      id: dbUser.id,
-      name: dbUser.name,
-      email: dbUser.email,
-      image: dbUser.avatar ?? null, // if you store it
-    };
-  }else{
-    return null
+    const { email, password } = credentials;
+    
+    const dbUser = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+    // console.log(user);
+    
+    // additionaly need to add bcrypt compare
+    if (!dbUser) {
+      return null;
+    }
+    
+    if (dbUser.email === email && dbUser.password === password) {
+      return {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        image: dbUser.avatar ?? null, // if you store it
+      };
+    }else{
+      return null
+    }
+  }catch(err){
+    throw err
   }
 };
 
 export async function getProperties() {
   try {
-    const response = prisma.property.findMany();
+    const response = await prisma.property.findMany();
     return response;
   } catch (err) {
+    throw err;
+  }
+}
+
+export async function getLodgeDetails(id:string){
+  try{
+    const response = prisma.property.findUnique({
+      where: {
+        id: id
+      }
+    })
+    return response
+  }catch(err){
     throw err;
   }
 }

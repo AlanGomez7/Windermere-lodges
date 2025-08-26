@@ -10,8 +10,7 @@ import { useToast } from "@/hooks/use-toast"
 import NavbarWrapper from "@/components/navbar-wrapper"
 
 export default function LoginPage() {
-  const router = useRouter()
-  const { toast } = useToast()
+
   return (
     <main className="min-h-screen bg-white">
       {/* <NavbarWrapper /> */}

@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { HttpError } from "@/lib/utils";
+import bcrypt from "bcryptjs";
 // import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function createUser(userDetails: any) {
@@ -34,8 +34,9 @@ export const credentialCheck = async (credentials: {
     if (!dbUser) {
       return null;
     }
-    
-    if (dbUser.email === email && dbUser.password === password) {
+
+    const status = await bcrypt.compare(password, dbUser.password)
+    if (status) {
       return {
         id: dbUser.id,
         name: dbUser.name,

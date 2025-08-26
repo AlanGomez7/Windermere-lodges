@@ -11,21 +11,22 @@ export const fetchProperties = async () => {
   return { message: res.message, ok: false };
 };
 
-export const fetchPropertyDetails = async(id: string)=>{
+export const fetchPropertyDetails = async (id: string) => {
   const response = await fetch(`${baseUrl}/api/our-lodges/${id}`, {
-    method: 'GET'
+    method: "GET",
   });
 
   const res = await response.json();
 
-  if(res.ok){
-    return res.result
-  }else{
-    return null
+  if (res.ok) {
+    return res.result;
+  } else {
+    return null;
   }
-}
+};
 
 export const registerUser = async (values: any) => {
+  
   const response = await fetch(`${baseUrl}/api/auth/register`, {
     method: "POST",
     headers: {

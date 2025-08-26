@@ -15,6 +15,8 @@ export default function RatingsAndReviews({
   lodge: any;
   user: any;
 }) {
+
+  console.log(lodge)
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>("");
@@ -36,6 +38,9 @@ export default function RatingsAndReviews({
   };
 
   const maxCount = Math.max(...ratingSummary.breakdown.map((b) => b.count));
+
+
+  // needs serious rework after booking is sorted
   const handleClick = (value: number) => {
     if (rating === value) {
       setRating(0); // deselect if the same star is clicked
@@ -135,7 +140,7 @@ export default function RatingsAndReviews({
               </button>
               <div className="flex flex-col place-items-center w-full">
                 <h2 className="text-2xl text-center font-semibold mb-8 text-gray-900 flex items-center gap-3">
-                  {lodge.headerTitle}
+                  {lodge.name}
                 </h2>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map((value) => (

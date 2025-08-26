@@ -80,11 +80,9 @@ export const FeaturedLodges = () => {
                 </div>
               </div>
 
-              <CardHeader className="flex justify-start">
-                <div className="">
-                  <CardTitle className="text-2xl font-bold">{lodge.name}</CardTitle>
+              <CardHeader className="">
+                  <CardTitle className="text-xl font-bold">{lodge.name}</CardTitle>
                   {/* <Badge variant="secondary">£{lodge.price}/night</Badge> */}
-                </div>
                 <CardDescription>{lodge.description}</CardDescription>
               </CardHeader>
 

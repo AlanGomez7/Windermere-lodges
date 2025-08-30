@@ -5,7 +5,7 @@ import { LodgeList } from "@/components/lodges/lodge-list";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import { fetchProperties } from "@/lib/api";
 import { Suspense } from "react";
-import NavbarWrapper from "@/components/navbar-wrapper";
+import Loading from "@/components/loading";
 
 export default function OurLodgesPage() {
   const lodges = fetchProperties();
@@ -22,7 +22,7 @@ export default function OurLodgesPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-row">
-            <Suspense fallback={<>loading....</>}>
+            <Suspense fallback={<Loading/>}>
               <LodgeList properties={lodges}/>
             </Suspense>
           </div>

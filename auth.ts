@@ -1,13 +1,15 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialProvider from "next-auth/providers/credentials";
 import { credentialCheck } from "./app/queries/auth";
-
+import prisma from "./lib/prisma";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
     strategy: "jwt",
   },
+  adapter: PrismaAdapter(prisma),
 
   providers: [
     CredentialProvider({
@@ -30,7 +32,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
     }),
 
-    Google,
+    GoogleProvider({
+      // clientId: process.env.GOOGLE_CLIENT_ID,
+      // clientSecret:process.env.GOOGLE_CLIENT_SECRET,
+      profile(profile) {
+        console.log(profile)
+        return {
+          id: profile.sub,
+          email: profile.email,
+          name: profile.username,
+          avatar: profile.picture,
+        };
+      },
+    }),
   ],
 
   callbacks: {

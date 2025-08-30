@@ -47,9 +47,9 @@ export const lodges = [
       { q: 'Do you offer discounts for nonprofits?', a: '' },
       { q: 'How am I billed when I add new members to a Workspace?', a: '' }
     ],
-    headerTitle: 'Glenridding Lodge',
-    headerDescription: "We're here to help plan your perfect getaway",
-    headerImage: '/Glenridding/1.jpeg',
+    // headerTitle: 'Glenridding Lodge',
+    // headerDescription: "We're here to help plan your perfect getaway",
+    // headerImage: '/Glenridding/1.jpeg',
   },
   
   {

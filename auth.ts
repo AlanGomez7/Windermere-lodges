@@ -3,7 +3,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialProvider from "next-auth/providers/credentials";
 import { checkUser, createUser, credentialCheck } from "./app/queries/auth";
-import prisma from "./lib/prisma";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
@@ -46,12 +45,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return token;
     },
 
-    async signIn({ profile }) {
+    async signIn({ profile, account }) {
       try {
+        if(account?.provider === 'credentials'){
+          return true
+        }
+
+        
         const user = await checkUser(profile);
 
         if (user) {
-          console.log(user)
           return true;
         }
 

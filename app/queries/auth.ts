@@ -36,6 +36,7 @@ export async function checkUser(userDetails: any) {
     if (!dbUser) {
       return null;
     }
+
     return dbUser;
   } catch (err) {
     throw err;
@@ -46,6 +47,7 @@ export const credentialCheck = async (credentials: {
   email: string;
   password: string;
 }) => {
+  console.log(credentials)
   try {
     const { email, password } = credentials;
 

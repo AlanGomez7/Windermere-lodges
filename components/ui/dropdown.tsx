@@ -20,6 +20,8 @@ export default function DropDown({
   user: any;
   isMobile: boolean;
 }) {
+
+  console.log(user)
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -71,7 +73,7 @@ export default function DropDown({
           >
             <Avatar className="w-10 h-10 hover:shadow-md transition-all duration-150 shadow-md">
               <AvatarImage
-                src={user?.avatar || "/placeholder.svg?height=40&width=40"}
+                src={user?.image || "/placeholder.svg?height=40&width=40"}
               />
               <AvatarFallback
                 className={`bg-gradient-to-br from-teal-100 to-teal-200 text-teal-700 font-semibold`}

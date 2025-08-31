@@ -2,14 +2,14 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialProvider from "next-auth/providers/credentials";
-import { credentialCheck } from "./app/queries/auth";
+import { checkUser, createUser, credentialCheck } from "./app/queries/auth";
 import prisma from "./lib/prisma";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
     strategy: "jwt",
   },
-  adapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma),
 
   providers: [
     CredentialProvider({
@@ -33,17 +33,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }),
 
     GoogleProvider({
-      // clientId: process.env.GOOGLE_CLIENT_ID,
-      // clientSecret:process.env.GOOGLE_CLIENT_SECRET,
-      profile(profile) {
-        console.log(profile)
-        return {
-          id: profile.sub,
-          email: profile.email,
-          name: profile.username,
-          avatar: profile.picture,
-        };
-      },
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
 
@@ -53,6 +44,31 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         token.role = (user as any).role; // Add role to token
       }
       return token;
+    },
+
+    async signIn({ profile }) {
+      try {
+        const user = await checkUser(profile);
+
+        if (user) {
+          return true;
+        }
+
+        // console.log(profile, "*****************()()()()()()()()(()()()()()()()")
+
+        await createUser({
+          avatar: profile?.picture,
+          email: profile?.email,
+          password: ''+profile?.updated_at,
+          name:profile?.name,
+          sub:profile?.sub,
+          role:'user'
+        });
+
+        return true;
+      } catch (err) {
+        return false;
+      }
     },
   },
 });

@@ -6,8 +6,18 @@ import bcrypt from "bcryptjs";
 
 export async function createUser(userDetails: any) {
   try {
+    const { name, email, password, role } = userDetails;
+    const encryptedPassword = await bcrypt.hash(password, 12);
+
     const response = await prisma.user.create({
-      data: userDetails,
+      data: {
+        name,
+        googleId: userDetails.sub ?? null,
+        email,
+        password: encryptedPassword,
+        role,
+        avatar: userDetails.avatar ?? null,
+      },
     });
     return response;
   } catch (error) {
@@ -15,27 +25,40 @@ export async function createUser(userDetails: any) {
   }
 }
 
+export async function checkUser(userDetails: any) {
+  try {
+    const dbUser = await prisma.user.findFirst({
+      where: {
+        email: userDetails.email,
+      },
+    });
+
+    if (!dbUser) {
+      return null;
+    }
+  } catch (err) {
+    throw err;
+  }
+}
+
 export const credentialCheck = async (credentials: {
   email: string;
   password: string;
 }) => {
-  try{
-
+  try {
     const { email, password } = credentials;
-    
+
     const dbUser = await prisma.user.findFirst({
       where: {
         email,
       },
     });
-    // console.log(user);
-    
-    // additionaly need to add bcrypt compare
-    if (!dbUser) {
+
+    if (!dbUser || dbUser.googleId) {
       return null;
     }
 
-    const status = await bcrypt.compare(password, dbUser.password)
+    const status = await bcrypt.compare(password, dbUser.password);
     if (status) {
       return {
         id: dbUser.id,
@@ -43,11 +66,11 @@ export const credentialCheck = async (credentials: {
         email: dbUser.email,
         image: dbUser.avatar ?? null, // if you store it
       };
-    }else{
-      return null
+    } else {
+      return null;
     }
-  }catch(err){
-    throw err
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -60,15 +83,15 @@ export async function getProperties() {
   }
 }
 
-export async function getLodgeDetails(id:string){
-  try{
+export async function getLodgeDetails(id: string) {
+  try {
     const response = prisma.property.findUnique({
       where: {
-        id: id
-      }
-    })
-    return response
-  }catch(err){
+        id: id,
+      },
+    });
+    return response;
+  } catch (err) {
     throw err;
   }
 }

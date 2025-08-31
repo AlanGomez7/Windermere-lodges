@@ -51,6 +51,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const user = await checkUser(profile);
 
         if (user) {
+          console.log(user)
           return true;
         }
 
@@ -67,6 +68,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
         return true;
       } catch (err) {
+        console.log(err)
         return false;
       }
     },

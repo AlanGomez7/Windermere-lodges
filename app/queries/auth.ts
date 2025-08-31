@@ -36,6 +36,7 @@ export async function checkUser(userDetails: any) {
     if (!dbUser) {
       return null;
     }
+    return dbUser;
   } catch (err) {
     throw err;
   }

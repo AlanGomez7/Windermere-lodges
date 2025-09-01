@@ -1,24 +1,40 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CheckCircle } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle } from "lucide-react";
 
 interface ExtrasProps {
-  onContinue: (data: any) => void
-  onBack: () => void
-  bookingDetails: any
+  onContinue: (data: any) => void;
+  onBack?: () => void;
+  bookingDetails: any;
+  isActive: boolean;
+  setCurrentStep: () => void;
 }
 
-export function Extras({ onContinue, onBack, bookingDetails }: ExtrasProps) {
-  const [extras, setExtras] = useState<any[]>(bookingDetails.extras || [])
-  const [promoCode, setPromoCode] = useState(bookingDetails.promoCode || "")
-  const [promoError, setPromoError] = useState("")
-  const [promoSuccess, setPromoSuccess] = useState("")
-  const [discountApplied, setDiscountApplied] = useState(bookingDetails.discountApplied || false)
+export function Extras({
+  onContinue,
+  onBack,
+  bookingDetails,
+  isActive,
+  setCurrentStep,
+}: ExtrasProps) {
+  const [extras, setExtras] = useState<any[]>(bookingDetails.extras || []);
+  const [promoCode, setPromoCode] = useState(bookingDetails.promoCode || "");
+  const [promoError, setPromoError] = useState("");
+  const [promoSuccess, setPromoSuccess] = useState("");
+  const [discountApplied, setDiscountApplied] = useState(
+    bookingDetails.discountApplied || false
+  );
 
   const availableExtras = [
     {
@@ -26,176 +42,226 @@ export function Extras({ onContinue, onBack, bookingDetails }: ExtrasProps) {
       name: "Welcome Hamper",
       description: "A selection of local produce, snacks, and drinks",
       price: 45,
-      image: "https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?q=80&w=300&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?q=80&w=300&auto=format&fit=crop",
     },
     {
       id: "breakfast-basket",
       name: "Breakfast Basket",
-      description: "Fresh local ingredients for a full English breakfast delivered daily",
+      description:
+        "Fresh local ingredients for a full English breakfast delivered daily",
       price: 35,
-      image: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=300&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=300&auto=format&fit=crop",
     },
     {
       id: "champagne",
       name: "Champagne & Chocolates",
-      description: "Bottle of premium champagne with luxury handmade chocolates",
+      description:
+        "Bottle of premium champagne with luxury handmade chocolates",
       price: 55,
-      image: "https://images.unsplash.com/photo-1567013275689-c179a874478f?q=80&w=300&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1567013275689-c179a874478f?q=80&w=300&auto=format&fit=crop",
     },
     {
       id: "spa-package",
       name: "In-Lodge Spa Package",
       description: "Luxurious spa treatments in the comfort of your lodge",
       price: 120,
-      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=300&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=300&auto=format&fit=crop",
     },
     {
       id: "bbq-pack",
       name: "BBQ Pack",
-      description: "Premium meat selection with all accompaniments for a perfect BBQ",
+      description:
+        "Premium meat selection with all accompaniments for a perfect BBQ",
       price: 65,
-      image: "https://images.unsplash.com/photo-1529350525428-32626f3db2af?q=80&w=300&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1529350525428-32626f3db2af?q=80&w=300&auto=format&fit=crop",
     },
     {
       id: "anniversary",
       name: "Anniversary/Birthday Package",
       description: "Decorations, cake, and a special gift for your celebration",
       price: 75,
-      image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=300&auto=format&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=300&auto=format&fit=crop",
     },
-  ]
+  ];
 
   const toggleExtra = (extraId: string) => {
     setExtras((prev) => {
-      const isSelected = prev.some((e) => e.id === extraId)
+      const isSelected = prev.some((e) => e.id === extraId);
 
       if (isSelected) {
-        return prev.filter((e) => e.id !== extraId)
+        return prev.filter((e) => e.id !== extraId);
       } else {
-        const extraToAdd = availableExtras.find((e) => e.id === extraId)
-        return [...prev, extraToAdd]
+        const extraToAdd = availableExtras.find((e) => e.id === extraId);
+        return [...prev, extraToAdd];
       }
-    })
-  }
+    });
+  };
 
   const isExtraSelected = (extraId: string) => {
-    return extras.some((e) => e.id === extraId)
-  }
+    return extras.some((e) => e.id === extraId);
+  };
 
   const applyPromoCode = () => {
     // Reset previous states
-    setPromoError("")
-    setPromoSuccess("")
-    setDiscountApplied(false)
+    setPromoError("");
+    setPromoSuccess("");
+    setDiscountApplied(false);
 
     if (!promoCode.trim()) {
-      setPromoError("Please enter a promo code")
-      return
+      setPromoError("Please enter a promo code");
+      return;
     }
 
     // Simulate promo code validation - in a real app this would check against a database
     if (promoCode.toUpperCase() === "SUMMER20") {
-      setPromoSuccess("Promo code applied! You've received a 20% discount.")
-      setDiscountApplied(true)
+      setPromoSuccess("Promo code applied! You've received a 20% discount.");
+      setDiscountApplied(true);
     } else {
-      setPromoError("Invalid promo code")
+      setPromoError("Invalid promo code");
     }
-  }
+  };
 
   const handleContinue = () => {
     onContinue({
       extras,
       promoCode,
       discountApplied,
-    })
-  }
+    });
+    setCurrentStep();
+  };
 
   const calculateExtrasTotal = () => {
-    return extras.reduce((total, extra) => total + extra.price, 0)
-  }
+    return extras.reduce((total, extra) => total + extra.price, 0);
+  };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Enhance Your Stay</CardTitle>
-          <CardDescription>Add these optional extras to make your stay even more special</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {availableExtras.map((extra) => (
-              <div
-                key={extra.id}
-                onClick={() => toggleExtra(extra.id)}
-                className={`cursor-pointer rounded-lg border p-4 transition-all ${
-                  isExtraSelected(extra.id) ? "border-teal-600 bg-teal-50" : "hover:border-gray-300"
-                }`}
-              >
-                <div className="aspect-square w-full overflow-hidden rounded-md mb-3">
-                  <img
-                    src={extra.image || "/placeholder.svg"}
-                    alt={extra.name}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-medium">{extra.name}</h3>
-                    <p className="text-sm text-gray-600 mt-1">{extra.description}</p>
-                  </div>
-                  <div className="text-teal-600 font-bold">£{extra.price}</div>
-                </div>
-                <div className="mt-3">
-                  <Button
-                    variant={isExtraSelected(extra.id) ? "default" : "outline"}
-                    className={`w-full ${isExtraSelected(extra.id) ? "bg-teal-600 hover:bg-teal-700" : ""}`}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleExtra(extra.id)
-                    }}
+    <section
+      className={`px-16 mb-5 min-h-screen flex justify-center ${
+        isActive ? "block" : "hidden"
+      }`}
+    >
+      <div className="container">
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Enhance Your Stay</CardTitle>
+              <CardDescription>
+                Add these optional extras to make your stay even more special
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {availableExtras.map((extra) => (
+                  <div
+                    key={extra.id}
+                    onClick={() => toggleExtra(extra.id)}
+                    className={`cursor-pointer rounded-lg border p-4 transition-all ${
+                      isExtraSelected(extra.id)
+                        ? "border-teal-600 bg-teal-50"
+                        : "hover:border-gray-300"
+                    }`}
                   >
-                    {isExtraSelected(extra.id) ? "Selected" : "Add to Booking"}
-                  </Button>
-                </div>
+                    <div className="aspect-square w-full overflow-hidden rounded-md mb-3">
+                      <img
+                        src={extra.image || "/placeholder.svg"}
+                        alt={extra.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-medium">{extra.name}</h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {extra.description}
+                        </p>
+                      </div>
+                      <div className="text-teal-600 font-bold">
+                        £{extra.price}
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <Button
+                        variant={
+                          isExtraSelected(extra.id) ? "default" : "outline"
+                        }
+                        className={`w-full ${
+                          isExtraSelected(extra.id)
+                            ? "bg-teal-600 hover:bg-teal-700"
+                            : ""
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleExtra(extra.id);
+                        }}
+                      >
+                        {isExtraSelected(extra.id)
+                          ? "Selected"
+                          : "Add to Booking"}
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Promo Code</CardTitle>
-          <CardDescription>If you have a promotional code, enter it here</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex space-x-2">
-            <Input placeholder="Enter promo code" value={promoCode} onChange={(e) => setPromoCode(e.target.value)} />
-            <Button variant="outline" className="shrink-0" onClick={applyPromoCode}>
-              Apply
+          {/* <Card>
+            <CardHeader>
+              <CardTitle>Promo Code</CardTitle>
+              <CardDescription>
+                If you have a promotional code, enter it here
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex space-x-2">
+                <Input
+                  placeholder="Enter promo code"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                />
+                <Button
+                  variant="outline"
+                  className="shrink-0"
+                  onClick={applyPromoCode}
+                >
+                  Apply
+                </Button>
+              </div>
+
+              {promoError && (
+                <div className="mt-2 text-sm text-red-600">{promoError}</div>
+              )}
+
+              {promoSuccess && (
+                <Alert className="mt-2 bg-green-50 border-green-200">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-green-600">
+                    {promoSuccess}
+                  </AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card> */}
+
+          <div className="flex justify-between">
+            <Button onClick={onBack} variant="outline">
+              Back
+            </Button>
+            <Button
+              onClick={handleContinue}
+              className="bg-teal-600 hover:bg-teal-700"
+            >Confirm Booking
+              
             </Button>
           </div>
-
-          {promoError && <div className="mt-2 text-sm text-red-600">{promoError}</div>}
-
-          {promoSuccess && (
-            <Alert className="mt-2 bg-green-50 border-green-200">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-600">{promoSuccess}</AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
-
-      <div className="flex justify-between">
-        <Button onClick={onBack} variant="outline">
-          Back
-        </Button>
-        <Button onClick={handleContinue} className="bg-teal-600 hover:bg-teal-700">
-          Continue to Payment
-        </Button>
+        </div>
       </div>
-    </div>
-  )
+    </section>
+  );
 }
-

@@ -6,16 +6,20 @@ import { Activities } from "@/components/activities"
 import { Testimonials } from "@/components/testimonials"
 import Footer from "@/components/footer"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+import { fetchProperties } from "@/lib/api"
 
 
-export default function Home() {
+export default async function Home() {
+
+  const lodges = await fetchProperties();
+
 
   return (
     <main className="min-h-screen bg-white">
       {/* <NavbarWrapper/> */}
       <Hero />
-      <BookingSection />
-      <FeaturedLodges />
+      <BookingSection lodges={lodges}/>
+      <FeaturedLodges lodges={lodges}/>
       <Amenities />
       <Activities />
       <Testimonials />

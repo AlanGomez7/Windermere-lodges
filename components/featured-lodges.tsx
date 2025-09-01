@@ -5,50 +5,10 @@ import Image from "next/image"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Star, Users, Maximize, ArrowRight } from "lucide-react"
+import { Star, Users, Maximize } from "lucide-react"
 
-const lodges = [
-  {
-    id: 1,
-    name: "Glenridding Lodge",
-    description: "Grasmere 2, White Cross Bay near Windermere, Cumbria & The Lake District (Ref. 1068867)",
-    image: "/Glenridding/1.jpeg",
-    price: 250,
-    rating: 4.5,
-    capacity: 4,
-    size: 120,
-    features: ["Off Road Parking", "Garden / Patio", "Cot Available", "Highchair Available", "+3"],
-    isNew: false,
-  },
-  {
-    id: 2,
-    name: "Water's Reach",
-    description: "White Cross Bay Holiday Park near Troutbeck Bridge, Cumbria & The Lake District (Ref. 1172323)",
-    image: "Waters_Reach/1.jpg",
-    price: 195,
-    rating: 4.7,
-    capacity: 6,
-    size: 90,
-    features: ["Swimming pool", "Ground floor accommodation", "Ground floor bedroom", "+7"],
-    isNew: false,
-  },
-  {
-    id: 3,
-    name: "Serenity",
-    description: "Skiptory Howe 10, White Cross Bay near Windermere, Cumbria & The Lake District (Ref. 1172347)",
-    image: "Serenity/1.png",
-    price: 275,
-    rating: 4.1,
-    capacity: 6,
-    size: 150,
-    features: ["Ground floor accommodation", "Ground floor bedroom", "Off Road Parking", "Garden / Patio", "+4"],
-    isNew: false,
-  },
 
-  
-]
-
-export const FeaturedLodges = () => {
+export const FeaturedLodges = ({lodges}:{lodges:any}) => {
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -61,19 +21,19 @@ export const FeaturedLodges = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {lodges.map((lodge) => (
+          {lodges.slice(0, 3).map((lodge:any) => (
             <Card
               key={lodge.id}
               className="overflow-hidden border-0 shadow-lg transition-all duration-300 hover:shadow-xl"
             >
               <div className="relative h-64">
-                <Image src={lodge.image || "/placeholder.svg"} alt={lodge.name} fill className="object-cover" />
+                <Image src={lodge.images[0] || "/placeholder.svg"} alt={lodge.name} fill className="object-cover" />
                 {lodge.isNew && (
                   <Badge className="absolute top-4 left-4 bg-emerald-600 hover:bg-emerald-700">New</Badge>
                 )}
                 <div className="absolute bottom-4 left-4 flex items-center bg-white bg-opacity-80 px-2 py-1 rounded-full">
                   <Star className="h-4 w-4 text-yellow-500 mr-1" fill="currentColor" />
-                  <span className="text-sm font-medium">{lodge.rating}</span>
+                  <span className="text-sm font-medium">4.1</span>
                 </div>
                 <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
                   £{lodge.price}/night
@@ -83,7 +43,7 @@ export const FeaturedLodges = () => {
               <CardHeader className="">
                   <CardTitle className="text-xl font-bold">{lodge.name}</CardTitle>
                   {/* <Badge variant="secondary">£{lodge.price}/night</Badge> */}
-                <CardDescription>{lodge.description}</CardDescription>
+                <CardDescription>{lodge.address}</CardDescription>
               </CardHeader>
 
               <CardContent className="pt-6">
@@ -99,7 +59,7 @@ export const FeaturedLodges = () => {
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {lodge.features.map((feature, index) => (
+                  {lodge.features.map((feature:string, index:number) => (
                     <Badge key={index} variant="outline" className="bg-gray-100">
                       {feature}
                     </Badge>

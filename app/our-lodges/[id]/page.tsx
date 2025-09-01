@@ -14,15 +14,10 @@ export default async function LodgeDetailsPage({
   params: Promise<{ id: string }>;
   searchParams: any;
 }) {
-
-
   const session = await auth();
   const { id } = await params;
-
   const lodge = await fetchPropertyDetails(id);
-  console.log(lodge);
-  // const lodge = lodges.find()
-  // const lodge = lodges.find(l => l.id === 3);
+  
   if (!lodge) return notFound();
   return <LodgeDetails lodge={lodge} session={session} />;
 }

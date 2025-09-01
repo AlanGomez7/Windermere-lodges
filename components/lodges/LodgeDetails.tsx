@@ -7,6 +7,8 @@ import { PageHeader } from "../page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
+
 import {
   Popover,
   PopoverContent,
@@ -33,6 +35,7 @@ import ReviewCard from "../review-card";
 import Link from "next/link";
 import { useAppContext } from "@/app/context/context";
 import { date } from "zod";
+import { checkAvailableLodges } from "@/lib/api";
 
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
@@ -358,10 +361,11 @@ function Gallery({
 }
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
-  const { searchParams } = useAppContext();
+  const { searchParams,setSearchParams, isLodgeAvailable, setIsLodgeAvailable } = useAppContext();
   const { dates, guests } = searchParams;
 
   const [diff, setDiff] = useState(0);
+  const [loading, setLoading] = useState<boolean>(false);
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(() => {
     const today = new Date();
@@ -399,7 +403,32 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     return diffDays;
   };
 
-  console.log(checkInDate, checkOutDate);
+  const handleSearch = async () => {
+    setLoading(true);
+
+    const params={
+      dates:{
+        from:checkInDate,
+        to:checkOutDate
+      },
+      guests:{adult:1, children:1},
+      lodge
+    }
+    const response = await checkAvailableLodges(params);
+
+    if (!response.ok) {
+      toast.error(response?.message ?? "Something went wrong");
+      setLoading(false);
+      return;
+    }
+
+
+    setIsLodgeAvailable(true)
+    setSearchParams(params)
+    toast.success("Lodge available")
+    // router.push(`/our-lodges/${searchParams.lodge?.id}`);
+    setLoading(false);
+  };
 
   const router = useRouter();
   const [showFAQ, setShowFAQ] = useState<number | null>(null);
@@ -444,7 +473,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
               </Button>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl text-gray-800">
-                  {lodge.name}
+                  {lodge.nickname}
                 </h1>
                 <p className="text-sm text-gray-600">{lodge.address}</p>
               </div>
@@ -453,11 +482,11 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
               <div className="flex items-center gap-2 rounded-lg bg-green-100 p-2 text-green-800">
                 <div className="flex items-center gap-1">
                   <span className="font-bold text-lg">{lodge.rating}</span>
-                  <span className="text-lg">★</span>
+                  <span className="text-lg">4★</span>
                 </div>
                 <div className="text-xs">
                   <p className="font-semibold">Very Good</p>
-                  <p>{lodge.ratingCount} rating</p>
+                  <p>254 ratings</p>
                 </div>
               </div>
             </div>
@@ -475,7 +504,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       ${lodge.price}.00
                     </span>
                     <span className="text-sm text-gray-500">/per night</span>
-                    <span className="line-through text-gray-400 ml-auto">
+                    {/* <span className="line-through text-gray-400 ml-auto">
                       ${lodge.oldPrice}
                     </span>
                     <Badge
@@ -483,7 +512,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       className="bg-green-600 text-white"
                     >
                       60% off
-                    </Badge>
+                    </Badge> */}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mb-4">
@@ -595,9 +624,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       <span>${lodge.price * diff + 100}</span>
                     </div>
                   </div>
-                  {dates===undefined ? (
+                  {!isLodgeAvailable ? (
                     <>
-                      <Button className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base">
+                      <Button onClick={()=>handleSearch()} className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base">
                         Check Availability
                       </Button>
                     </>

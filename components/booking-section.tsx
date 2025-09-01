@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "@/components/booking/date-picker";
 import { GuestSelector } from "@/components/booking/guest-selector";
@@ -28,10 +28,21 @@ type AvailabilityResponse = {
   message?: string;
 };
 
-export const BookingSection = () => {
+export const BookingSection = ({ lodges }: { lodges: any }) => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const {searchParams, setSearchParams} = useAppContext();
+
+  const {
+    searchParams,
+    setSearchParams,
+    setIsLodgeAvailable,
+    setProperties,
+    properties,
+  } = useAppContext();
+
+  useEffect(() => {
+    setProperties(lodges);
+  }, []);
 
   // const [searchParams, setSearchParams] = useState<SearchParams>({
   //   dates: undefined,
@@ -39,28 +50,22 @@ export const BookingSection = () => {
   //   lodge: undefined,
   // });
 
-const handleSearch = async () => {
-  setLoading(true);
+  const handleSearch = async () => {
+    setLoading(true);
+    const response = await checkAvailableLodges(searchParams);
 
-  const response = await checkAvailableLodges(searchParams);
-  console.log(response);
+    if (!response.ok) {
+      setIsLodgeAvailable(false);
 
-  if (!response.ok) {
-    toast.error(response?.message ?? "Something went wrong");
+      toast.error(response?.message ?? "Something went wrong");
+      setLoading(false);
+      return;
+    }
+
+    setIsLodgeAvailable(true);
+    router.push(`/our-lodges/${searchParams.lodge?.refNo}`);
     setLoading(false);
-    return;
-  }
-
-  const formatDate = (date?: Date) => {
-    if (!date) return "";
-    return date.toISOString().split("T")[0]; // YYYY-MM-DD format
   };
-
-  router.push(`/our-lodges/${searchParams.lodge?.id}`);
-
-  setLoading(false);
-};
-
 
   // ?no_of_guests=${searchParams.guests}&checkIn=${fromDate}&checkOut=${toDate}
 
@@ -84,6 +89,7 @@ const handleSearch = async () => {
             />
 
             <LodgeSelector
+              properties={properties}
               onChange={(lodge) => setSearchParams({ ...searchParams, lodge })}
             />
 

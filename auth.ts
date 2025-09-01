@@ -57,8 +57,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           return true;
         }
 
-        // console.log(profile, "*****************()()()()()()()()(()()()()()()()")
-
         await createUser({
           avatar: profile?.picture,
           email: profile?.email,

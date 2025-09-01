@@ -88,9 +88,9 @@ export async function getProperties() {
 
 export async function getLodgeDetails(id: string) {
   try {
-    const response = prisma.property.findUnique({
+    const response = prisma.property.findFirst({
       where: {
-        id: id,
+        refNo:id
       },
     });
     return response;

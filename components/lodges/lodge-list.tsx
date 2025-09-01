@@ -80,6 +80,7 @@ const lodges = [
 
 export function LodgeList({ properties }: { properties: any }) {
   const lodges:any = use(properties);
+  console.log(lodges)
 
   const [favorites, setFavorites] = useState<number[]>([]);
   const router = useRouter();
@@ -104,7 +105,7 @@ export function LodgeList({ properties }: { properties: any }) {
       <div className="grid h-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {lodges.map((lodge:any) => (
           <div key={lodge.id} className="group">
-            <Link href={`/our-lodges/${lodge.id}`} className="block">
+            <Link href={`/our-lodges/${lodge.refNo}`} className="block">
               <Card className="overflow-hidden group-hover:shadow-md transition-shadow duration-200">
                 <div className="relative">
                   <div className="aspect-w-16 aspect-h-9 relative h-48">
@@ -140,7 +141,7 @@ export function LodgeList({ properties }: { properties: any }) {
 
                 <CardContent className="p-5">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold">{lodge.name}</h3>
+                    <h3 className="text-xl font-bold truncate">{lodge.name}</h3>
                     <div className="flex items-center">
                       <Star className="h-4 w-4 text-yellow-500 mr-1 fill-yellow-500" />
                       <span className="text-sm font-medium">
@@ -175,11 +176,11 @@ export function LodgeList({ properties }: { properties: any }) {
                     </div>
                     <div className="flex items-center">
                       <BedDouble className="h-4 w-4 mr-2 text-gray-500" />
-                      <span>{lodge.rooms} Bedrooms</span>
+                      <span>{lodge.bedrooms} Bedrooms</span>
                     </div>
                     <div className="flex items-center">
                       <Maximize className="h-4 w-4 mr-2 text-gray-500" />
-                      <span>{lodge.size} sq ft</span>
+                      <span>{lodge.bathrooms} Bathrooms</span>
                     </div>
                   </div>
                 </CardContent>

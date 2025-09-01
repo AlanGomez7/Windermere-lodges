@@ -21,7 +21,6 @@ export default function DropDown({
   isMobile: boolean;
 }) {
 
-  console.log(user)
   const getInitials = (name: string) => {
     return name
       .split(" ")

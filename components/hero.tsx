@@ -14,6 +14,7 @@ import image4 from "../public/Main-banners/windermere4.jpg";
 const sliderImages = [image1, image2, image3, image4];
 
 export const Hero = () => {
+
   const heroRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);

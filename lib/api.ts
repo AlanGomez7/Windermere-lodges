@@ -1,7 +1,5 @@
 "use server";
 
-import { headers } from "next/headers";
-
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const baseUplistingUrl = process.env.UPLISTING_URL;
 
@@ -27,7 +25,6 @@ export const fetchPropertyDetails = async (id: string) => {
   const response = await fetch(`${baseUrl}/api/our-lodges/${id}`, {
     method: "GET",
   });
-
   const res = await response.json();
 
   if (res.ok) {
@@ -38,7 +35,7 @@ export const fetchPropertyDetails = async (id: string) => {
 };
 
 export const checkAvailableLodges= async (params: any):Promise<AvailabilityResponse>  => {
-  if (!params.dates || !params.dates) {
+  if (!params.dates) {
     return {
       data: [],
       included: [],
@@ -74,6 +71,7 @@ export const checkAvailableLodges= async (params: any):Promise<AvailabilityRespo
       }
     );
 
+
     if (!response.ok) {
       // const text = await response.text(); // fallback for non-JSON errors
       // throw new Error(`Uplisting API error: ${text}`);
@@ -86,18 +84,18 @@ export const checkAvailableLodges= async (params: any):Promise<AvailabilityRespo
     }
 
     const result = await response.json() as AvailabilityResponse;
+    console.log(result)
+
     const { data, included } = result;
 
-    if (data.length === 0) return { data, included, ok: false };
+    if (data.length === 0) return { data, included, ok: false, message:'Lodge not available' };
 
     const { lodge } = params;
 
     const selectedLodge = data.find((d: any) => d.id === lodge.id);
 
-    console.log(selectedLodge, "oooooooo");
     return { data: selectedLodge, ok: true, included };
   } catch (err) {
-    console.log(err);
     return {data:[],included:[],message:'Something went wrong',ok:false}
   }
 };

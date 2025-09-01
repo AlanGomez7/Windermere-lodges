@@ -13,7 +13,7 @@ export function BookingSteps({ currentStep }: BookingStepsProps) {
     { id: 2, name: "Guest Information" },
     { id: 3, name: "Extras" },
     { id: 4, name: "Payment" },
-    { id: 5, name: "Confirmation" },
+    // { id: 5, name: "Confirmation" },
   ]
 
   return (

@@ -27,10 +27,10 @@ export function DateRangePicker({
   disabled = false
 }: DateRangePickerProps) {
   const [date, setDate] = React.useState<DateRange | undefined>(
-    initialDateRange || {
-      from: new Date(),
-      to: addDays(new Date(), 7),
-    }
+    // initialDateRange || {
+    //   from: new Date(),
+    //   to: addDays(new Date(), 7),
+    // }
   );
 
   const handleSelect = (newDate: DateRange | undefined) => {
@@ -62,13 +62,12 @@ export function DateRangePicker({
                 format(date.from, 'LLL dd, y')
               )
             ) : (
-              <span>Pick a date range</span>
+              <span>Pick your days</span>
             )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
-            initialFocus
             mode="range"
             defaultMonth={date?.from}
             selected={date}

@@ -71,8 +71,9 @@ model Property {
   createdAt       DateTime               @default(now())
   updatedAt       DateTime               @updatedAt
   guests          Int
-  rooms           String
-  size            String
+  bathrooms       String
+  bedrooms        String
+  nickname        String
   bookings        Booking[]
   comments        Comment[]
   enquiryBookings EnquiryBooking[]

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
-import { auth } from "@/auth";
 import NavbarWrapper from "@/components/navbar-wrapper";
+import { AppWrapper } from "./context/context";
 export const metadata: Metadata = {
   title: "Windermere Lodges",
   description: "Created by coffee_coders",
@@ -19,8 +19,8 @@ export default async function RootLayout({
     <html lang="en">
       <body>
         <main className="min-h-screen bg-white">
-          <NavbarWrapper/>
-          {children}
+          <NavbarWrapper />
+          <AppWrapper>{children}</AppWrapper>
           <Toaster
             position="bottom-center"
             toastOptions={{ style: { maxWidth: "500px" } }}

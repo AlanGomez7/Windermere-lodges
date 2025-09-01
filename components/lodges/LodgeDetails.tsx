@@ -30,6 +30,9 @@ import { galleryImagesByLodge } from "../gallery/gallery-data";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import RatingsAndReviews from "./ratings-and-reviews";
 import ReviewCard from "../review-card";
+import Link from "next/link";
+import { useAppContext } from "@/app/context/context";
+import { date } from "zod";
 
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
@@ -355,13 +358,51 @@ function Gallery({
 }
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
+  const { searchParams } = useAppContext();
+  const { dates, guests } = searchParams;
+
+  const [diff, setDiff] = useState(0);
+  const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
+  const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(() => {
+    const today = new Date();
+    today.setDate(today.getDate() + 5); // add 5 days
+    return today;
+  });
+
+  useEffect(() => {
+    if (dates) {
+      setCheckInDate(dates.from);
+      setCheckOutDate(dates.to);
+    }
+    return;
+  }, []);
+
+  useEffect(() => {
+    finddifference();
+  }, [checkInDate, checkOutDate]);
+
+  console.log(diff);
+
+  const finddifference = () => {
+    const date1 = Number(new Date(checkInDate ? checkInDate : ""));
+    const date2 = Number(new Date(checkOutDate ? checkOutDate : ""));
+
+    // Difference in milliseconds
+    const diffMs = date2 - date1;
+
+    // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    console.log(diffDays);
+    setDiff(diffDays);
+
+    return diffDays;
+  };
+
+  console.log(checkInDate, checkOutDate);
+
   const router = useRouter();
   const [showFAQ, setShowFAQ] = useState<number | null>(null);
-  const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
-  const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(
-    new Date("2025-10-12T00:00:00")
-  );
-
 
   // Map lodge name or id to gallery-data key
   // const lodgeKey =
@@ -538,25 +579,35 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between text-sm">
-                      <span>5 Night</span>
-                      <span>$745</span>
+                      <span>{diff} Night</span>
+                      <span>${diff * lodge.price}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    {/* <div className="flex justify-between text-sm">
                       <span>Discount</span>
                       <span className="text-green-600">-${lodge.price}</span>
-                    </div>
+                    </div> */}
                     <div className="flex justify-between text-sm">
                       <span>Service fee</span>
-                      <span>$5</span>
+                      <span>$100</span>
                     </div>
                     <div className="flex justify-between font-bold text-lg mt-2">
                       <span>Total Payment</span>
-                      <span>${lodge.price * 5 - lodge.price + 5}</span>
+                      <span>${lodge.price * diff + 100}</span>
                     </div>
                   </div>
-                  <Button className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base">
-                    Book Now
-                  </Button>
+                  {dates===undefined ? (
+                    <>
+                      <Button className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base">
+                        Check Availability
+                      </Button>
+                    </>
+                  ) : (
+                    <Link href={"/booking"}>
+                      <Button className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base">
+                        Book Now
+                      </Button>
+                    </Link>
+                  )}
                 </CardContent>
               </Card>
             </div>

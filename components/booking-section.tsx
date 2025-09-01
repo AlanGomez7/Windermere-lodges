@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "@/components/booking/date-picker";
 import { GuestSelector } from "@/components/booking/guest-selector";
@@ -11,6 +10,7 @@ import type { Lodge } from "@/types/lodge";
 import { checkAvailableLodges } from "@/lib/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useAppContext } from "@/app/context/context";
 
 interface SearchParams {
   dates: DateRange | undefined;
@@ -30,26 +30,39 @@ type AvailabilityResponse = {
 
 export const BookingSection = () => {
   const router = useRouter();
-  const [searchParams, setSearchParams] = useState<SearchParams>({
-    dates: undefined,
-    guests: { adults: 2, children: 0 },
-    lodge: undefined,
-  });
+  const [loading, setLoading] = useState<boolean>(false);
+  const {searchParams, setSearchParams} = useAppContext();
 
-  const handleSearch = async () => {
-    const response = await checkAvailableLodges(searchParams);
-    console.log(response);
+  // const [searchParams, setSearchParams] = useState<SearchParams>({
+  //   dates: undefined,
+  //   guests: { adults: 2, children: 0 },
+  //   lodge: undefined,
+  // });
 
-    if (!response.ok) {
-      toast.error(response?.message ?? 'Something went wrong');
-      return;
-    }
+const handleSearch = async () => {
+  setLoading(true);
 
-    router.push(`/our-lodges/${searchParams.lodge?.id}`);
+  const response = await checkAvailableLodges(searchParams);
+  console.log(response);
 
-    // if(response.data.length === 0){
-    // }
+  if (!response.ok) {
+    toast.error(response?.message ?? "Something went wrong");
+    setLoading(false);
+    return;
+  }
+
+  const formatDate = (date?: Date) => {
+    if (!date) return "";
+    return date.toISOString().split("T")[0]; // YYYY-MM-DD format
   };
+
+  router.push(`/our-lodges/${searchParams.lodge?.id}`);
+
+  setLoading(false);
+};
+
+
+  // ?no_of_guests=${searchParams.guests}&checkIn=${fromDate}&checkOut=${toDate}
 
   return (
     <section className="py-16 bg-white">
@@ -77,8 +90,9 @@ export const BookingSection = () => {
             <Button
               onClick={handleSearch}
               className="h-full bg-emerald-600 hover:bg-emerald-700"
+              disabled={loading}
             >
-              Search Availability
+              {loading ? "Checking avalability" : "Search Availability"}
             </Button>
           </div>
 

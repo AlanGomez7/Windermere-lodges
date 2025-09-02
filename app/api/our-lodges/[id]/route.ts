@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request, { params }: any) {
   const { id } = await params;
-  console.log(id);
 
   try {
     const response = await getLodgeDetails(id);

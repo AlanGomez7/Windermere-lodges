@@ -9,12 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle } from "lucide-react";
-import toast from "react-hot-toast";
 import { useAppContext } from "@/app/context/context";
 import { confirmBooking } from "@/lib/api";
+import toast from "react-hot-toast";
 
 interface ExtrasProps {
   onContinue: (data: any) => void;
@@ -105,11 +102,14 @@ export function Extras({
   };
 
   const handleContinue = async () => {
-    
     const response = await confirmBooking({ form: orderDetails, searchParams });
-    console.log(response);
 
-    setCurrentStep();
+    if(response.ok){
+      toast.success(response.message)
+      setCurrentStep();
+    }else{
+      toast.error(response.message)
+    }
   };
 
   return (

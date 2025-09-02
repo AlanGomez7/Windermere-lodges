@@ -1,15 +1,10 @@
 "use client"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { PageHeader } from "@/components/page-header"
-import { LoginForm } from "@/components/auth/login-form"
 import { SocialLogin } from "@/components/auth/social-login"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
-import { useToast } from "@/hooks/use-toast"
 import { RegisterForm } from "@/components/auth/register-form"
-import NavbarWrapper from "@/components/navbar-wrapper"
 
 
 export default function RegisterPage() {

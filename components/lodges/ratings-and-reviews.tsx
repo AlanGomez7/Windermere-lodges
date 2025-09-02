@@ -16,7 +16,6 @@ export default function RatingsAndReviews({
   user: any;
 }) {
 
-  console.log(lodge)
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>("");
@@ -54,8 +53,6 @@ export default function RatingsAndReviews({
       setErr(true);
       return;
     }
-
-    console.log(user);
 
     const response = await submitReview({ rating, review, lodgeId: lodge.id });
   };

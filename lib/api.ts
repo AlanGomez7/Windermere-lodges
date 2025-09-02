@@ -16,7 +16,7 @@ export const fetchProperties = async () => {
   const response = await fetch(`${baseUrl}/api/properties`, {
     method: "GET",
   });
-  
+
   const res = await response.json();
   if (res.ok) {
     return res.lodges;
@@ -78,9 +78,7 @@ export const checkAvailableLodges = async (
     const result = (await response.json()) as AvailabilityResponse;
     console.log(result);
 
-
     if (!response.ok) {
-
       return {
         data: [],
         included: [],
@@ -88,7 +86,6 @@ export const checkAvailableLodges = async (
         ok: false,
       };
     }
-
 
     const { data, included } = result;
 
@@ -100,9 +97,7 @@ export const checkAvailableLodges = async (
     const selectedLodge = data.find((d: any) => d.id === lodge.id);
 
     return { data: selectedLodge, ok: true, included };
-    
   } catch (err) {
-    console.log(err)
     return {
       data: [],
       included: [],
@@ -126,17 +121,15 @@ export const registerUser = async (values: any) => {
 };
 
 export const confirmBooking = async ({ form, searchParams }: any) => {
-
   const fromDate = searchParams.dates.from;
   const toDate = searchParams.dates.to;
 
   const checkIn = new Date(fromDate).toISOString().split("T")[0];
   const checkOut = new Date(toDate).toISOString().split("T")[0];
 
-
   const reqBody = {
     data: {
-      type:"bookings",
+      type: "bookings",
       attributes: {
         check_in: `${checkIn}`,
         check_out: `${checkOut}`,
@@ -163,17 +156,16 @@ export const confirmBooking = async ({ form, searchParams }: any) => {
       "X-Uplisting-Client-Id": `${process.env.UPLISTING_CLIENT_KEY}`,
       "Content-Type": "application/json",
     },
-    body:JSON.stringify(reqBody)
+    body: JSON.stringify(reqBody),
   });
 
-  const result = await response.json()
+  const result = await response.json();
 
-
-  if(result.id){
-    const response = await createBooking(result);
-    return {ok: true, response:result, message:'Booking Successfull'}
-  }else{
-    return {ok: false, response:result, message:'Something went wrong'}
+  if (result.data.id) {
+    const response = await createBooking({ form, searchParams, result });
+    return { ok: true, response, message: "Booking Successful" };
+  } else {
+    return { ok: false, response: result, message: "Something went wrong" };
   }
 };
 

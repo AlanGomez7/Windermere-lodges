@@ -393,8 +393,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     setDiff(nights);
   }, [checkInDate, checkOutDate]);
 
-  console.log(diff);
-
   const finddifference = () => {
     const date1 = Number(new Date(checkInDate ? checkInDate : ""));
     const date2 = Number(new Date(checkOutDate ? checkOutDate : ""));
@@ -564,7 +562,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       <span>${diff * lodge.price}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span>Service fee</span>
+                      <span>Cleaning fee</span>
                       <span>$100</span>
                     </div>
                     <div className="flex justify-between font-bold text-lg mt-2">
@@ -572,7 +570,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       <span>${lodge.price * diff + 100}</span>
                     </div>
                   </div>)}
-                  
+
                   {diff&&!isLodgeAvailable ? (
                     <>
                       <Button

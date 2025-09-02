@@ -368,9 +368,10 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     isLodgeAvailable,
     setIsLodgeAvailable,
   } = useAppContext();
+
   const { dates, guests } = searchParams;
 
-  const [diff, setDiff] = useState<number|null>(null);
+  const [diff, setDiff] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   // const [, setLoading] = useState<boolean>(false);
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
@@ -389,17 +390,16 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   }, []);
 
   useEffect(() => {
-    const nights = finddifference();
+    // setCheckOutDate(checkInDate)
+    const nights = findDifference();
     setDiff(nights);
   }, [checkInDate, checkOutDate]);
 
-  const finddifference = () => {
+  const findDifference = () => {
     const date1 = Number(new Date(checkInDate ? checkInDate : ""));
     const date2 = Number(new Date(checkOutDate ? checkOutDate : ""));
-
     // Difference in milliseconds
     const diffMs = date2 - date1;
-
     // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     return diffDays;
@@ -509,7 +509,15 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                           <Calendar
                             mode="single"
                             selected={checkInDate}
-                            onSelect={setCheckInDate}
+                            onSelect={(date) => {
+                              setCheckInDate(date);
+
+                              if (date) {
+                                const checkout = new Date(date);
+                                checkout.setDate(checkout.getDate() + 3); // 👈 add 3 days
+                                setCheckOutDate(checkout);
+                              }
+                            }}
                             initialFocus
                           />
                         </PopoverContent>
@@ -535,7 +543,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
                           <Calendar
-                          checkIn={checkInDate}
+                            checkIn={checkInDate}
                             mode="single"
                             selected={checkOutDate}
                             onSelect={setCheckOutDate}
@@ -544,6 +552,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       </Popover>
                     </div>
                   </div>
+                  <p className="text-xs mb-3">
+                    Minimum booking is for 3 nights
+                  </p>
 
                   <GuestSelector
                     onChange={(guests) =>
@@ -551,32 +562,31 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                     }
                   />
 
-                  
-                  {diff&&<p className="text-red-500">{diff < 3 && "Book should be atleast for 3 nights"}</p>}
                   <div className="border-t my-4" />
 
+                  {diff && (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex justify-between text-sm">
+                        <span>{diff} Night</span>
+                        <span>${diff * lodge.price}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Cleaning fee</span>
+                        <span>$100</span>
+                      </div>
+                      <div className="flex justify-between font-bold text-lg mt-2">
+                        <span>Total Payment</span>
+                        <span>${lodge.price * diff + 100}</span>
+                      </div>
+                    </div>
+                  )}
 
-                  {diff&&(<div className="flex flex-col gap-2">
-                    <div className="flex justify-between text-sm">
-                      <span>{diff} Night</span>
-                      <span>${diff * lodge.price}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Cleaning fee</span>
-                      <span>$100</span>
-                    </div>
-                    <div className="flex justify-between font-bold text-lg mt-2">
-                      <span>Total Payment</span>
-                      <span>${lodge.price * diff + 100}</span>
-                    </div>
-                  </div>)}
-
-                  {diff&&!isLodgeAvailable ? (
+                  {diff && !isLodgeAvailable ? (
                     <>
                       <Button
                         onClick={() => handleSearch()}
                         className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base"
-                        disabled={loading || diff<3}
+                        disabled={loading || diff < 3}
                       >
                         Check Availability
                       </Button>

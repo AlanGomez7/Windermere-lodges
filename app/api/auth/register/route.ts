@@ -7,6 +7,10 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const { name, email, password } = await request.json();
+    
+    if(!name || !email || !password){
+      throw new Error('Invalide credentials')
+    }
 
     await createUser({ name, email, password, role: "user" });
     return NextResponse.json({

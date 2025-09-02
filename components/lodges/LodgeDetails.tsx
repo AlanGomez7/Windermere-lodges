@@ -36,6 +36,7 @@ import Link from "next/link";
 import { useAppContext } from "@/app/context/context";
 import { date } from "zod";
 import { checkAvailableLodges } from "@/lib/api";
+import { GuestSelector } from "../booking/guest-selector";
 
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
@@ -361,11 +362,17 @@ function Gallery({
 }
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
-  const { searchParams,setSearchParams, isLodgeAvailable, setIsLodgeAvailable } = useAppContext();
+  const {
+    searchParams,
+    setSearchParams,
+    isLodgeAvailable,
+    setIsLodgeAvailable,
+  } = useAppContext();
   const { dates, guests } = searchParams;
 
-  const [diff, setDiff] = useState(0);
+  const [diff, setDiff] = useState<number|null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  // const [, setLoading] = useState<boolean>(false);
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(() => {
     const today = new Date();
@@ -382,7 +389,8 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   }, []);
 
   useEffect(() => {
-    finddifference();
+    const nights = finddifference();
+    setDiff(nights);
   }, [checkInDate, checkOutDate]);
 
   console.log(diff);
@@ -396,24 +404,20 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
     // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    console.log(diffDays);
-    setDiff(diffDays);
-
     return diffDays;
   };
 
   const handleSearch = async () => {
     setLoading(true);
 
-    const params={
-      dates:{
-        from:checkInDate,
-        to:checkOutDate
+    const params = {
+      dates: {
+        from: checkInDate,
+        to: checkOutDate,
       },
-      guests:{adult:1, children:1},
-      lodge
-    }
+      guests: guests,
+      lodge,
+    };
     const response = await checkAvailableLodges(params);
 
     if (!response.ok) {
@@ -422,38 +426,16 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
       return;
     }
 
-
-    setIsLodgeAvailable(true)
-    setSearchParams(params)
-    toast.success("Lodge available")
-    // router.push(`/our-lodges/${searchParams.lodge?.id}`);
+    setIsLodgeAvailable(true);
+    setSearchParams(params);
+    toast.success("Lodge available");
     setLoading(false);
   };
 
   const router = useRouter();
-  const [showFAQ, setShowFAQ] = useState<number | null>(null);
-
-  // Map lodge name or id to gallery-data key
-  // const lodgeKey =
-  //   lodge.name === "Glenridding Lodge"
-  //     ? "lodge1"
-  //     : lodge.name === "Water's Reach"
-  //     ? "lodge2"
-  //     : lodge.name === "Serenity"
-  //     ? "lodge3"
-  //     : null;
-
-  // const galleryImages = (lodgeKey &&
-  //   galleryImagesByLodge[lodgeKey]?.map((img) => img.src)) || [
-  //   lodge.image,
-  //   "/placeholder.jpg",
-  //   "/placeholder-user.jpg",
-  //   "/activities/4.png",
-  // ];
 
   return (
     <>
-      {/* <NavbarWrapper /> */}
       <>
         <PageHeader
           title={lodge.name}
@@ -504,15 +486,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       ${lodge.price}.00
                     </span>
                     <span className="text-sm text-gray-500">/per night</span>
-                    {/* <span className="line-through text-gray-400 ml-auto">
-                      ${lodge.oldPrice}
-                    </span>
-                    <Badge
-                      variant="destructive"
-                      className="bg-green-600 text-white"
-                    >
-                      60% off
-                    </Badge> */}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mb-4">
@@ -564,57 +537,32 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
                           <Calendar
+                          checkIn={checkInDate}
                             mode="single"
                             selected={checkOutDate}
                             onSelect={setCheckOutDate}
-                            initialFocus
                           />
                         </PopoverContent>
                       </Popover>
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-1 mb-4">
-                    <label className="text-sm text-gray-500">Guest</label>
-                    <Select defaultValue="2-adults-1-children">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select guests" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1-adult">1 Adult</SelectItem>
-                        <SelectItem value="2-adults">2 Adults</SelectItem>
-                        <SelectItem value="2-adults-1-children">
-                          2 Adults, 1 Children
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <GuestSelector
+                    onChange={(guests) =>
+                      setSearchParams({ ...searchParams, guests })
+                    }
+                  />
 
-                  {/* DISCOUNT AND OFFER CODE TO BE APPLIED ON CLIENT's CONFIRMATION */}
-                  {/* <div className="flex flex-col gap-1 mb-4">
-                  <label className="text-sm text-gray-500">Discount Code</label>
-                  <Select defaultValue="first20">
-                  <SelectTrigger>
-                      <SelectValue placeholder="Select code" />
-                      </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="first20">First20</SelectItem>
-                      <SelectItem value="summer24">Summer24</SelectItem>
-                    </SelectContent>
-                    </Select>
-                </div> */}
-
+                  
+                  {diff&&<p className="text-red-500">{diff < 3 && "Book should be atleast for 3 nights"}</p>}
                   <div className="border-t my-4" />
 
-                  <div className="flex flex-col gap-2">
+
+                  {diff&&(<div className="flex flex-col gap-2">
                     <div className="flex justify-between text-sm">
                       <span>{diff} Night</span>
                       <span>${diff * lodge.price}</span>
                     </div>
-                    {/* <div className="flex justify-between text-sm">
-                      <span>Discount</span>
-                      <span className="text-green-600">-${lodge.price}</span>
-                    </div> */}
                     <div className="flex justify-between text-sm">
                       <span>Service fee</span>
                       <span>$100</span>
@@ -623,10 +571,15 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       <span>Total Payment</span>
                       <span>${lodge.price * diff + 100}</span>
                     </div>
-                  </div>
-                  {!isLodgeAvailable ? (
+                  </div>)}
+                  
+                  {diff&&!isLodgeAvailable ? (
                     <>
-                      <Button onClick={()=>handleSearch()} className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base">
+                      <Button
+                        onClick={() => handleSearch()}
+                        className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base"
+                        disabled={loading || diff<3}
+                      >
                         Check Availability
                       </Button>
                     </>

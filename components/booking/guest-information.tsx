@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppContext } from "@/app/context/context";
-
+import { useRouter } from "next/navigation";
 interface ContactInfo {
   firstName: string;
   lastName: string;
@@ -37,20 +37,20 @@ interface GuestInformationProps {
   onContinue?: (contactInfo: ContactInfo) => void;
   onBack?: () => void;
   bookingDetails: BookingDetails;
-  isActive:boolean
-  setCurrentStep:()=>void
+  isActive: boolean;
+  setCurrentStep: () => void;
 }
 
 export function GuestInformation({
-  onContinue,
-  onBack,
+
   bookingDetails,
   isActive,
-  setCurrentStep
+  setCurrentStep,
 }: GuestInformationProps) {
-  console.log(isActive)
 
-  const {setOrderDetails} = useAppContext();
+  const router = useRouter();
+
+  const { setOrderDetails } = useAppContext();
 
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
     firstName: bookingDetails.contactInfo?.firstName ?? "",
@@ -94,12 +94,16 @@ export function GuestInformation({
     }
 
     setError("");
-    setCurrentStep()
+    setCurrentStep();
     setOrderDetails(contactInfo);
   };
 
   return (
-    <section className={`px-16 mb-5 min-h-screen flex justify-center ${isActive ? "block" : "hidden"}`}>
+    <section
+      className={`px-16 mb-5 min-h-screen flex justify-center ${
+        isActive ? "block" : "hidden"
+      }`}
+    >
       <div className="container">
         <div className="space-y-6">
           <Card>
@@ -244,9 +248,9 @@ export function GuestInformation({
           )}
 
           <div className="flex justify-between">
-            <Button onClick={onBack} variant="outline">
-              Back
-            </Button>
+            {/* <Link href={`/our-lodges/${bookingDetails?.lodge.refNo}`}> */}
+              <Button variant="outline" onClick={()=>router.back()}>Back</Button>
+            {/* </Link> */}
             <Button
               onClick={handleContinue}
               className="bg-teal-600 hover:bg-teal-700"

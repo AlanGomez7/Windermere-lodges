@@ -12,6 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle } from "lucide-react";
+import toast from "react-hot-toast";
+import { useAppContext } from "@/app/context/context";
+import { confirmBooking } from "@/lib/api";
 
 interface ExtrasProps {
   onContinue: (data: any) => void;
@@ -22,19 +25,13 @@ interface ExtrasProps {
 }
 
 export function Extras({
-  onContinue,
   onBack,
   bookingDetails,
   isActive,
   setCurrentStep,
 }: ExtrasProps) {
+  const { orderDetails, searchParams } = useAppContext();
   const [extras, setExtras] = useState<any[]>(bookingDetails.extras || []);
-  const [promoCode, setPromoCode] = useState(bookingDetails.promoCode || "");
-  const [promoError, setPromoError] = useState("");
-  const [promoSuccess, setPromoSuccess] = useState("");
-  const [discountApplied, setDiscountApplied] = useState(
-    bookingDetails.discountApplied || false
-  );
 
   const availableExtras = [
     {
@@ -107,37 +104,12 @@ export function Extras({
     return extras.some((e) => e.id === extraId);
   };
 
-  const applyPromoCode = () => {
-    // Reset previous states
-    setPromoError("");
-    setPromoSuccess("");
-    setDiscountApplied(false);
+  const handleContinue = async () => {
+    
+    const response = await confirmBooking({ form: orderDetails, searchParams });
+    console.log(response);
 
-    if (!promoCode.trim()) {
-      setPromoError("Please enter a promo code");
-      return;
-    }
-
-    // Simulate promo code validation - in a real app this would check against a database
-    if (promoCode.toUpperCase() === "SUMMER20") {
-      setPromoSuccess("Promo code applied! You've received a 20% discount.");
-      setDiscountApplied(true);
-    } else {
-      setPromoError("Invalid promo code");
-    }
-  };
-
-  const handleContinue = () => {
-    onContinue({
-      extras,
-      promoCode,
-      discountApplied,
-    });
     setCurrentStep();
-  };
-
-  const calculateExtrasTotal = () => {
-    return extras.reduce((total, extra) => total + extra.price, 0);
   };
 
   return (
@@ -256,8 +228,8 @@ export function Extras({
             <Button
               onClick={handleContinue}
               className="bg-teal-600 hover:bg-teal-700"
-            >Confirm Booking
-              
+            >
+              Confirm Booking
             </Button>
           </div>
         </div>
@@ -265,3 +237,21 @@ export function Extras({
     </section>
   );
 }
+
+// try {
+//   const result = await fetch(
+//     "http://localhost:3001/api/order/confirm-order",
+//     {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ form: orderDetails, searchParams }),
+//     }
+//   );
+
+//   console.log(result);
+//   // Reload the list
+// } catch (error) {
+//   toast.error(error instanceof Error ? error.message : "Failed to Book");
+// }

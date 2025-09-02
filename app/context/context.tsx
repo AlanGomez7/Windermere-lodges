@@ -11,6 +11,7 @@ interface SearchParams {
     children: number;
   };
   lodge: Lodge | undefined;
+  nights?:undefined | number
 }
 
 const AppContext = createContext<any>(undefined);
@@ -23,6 +24,7 @@ export function AppWrapper({ children }: { children: ReactNode }) {
     dates: undefined,
     guests: { adults: 2, children: 0 },
     lodge: undefined,
+    nights:undefined
   });
 
   return (

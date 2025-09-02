@@ -1,27 +1,37 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { DayPicker, UI } from "react-day-picker"
+import * as React from "react";
+import { DayPicker, UI } from "react-day-picker";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { addDays } from "date-fns";
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+  checkIn?: Date;
+};
 
 function Calendar({
   className,
   classNames,
+  checkIn,
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
-
   const today = new Date();
-  
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
-      disabled={{before: today}}
+      disabled={
+        checkIn
+          ? [
+              { before: checkIn },
+              { from: checkIn, to: addDays(checkIn, 2) }, // disable check-in + next 3 days
+            ]
+          : undefined
+      }
       classNames={{
         months:
           "flex flex-col relative sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
@@ -30,12 +40,12 @@ function Calendar({
         caption_label: "text-sm font-medium",
         nav: "space-x-1 flex items-center",
         [UI.PreviousMonthButton]: cn(
-          buttonVariants({ variant: 'outline' }),
-          'absolute left-1 top-0 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100'
+          buttonVariants({ variant: "outline" }),
+          "absolute left-1 top-0 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
         [UI.NextMonthButton]: cn(
-          buttonVariants({ variant: 'outline' }),
-          'absolute right-1 top-0 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100'
+          buttonVariants({ variant: "outline" }),
+          "absolute right-1 top-0 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
         month_grid: "w-full border-collapse space-y-1",
         weekdays: "flex",

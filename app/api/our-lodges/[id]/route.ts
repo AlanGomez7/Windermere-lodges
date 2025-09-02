@@ -1,4 +1,4 @@
-import { getLodgeDetails } from "@/app/queries/auth";
+import { getLodgeDetails } from "@/app/queries/properties";
 import { getErrorMessage } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";

@@ -1,4 +1,4 @@
-import { getProperties } from "@/app/queries/auth";
+import { getProperties } from "@/app/queries/properties";
 import { getErrorMessage } from "@/lib/utils";
 import { NextResponse } from "next/server";
 

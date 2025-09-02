@@ -10,7 +10,6 @@ import { fetchProperties } from "@/lib/api"
 
 
 export default async function Home() {
-
   const lodges = await fetchProperties();
 
 

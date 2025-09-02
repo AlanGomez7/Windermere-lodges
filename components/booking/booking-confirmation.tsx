@@ -24,14 +24,34 @@ export function BookingConfirmation({
   isActive
 }: BookingConfirmationProps) {
 
-  console.log(bookingDetails);
   const router = useRouter();
   const [bookingNumber, setBookingNumber] = useState<string>("");
+  const [nights, setNights] = useState<number>(3);
+
+
 
   useEffect(() => {
     const bookingNumber = "WL" + Math.floor(100000 + Math.random() * 900000);
     setBookingNumber(bookingNumber);
+    findDifference()
   }, []);
+
+
+  const findDifference = () => {
+    const date1 = Number(new Date(bookingDetails.dates?.from));
+    const date2 = Number(new Date(bookingDetails.dates?.to));
+
+    // Difference in milliseconds
+    const diffMs = date2 - date1;
+
+    // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    console.log(diffDays);
+    setNights(diffDays);
+
+    return diffDays;
+  };
 
   const generatePdf = () => {
     // In a real app, this would generate and download a booking confirmation PDF
@@ -76,7 +96,7 @@ export function BookingConfirmation({
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between">
                     <div className="mb-2 md:mb-0">
                       <h3 className="font-semibold text-lg">
-                        {bookingDetails.lodge.name}
+                        {bookingDetails?.lodge.name}
                       </h3>
                       {bookingDetails.dates &&
                         bookingDetails.dates.from &&
@@ -167,7 +187,7 @@ export function BookingConfirmation({
                       <span>
                         £
                         {bookingDetails.lodge
-                          ? bookingDetails.lodge.price * bookingDetails.nights
+                          ? bookingDetails.lodge.price * nights
                           : 0}
                       </span>
                     </div>
@@ -203,24 +223,24 @@ export function BookingConfirmation({
                     )}
 
                     <div className="flex justify-between">
-                      <span>Taxes & Fees</span>
+                      <span>Service Fees</span>
                       <span>
-                        £
-                        {Math.round(
+                        £ 100
+                        {/* {Math.round(
                           bookingDetails.lodge
                             ? bookingDetails.lodge.price *
                                 bookingDetails.nights *
                                 0.2
                             : 0
-                        )}
+                        )} */}
                       </span>
                     </div>
 
                     <div className="flex justify-between font-bold pt-2">
                       <span>Total Paid</span>
                       <span>
-                        £
-                        {bookingDetails.lodge
+                        £ {(bookingDetails.lodge?.price*nights) + 100}
+                        {/* {bookingDetails.lodge
                           ? Math.round(
                               bookingDetails.lodge.price *
                                 bookingDetails.nights +
@@ -237,7 +257,7 @@ export function BookingConfirmation({
                                     0.2
                                   : 0)
                             )
-                          : 0}
+                          : 0} */}
                       </span>
                     </div>
                   </div>

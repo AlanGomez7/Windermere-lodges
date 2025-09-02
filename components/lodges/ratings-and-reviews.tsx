@@ -140,7 +140,7 @@ export default function RatingsAndReviews({
               </button>
               <div className="flex flex-col place-items-center w-full">
                 <h2 className="text-2xl text-center font-semibold mb-8 text-gray-900 flex items-center gap-3">
-                  {lodge.attributes.nickname}
+                  {lodge.name}
                 </h2>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map((value) => (

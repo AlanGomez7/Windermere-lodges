@@ -1,5 +1,7 @@
 "use server";
 
+import { createBooking } from "@/app/queries/order";
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const baseUplistingUrl = process.env.UPLISTING_URL;
 
@@ -14,6 +16,7 @@ export const fetchProperties = async () => {
   const response = await fetch(`${baseUrl}/api/properties`, {
     method: "GET",
   });
+  
   const res = await response.json();
   if (res.ok) {
     return res.lodges;
@@ -34,7 +37,9 @@ export const fetchPropertyDetails = async (id: string) => {
   }
 };
 
-export const checkAvailableLodges= async (params: any):Promise<AvailabilityResponse>  => {
+export const checkAvailableLodges = async (
+  params: any
+): Promise<AvailabilityResponse> => {
   if (!params.dates) {
     return {
       data: [],
@@ -70,11 +75,12 @@ export const checkAvailableLodges= async (params: any):Promise<AvailabilityRespo
         },
       }
     );
+    const result = (await response.json()) as AvailabilityResponse;
+    console.log(result);
 
 
     if (!response.ok) {
-      // const text = await response.text(); // fallback for non-JSON errors
-      // throw new Error(`Uplisting API error: ${text}`);
+
       return {
         data: [],
         included: [],
@@ -83,20 +89,26 @@ export const checkAvailableLodges= async (params: any):Promise<AvailabilityRespo
       };
     }
 
-    const result = await response.json() as AvailabilityResponse;
-    console.log(result)
 
     const { data, included } = result;
 
-    if (data.length === 0) return { data, included, ok: false, message:'Lodge not available' };
+    if (data.length === 0)
+      return { data, included, ok: false, message: "Lodge not available" };
 
     const { lodge } = params;
 
     const selectedLodge = data.find((d: any) => d.id === lodge.id);
 
     return { data: selectedLodge, ok: true, included };
+    
   } catch (err) {
-    return {data:[],included:[],message:'Something went wrong',ok:false}
+    console.log(err)
+    return {
+      data: [],
+      included: [],
+      message: "Something went wrong",
+      ok: false,
+    };
   }
 };
 
@@ -111,6 +123,58 @@ export const registerUser = async (values: any) => {
 
   const res = response.json();
   return res;
+};
+
+export const confirmBooking = async ({ form, searchParams }: any) => {
+
+  const fromDate = searchParams.dates.from;
+  const toDate = searchParams.dates.to;
+
+  const checkIn = new Date(fromDate).toISOString().split("T")[0];
+  const checkOut = new Date(toDate).toISOString().split("T")[0];
+
+
+  const reqBody = {
+    data: {
+      type:"bookings",
+      attributes: {
+        check_in: `${checkIn}`,
+        check_out: `${checkOut}`,
+        guest_name: `${form.firstName} ${form.lastName}`,
+        guest_email: `${form.email}`,
+        guest_phone: `${form.phone}`,
+        number_of_guests: 3,
+      },
+      relationships: {
+        property: {
+          data: {
+            type: "properties",
+            id: `${searchParams.lodge.refNo}`,
+          },
+        },
+      },
+    },
+  };
+
+  const response = await fetch(`${baseUplistingUrl}/v2/bookings`, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${process.env.UPLISTING_KEY}`,
+      "X-Uplisting-Client-Id": `${process.env.UPLISTING_CLIENT_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body:JSON.stringify(reqBody)
+  });
+
+  const result = await response.json()
+
+
+  if(result.id){
+    const response = await createBooking(result);
+    return {ok: true, response:result, message:'Booking Successfull'}
+  }else{
+    return {ok: false, response:result, message:'Something went wrong'}
+  }
 };
 
 export const submitReview = async (reviews: any) => {

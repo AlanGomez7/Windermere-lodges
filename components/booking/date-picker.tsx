@@ -23,15 +23,9 @@ interface DateRangePickerProps {
 export function DateRangePicker({ 
   className,
   onChange,
-  initialDateRange,
   disabled = false
 }: DateRangePickerProps) {
-  const [date, setDate] = React.useState<DateRange | undefined>(
-    // initialDateRange || {
-    //   from: new Date(),
-    //   to: addDays(new Date(), 7),
-    // }
-  );
+  const [date, setDate] = React.useState<DateRange | undefined>();
 
   const handleSelect = (newDate: DateRange | undefined) => {
     setDate(newDate);

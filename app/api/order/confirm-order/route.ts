@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
+  console.log(body)
   const { form, searchParams } = body;
 
   const fromDate = searchParams.dates.from;
@@ -17,9 +18,9 @@ export async function POST(request: Request) {
       attributes: {
         check_in: `${checkIn}`,
         check_out: `${checkOut}`,
-        guest_name: `${form.firstname} ${form.lastname}`,
+        guest_name: `${form.firstName} ${form.lastName}`,
         guest_email: `${form.email}`,
-        guest_phone: `${form.mobile}`,
+        guest_phone: `${form.phone}`,
         number_of_guests: 3,
       },
       relationship: {
@@ -33,7 +34,6 @@ export async function POST(request: Request) {
     },
   };
 
-  console.log(reqBody);
 
   return NextResponse.json({
     message: "user registered successfully",

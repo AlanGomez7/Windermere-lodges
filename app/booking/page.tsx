@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 export default function BookingPage() {
   const router = useRouter();
   const { searchParams } = useAppContext();
+  console.log(searchParams)
   const [currentStep, setCurrentStep] = useState(2);
 
   useEffect(() => {

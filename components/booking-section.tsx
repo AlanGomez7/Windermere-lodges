@@ -44,11 +44,6 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
     setProperties(lodges);
   }, []);
 
-  // const [searchParams, setSearchParams] = useState<SearchParams>({
-  //   dates: undefined,
-  //   guests: { adults: 2, children: 0 },
-  //   lodge: undefined,
-  // });
 
   const handleSearch = async () => {
     setLoading(true);

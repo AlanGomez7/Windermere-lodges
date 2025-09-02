@@ -140,20 +140,24 @@ export function LodgeList({ properties }: { properties: any }) {
                 </div>
 
                 <CardContent className="p-5">
-                  <div className="flex justify-between items-start mb-2">
+                  <div className=" mb-2">
                     <h3 className="text-xl font-bold truncate">{lodge.name}</h3>
                     <div className="flex items-center">
                       <Star className="h-4 w-4 text-yellow-500 mr-1 fill-yellow-500" />
+                      <Star className="h-4 w-4 text-yellow-500 mr-1 fill-yellow-500" />
+                      <Star className="h-4 w-4 text-yellow-500 mr-1 fill-yellow-500" />
+                      <Star className="h-4 w-4 text-yellow-500 mr-1 fill-yellow-500" />
+
                       <span className="text-sm font-medium">
                         {lodge.rating}
                       </span>
                       <span className="text-xs text-gray-500 ml-1">
-                        ({lodge.reviews})
+                        (236 reviews)
                       </span>
                     </div>
                   </div>
 
-                  <p className="text-gray-600 text-sm mb-4">
+                  <p className="text-gray-600 text-sm mt-3 mb-2 truncate">
                     {lodge.address}
                   </p>
 
@@ -179,7 +183,7 @@ export function LodgeList({ properties }: { properties: any }) {
                       <span>{lodge.bedrooms} Bedrooms</span>
                     </div>
                     <div className="flex items-center">
-                      <Maximize className="h-4 w-4 mr-2 text-gray-500" />
+                      <Bath className="h-4 w-4 mr-2 text-gray-500" />
                       <span>{lodge.bathrooms} Bathrooms</span>
                     </div>
                   </div>

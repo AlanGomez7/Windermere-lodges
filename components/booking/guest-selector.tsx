@@ -74,7 +74,7 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
                   value={searchParams.guests.adults}
                   onChange={(e) => handleAdultsChange(parseInt(e.target.value))}
                   min={1}
-                  max={lodge.guests}
+                  max={lodge ? lodge.guest : 5}
                   className="h-8 w-14"
                 />
                 <Button

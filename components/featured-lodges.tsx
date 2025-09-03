@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Users, Maximize } from "lucide-react";
+import { Star, Users, Maximize, Bath, BedDouble } from "lucide-react";
 
 export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
   return (
@@ -30,11 +30,11 @@ export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {lodges.slice(0, 3).map((lodge: any) => (
-            <Card
-              key={lodge.id}
-              className="overflow-hidden border-0 shadow-lg transition-all duration-300 hover:shadow-xl"
-            >
-              <Link href={`/our-lodges/${lodge.refNo}`} key={lodge.id}>
+            <Link href={`/our-lodges/${lodge.refNo}`} key={lodge.id} prefetch>
+              <Card
+                key={lodge.id}
+                className="overflow-hidden border-0 shadow-lg transition-all duration-300 hover:shadow-xl"
+              >
                 <div className="relative h-64">
                   <Image
                     src={lodge.images[0] || "/placeholder.svg"}
@@ -59,11 +59,13 @@ export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
                   </div>
                 </div>
 
-                <CardHeader className="">
-                  <CardTitle className="text-xl font-bold">
-                    {lodge.name}
-                  </CardTitle>
-                  {/* <Badge variant="secondary">£{lodge.price}/night</Badge> */}
+                <CardHeader className="flex">
+                  <div className="flex justify-between items-start w-full">
+                    <CardTitle className="text-xl font-bold">
+                      {lodge.nickname}
+                    </CardTitle>
+                    {/* <Badge variant="secondary">£{lodge.price}/night</Badge> */}
+                  </div>
                   <CardDescription>{lodge.address}</CardDescription>
                 </CardHeader>
 
@@ -71,11 +73,15 @@ export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
                   <div className="flex flex-wrap gap-4 text-sm text-gray-500">
                     <div className="flex items-center">
                       <Users className="h-4 w-4 mr-1" />
-                      <span>{lodge.capacity} Guests</span>
+                      <span>{lodge.guests} Guests</span>
                     </div>
                     <div className="flex items-center">
-                      <Maximize className="h-4 w-4 mr-1" />
-                      <span>{lodge.size} m²</span>
+                      <BedDouble className="h-4 w-4 mr-1" />
+                      <span>{lodge.bedrooms} Bedrooms</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Bath className="h-4 w-4 mr-1" />
+                      <span>{lodge.bathrooms} Bathrooms</span>
                     </div>
                   </div>
 
@@ -91,8 +97,8 @@ export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
                     ))}
                   </div>
                 </CardContent>
-              </Link>
-            </Card>
+              </Card>
+            </Link>
           ))}
         </div>
 

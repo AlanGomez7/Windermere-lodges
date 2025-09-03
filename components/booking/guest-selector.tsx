@@ -14,16 +14,16 @@ import { useAppContext } from "@/app/context/context";
 
 interface GuestSelectorProps {
   onChange?: (guests: { adults: number; children: number }) => void;
+  lodge: any;
 }
 
-export function GuestSelector({ onChange }: GuestSelectorProps) {
+export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
   const { searchParams } = useAppContext();
-  console.log(searchParams);
   const [adults, setAdults] = React.useState(2);
   const [children, setChildren] = React.useState(0);
 
   const handleAdultsChange = (value: number) => {
-    const newValue = Math.max(1, Math.min(10, value));
+    const newValue = Math.max(1, Math.min(lodge.guests, value));
     setAdults(newValue);
     onChange?.({ adults: newValue, children });
   };
@@ -74,7 +74,7 @@ export function GuestSelector({ onChange }: GuestSelectorProps) {
                   value={searchParams.guests.adults}
                   onChange={(e) => handleAdultsChange(parseInt(e.target.value))}
                   min={1}
-                  max={10}
+                  max={lodge.guests}
                   className="h-8 w-14"
                 />
                 <Button

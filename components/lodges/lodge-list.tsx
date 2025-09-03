@@ -111,7 +111,7 @@ export function LodgeList({ properties }: { properties: any }) {
                   <div className="aspect-w-16 aspect-h-9 relative h-48">
                     <Image
                       src={lodge.images[0] || "/placeholder.svg"}
-                      alt={lodge.name}
+                      alt={lodge.nickname}
                       fill
                       className="object-cover"
                     />
@@ -141,7 +141,7 @@ export function LodgeList({ properties }: { properties: any }) {
 
                 <CardContent className="p-5">
                   <div className=" mb-2">
-                    <h3 className="text-xl font-bold truncate">{lodge.name}</h3>
+                    <h3 className="text-xl font-bold truncate">{lodge.nickname}</h3>
                     <div className="flex items-center">
                       <Star className="h-4 w-4 text-yellow-500 mr-1 fill-yellow-500" />
                       <Star className="h-4 w-4 text-yellow-500 mr-1 fill-yellow-500" />

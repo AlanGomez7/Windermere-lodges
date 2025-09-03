@@ -557,6 +557,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                   </p>
 
                   <GuestSelector
+                  lodge={lodge}
                     onChange={(guests) =>
                       setSearchParams({ ...searchParams, guests })
                     }
@@ -656,7 +657,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
             {/* About */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">About {lodge.name}</h2>
-              <p className="text-gray-700">{lodge.about}</p>
+              <p className="text-gray-700">{lodge.description}</p>
             </div>
             {/* Rating & Review */}
             <RatingsAndReviews lodge={lodge} user={session} />

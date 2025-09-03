@@ -13,8 +13,8 @@ import { Label } from "@/components/ui/label";
 import { useAppContext } from "@/app/context/context";
 
 interface GuestSelectorProps {
-  onChange?: (guests: { adults: number; children: number }) => void;
-  lodge: any;
+  onChange?: (guests: { adults: number; children: number }) => void,
+  lodge?: any;
 }
 
 export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {

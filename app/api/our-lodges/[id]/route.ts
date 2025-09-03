@@ -17,9 +17,10 @@ export async function GET(request: Request, { params }: any) {
     }
 
     return NextResponse.json({ result: response, ok: true }, { status: 200 });
+    
   } catch (err) {
-    const message = getErrorMessage(err);
 
+    const message = getErrorMessage(err);
     return NextResponse.json({ message: message, ok: false }, { status: 200 });
   }
 }

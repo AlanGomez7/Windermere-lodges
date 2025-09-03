@@ -18,9 +18,9 @@ export async function POST(request: Request) {
       status: 201,
       ok: true,
     });
+
   } catch (e: any) {
     const message = getErrorMessage(e);
-    console.log(message);
     return NextResponse.json({ message, ok: false }, { status: 409 });
   }
 }

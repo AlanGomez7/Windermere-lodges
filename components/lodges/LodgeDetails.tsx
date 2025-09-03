@@ -557,7 +557,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                   </p>
 
                   <GuestSelector
-                  lodge={lodge}
+                    lodge={lodge}
                     onChange={(guests) =>
                       setSearchParams({ ...searchParams, guests })
                     }

@@ -9,7 +9,6 @@ import Loading from "@/components/loading";
 
 export default function OurLodgesPage() {
   const lodges = fetchProperties();
-  console.log(lodges)
   return (
     <main className="min-h-screen bg-white">
       {/* <NavbarWrapper /> */}

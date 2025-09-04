@@ -13,7 +13,7 @@ const Footer = () => {
               Luxury lodges in the heart of the Lake District, offering unforgettable experiences in one of England's
               most beautiful landscapes.
             </p>
-            <div className="flex space-x-4">
+            {/* <div className="flex space-x-4">
               <a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors">
                 <Facebook size={20} />
               </a>
@@ -23,7 +23,7 @@ const Footer = () => {
               <a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors">
                 <Instagram size={20} />
               </a>
-            </div>
+            </div> */}
           </div>
 
           {/* Quick Links */}

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import NavbarWrapper from "@/components/navbar-wrapper";
 import { AppWrapper } from "./context/context";
+
 export const metadata: Metadata = {
   title: "Windermere Lodges",
   description: "Created by coffee_coders",

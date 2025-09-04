@@ -11,7 +11,6 @@ export default function OurLodgesPage() {
   const lodges = fetchProperties();
   return (
     <main className="min-h-screen bg-white">
-      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Our Lodges"
         description="Discover your perfect Lake District retreat"

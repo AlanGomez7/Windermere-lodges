@@ -1,12 +1,19 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { MessageSquare } from "lucide-react"
-import { ChatbotDialog } from "@/components/chatbot/chatbot-dialog"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { MessageSquare } from "lucide-react";
+import { ChatbotDialog } from "@/components/chatbot/chatbot-dialog";
+import dynamic from "next/dynamic";
+
+const ChatDialog = dynamic(() =>
+  import("@/components/chatbot/chatbot-dialog").then(
+    (dialog) => dialog.ChatbotDialog
+  )
+);
 
 export const ChatbotButton = () => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -18,8 +25,7 @@ export const ChatbotButton = () => {
         <MessageSquare className="h-6 w-6" />
       </Button>
 
-      <ChatbotDialog open={isOpen} onOpenChange={setIsOpen} />
+      {isOpen&&<ChatDialog open={isOpen} onOpenChange={setIsOpen} />}
     </>
-  )
-}
-
+  );
+};

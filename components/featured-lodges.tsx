@@ -41,6 +41,7 @@ export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
                     alt={lodge.name}
                     fill
                     className="object-cover"
+                    priority
                   />
                   {lodge.isNew && (
                     <Badge className="absolute top-4 left-4 bg-emerald-600 hover:bg-emerald-700">

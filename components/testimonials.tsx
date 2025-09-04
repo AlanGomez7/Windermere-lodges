@@ -99,7 +99,7 @@ export const Testimonials = () => {
             >
               <CardHeader className="flex flex-row items-center gap-4 p-4">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={testimonial.image} alt={testimonial.name} />
+                  <AvatarImage src={testimonial.image} alt={testimonial.name} fetchPriority="high"/>
                   <AvatarFallback>{testimonial.name[0]}</AvatarFallback>
                 </Avatar>
                 <div>

@@ -46,11 +46,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
     async signIn({ profile, account }) {
       try {
-        if(account?.provider === 'credentials'){
-          return true
+        if (account?.provider === "credentials") {
+          return true;
         }
 
-        
         const user = await checkUser(profile);
 
         if (user) {
@@ -60,15 +59,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         await createUser({
           avatar: profile?.picture,
           email: profile?.email,
-          password: ''+profile?.updated_at,
-          name:profile?.name,
-          sub:profile?.sub,
-          role:'user'
+          password: "" + profile?.updated_at,
+          name: profile?.name,
+          sub: profile?.sub,
+          role: "user",
         });
 
         return true;
       } catch (err) {
-        console.log(err)
+        console.log(err);
         return false;
       }
     },

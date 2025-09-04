@@ -1,4 +1,3 @@
-"use client"
 import Link from "next/link"
 import Footer from "@/components/footer"
 import { PageHeader } from "@/components/page-header"

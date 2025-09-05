@@ -12,7 +12,7 @@ export function PageHeader({
   backgroundImage,
 }: PageHeaderProps) {
   return (
-    <div className="relative pt-32 pb-20 flex items-center justify-center">
+    <div className="relative pt-32 pb-20 flex items-center justify-center brightness-[0.5]">
       <Image src={backgroundImage} alt="" fill className="object-cover" priority/>
       <div className="container mx-auto px-4 text-center text-white">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">{title}</h1>

@@ -92,6 +92,7 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
               onClick={handleSearch}
               className="h-full bg-emerald-600 hover:bg-emerald-700"
               disabled={loading}
+              name="check availability"
             >
               {loading ? "Checking avalability" : "Search Availability"}
             </Button>

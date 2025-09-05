@@ -50,6 +50,7 @@ export function LodgeSelector({ onChange, properties }: LodgeSelectorProps) {
           role="combobox"
           aria-expanded={open}
           className="w-full justify-start truncate"
+          name="select lodge"
         >
           <Home className="mr-2 h-4 w-4" />
           {selectedLodge ? selectedLodge.name : "Select a lodge..."}

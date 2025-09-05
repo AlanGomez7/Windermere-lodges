@@ -28,4 +28,3 @@ export async function credentialLogin(credentials: any) {
   }
 }
 
-export async function doSocialLogout() {}

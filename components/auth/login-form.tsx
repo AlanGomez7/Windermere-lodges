@@ -43,23 +43,29 @@ export function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-    const response = await credentialLogin(values);
+    try {
+      setIsLoading(true);
 
-    if (!!response.error) {
-      setError(response.error);
-    } else {
-      router.push("/");
-    }
+      const response = await credentialLogin(values);
 
-    setIsLoading(false);
+      if (response?.error) {
+        setError(response?.error);
+        return;
+      }
+
+      await router.replace("/");
+    } catch (err) {
+      setError("Something went wrong! please try again");
+    } 
   }
 
   return (
     <Form {...form}>
-      {error && <div className="flex justify-center">
-        <p className="text-red-600">{error}</p>
-      </div>}
+      {error && (
+        <div className="flex justify-center">
+          <p className="text-red-600">{error}</p>
+        </div>
+      )}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}

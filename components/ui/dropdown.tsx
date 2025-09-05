@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import LogoutButton from "../logout-button";
 import { useEffect, useState } from "react";
+import { UserRound, BookCheck, Heart, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function DropDown({
@@ -20,7 +21,7 @@ export default function DropDown({
   user: any;
   isMobile: boolean;
 }) {
-
+  
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -58,7 +59,7 @@ export default function DropDown({
                 {user ? getInitials(user.name || "User") : "U"}
               </AvatarFallback>
             </Avatar>
-            Alan gomez
+            {user.name}
           </Button>
         ) : (
           <Button
@@ -91,18 +92,32 @@ export default function DropDown({
         align="start"
         side={isMobile ? "top" : "left"}
         onCloseAutoFocus={(e) => e.preventDefault()}
-
       >
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/account">Profile</Link>
+          <Link href="/account">
+            <UserRound className="mr-4 my-2"/>
+            Profile
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/bookings">Bookings</Link>
+          <Link href="/bookings">
+            <BookCheck className="mr-4 my-2"/>
+            Bookings
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/reviews-and-ratings">Reviews & Ratings</Link>
+          <Link href="/favorites">
+            <Heart className="mr-4 my-2"/>
+            Favorites
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/reviews-and-ratings">
+            <Star className="mr-4 my-2"/>
+            Reviews & Ratings
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>

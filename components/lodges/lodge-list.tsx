@@ -105,7 +105,7 @@ export function LodgeList({ properties }: { properties: any }) {
       <div className="grid h-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {lodges.map((lodge:any) => (
           <div key={lodge.id} className="group">
-            <Link href={`/our-lodges/${lodge.refNo}`} className="block">
+            <Link href={`/our-lodges/${lodge.refNo}`} className="block" prefetch>
               <Card className="overflow-hidden group-hover:shadow-md transition-shadow duration-200">
                 <div className="relative">
                   <div className="aspect-w-16 aspect-h-9 relative h-48">

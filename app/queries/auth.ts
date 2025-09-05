@@ -27,7 +27,7 @@ export async function createUser(userDetails: any) {
 
 export async function checkUser(userDetails: any) {
   try {
-    const dbUser = await prisma.user.findFirst({
+    const dbUser = await prisma.user.findUnique({
       where: {
         email: userDetails.email,
       },
@@ -50,7 +50,7 @@ export const credentialCheck = async (credentials: {
   try {
     const { email, password } = credentials;
 
-    const dbUser = await prisma.user.findFirst({
+    const dbUser = await prisma.user.findUnique({
       where: {
         email,
       },

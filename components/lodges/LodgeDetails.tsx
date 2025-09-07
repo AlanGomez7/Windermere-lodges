@@ -16,25 +16,16 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Icons } from "../ui/icons";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "../ui/visually-hidden";
-import { galleryImagesByLodge } from "../gallery/gallery-data";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import RatingsAndReviews from "./ratings-and-reviews";
 import ReviewCard from "../review-card";
 import Link from "next/link";
 import { useAppContext } from "@/app/context/context";
-import { date } from "zod";
 import { checkAvailableLodges } from "@/lib/api";
 import { GuestSelector } from "../booking/guest-selector";
 
@@ -390,10 +381,12 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   }, []);
 
   useEffect(() => {
-    // setCheckOutDate(checkInDate)
     const nights = findDifference();
     setDiff(nights);
+    setSearchParams({ ...searchParams, nights });
   }, [checkInDate, checkOutDate]);
+
+  console.log(searchParams);
 
   const findDifference = () => {
     const date1 = Number(new Date(checkInDate ? checkInDate : ""));
@@ -429,6 +422,12 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     toast.success("Lodge available");
     setLoading(false);
   };
+
+
+  const handleBooking = ()=>{
+    localStorage.setItem("order", JSON.stringify(searchParams));
+    router.push("/booking")
+  }
 
   const router = useRouter();
 
@@ -573,11 +572,15 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Cleaning fee</span>
-                        <span>$100</span>
+                        <span>${lodge.cleaning_fee}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Pets fee</span>
+                        <span>${searchParams.guests.pets*lodge.pets_fee}</span>
                       </div>
                       <div className="flex justify-between font-bold text-lg mt-2">
                         <span>Total Payment</span>
-                        <span>${lodge.price * diff + 100}</span>
+                        <span>${(lodge.price * diff) + lodge.cleaning_fee + (searchParams.guests.pets*lodge.pets_fee)}</span>
                       </div>
                     </div>
                   )}
@@ -593,11 +596,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       </Button>
                     </>
                   ) : (
-                    <Link href={"/booking"}>
-                      <Button className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base">
+                      <Button className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base" onClick={handleBooking}>
                         Book Now
                       </Button>
-                    </Link>
                   )}
                 </CardContent>
               </Card>

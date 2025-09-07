@@ -26,6 +26,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         // const { email } = credential;
 
         const user = await credentialCheck({ email, password });
+        console.log(user);
         return user;
       },
     }),
@@ -39,9 +40,20 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role; // Add role to token
+        return {
+          ...token,
+          userId: user.id,
+        };
       }
+
       return token;
+    },
+
+    async session({ session, token }) {
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+      return session;
     },
 
     async signIn({ profile, account }) {

@@ -102,7 +102,7 @@ export default function DropDown({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/bookings">
+          <Link href="/my-bookings">
             <BookCheck className="mr-4 my-2"/>
             Bookings
           </Link>

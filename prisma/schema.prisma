@@ -9,15 +9,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String
   password  String
-  role      String   @default("admin")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      String     @default("admin")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   avatar    String?
   googleId  String?
+  address   String?
+  mobile    String?
+  slug      String    
+  Wishlist  Wishlist[]
 }
 
 model Settings {
@@ -73,11 +77,15 @@ model Property {
   guests          Int
   bathrooms       String
   bedrooms        String
+  cleaning_fee    Int
   nickname        String
+  pets            Int
+  pets_fee        Int
   bookings        Booking[]
   comments        Comment[]
   enquiryBookings EnquiryBooking[]
   galleryImages   PropertyGalleryImage[]
+  Wishlist        Wishlist[]
 }
 
 model Booking {
@@ -142,7 +150,18 @@ model EnquiryBooking {
   message       String?
   status        EnquiryBookingStatus @default(PENDING)
   createdAt     DateTime             @default(now())
+  enquiryId     String
   property      Property             @relation(fields: [propertyId], references: [id])
+}
+
+model Wishlist {
+  id         String   @id
+  userId     String
+  propertyId String
+  Property   Property @relation(fields: [propertyId], references: [id])
+  User       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, propertyId])
 }
 
 enum PaymentType {

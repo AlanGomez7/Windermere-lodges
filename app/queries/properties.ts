@@ -13,10 +13,34 @@ export async function getLodgeDetails(id: string) {
   try {
     const response = prisma.property.findFirst({
       where: {
-        refNo:id
+        refNo: id,
       },
     });
     return response;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function checkWishlist(lodgeId: string, userId: string) {
+  try {
+    const existing = await prisma.wishlist.findUnique({
+      where: { userId_lodgeId: { userId, lodgeId } },
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function removeWishlist(lodgeId: string, userId: string) {
+  try {
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function addToWishlist(lodgeId: string, userId: string) {
+  try {
   } catch (err) {
     throw err;
   }

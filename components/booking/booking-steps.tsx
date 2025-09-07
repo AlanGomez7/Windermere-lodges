@@ -12,8 +12,8 @@ export function BookingSteps({ currentStep }: BookingStepsProps) {
     { id: 1, name: "Lodge Selection" },
     { id: 2, name: "Guest Information" },
     { id: 3, name: "Extras" },
-    // { id: 4, name: "Payment" },
-    { id: 4, name: "Confirmation" },
+    { id: 4, name: "Payment" },
+    // { id: 4, name: "Confirmation" },
   ];
 
   return (

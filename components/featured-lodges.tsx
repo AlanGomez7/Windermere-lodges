@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Star, Users, Maximize, Bath, BedDouble } from "lucide-react";
 
 export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
+  console.log(lodges)
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">

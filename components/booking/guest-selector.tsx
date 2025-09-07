@@ -13,7 +13,11 @@ import { Label } from "@/components/ui/label";
 import { useAppContext } from "@/app/context/context";
 
 interface GuestSelectorProps {
-  onChange?: (guests: { adults: number; children: number }) => void,
+  onChange?: (guests: {
+    adults: number;
+    children: number;
+    pets: number;
+  }) => void;
   lodge?: any;
 }
 
@@ -21,17 +25,24 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
   const { searchParams } = useAppContext();
   const [adults, setAdults] = React.useState(2);
   const [children, setChildren] = React.useState(0);
+  const [pets, setPets] = React.useState(0);
 
   const handleAdultsChange = (value: number) => {
     const newValue = Math.max(1, Math.min(lodge.guests, value));
     setAdults(newValue);
-    onChange?.({ adults: newValue, children });
+    onChange?.({ adults: newValue, children, pets });
   };
 
   const handleChildrenChange = (value: number) => {
     const newValue = Math.max(0, Math.min(6, value));
     setChildren(newValue);
-    onChange?.({ adults, children: newValue });
+    onChange?.({ adults, children: newValue, pets });
+  };
+
+  const handlePetsChange = (value: number) => {
+    const newValue = Math.max(0, Math.min(6, value));
+    setPets(newValue);
+    onChange?.({ adults, children, pets: newValue });
   };
 
   return (
@@ -44,6 +55,10 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
           {searchParams.guests.children > 0 &&
             `, ${searchParams.guests.children} ${
               searchParams.guests.children === 1 ? "Child" : "Children"
+            }`}
+          {searchParams.guests.pets > 0 &&
+            `, ${searchParams.guests.pets} ${
+              searchParams.guests.pets === 1 ? "Pet" : "Pets"
             }`}
         </Button>
       </PopoverTrigger>
@@ -117,6 +132,38 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
                   size="icon"
                   className="h-8 w-8"
                   onClick={() => handleChildrenChange(children + 1)}
+                >
+                  +
+                </Button>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 items-center gap-4">
+              <Label htmlFor="children">Pets</Label>
+              <div className="col-span-2 flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => handlePetsChange(pets - 1)}
+                >
+                  -
+                </Button>
+                <Input
+                  id="pets"
+                  type="number"
+                  value={searchParams.guests.pets}
+                  onChange={(e) => handlePetsChange(parseInt(e.target.value))}
+                  min={0}
+                  max={6}
+                  className="h-8 w-14"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => handlePetsChange(pets + 1)}
                 >
                   +
                 </Button>

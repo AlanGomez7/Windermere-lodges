@@ -1,6 +1,8 @@
 "use server";
 
 import { createBooking } from "@/app/queries/order";
+import { auth } from "@/auth";
+import prisma from "./prisma";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const baseUplistingUrl = process.env.UPLISTING_URL;
@@ -22,6 +24,55 @@ export const fetchProperties = async () => {
     return res.lodges;
   }
   return { message: res.message, ok: false };
+};
+
+// export const toggleFavorites = async (lodgeId:string) => {
+//   const session = await auth();
+
+//   if (!session?.user?.id) {
+//     throw new Error("Unauthorized");
+//   }
+
+//   const userId = session.user.id;
+
+//   const existing = await prisma.wishlist.findUnique({
+//     where: {userId_lodgeId: { userId, lodgeId }},
+//   });
+
+//   if (existing) {
+//     await prisma.wishlist.delete({
+//       where: { id: existing.id },
+//     });
+//     return false; // now not a favorite
+//   } else {
+//     await prisma.wishlist.create({
+//       data: { userId, lodgeId },
+//     });
+//     return true; // now a favorite
+//   }
+// };
+
+export const updateUserDetails = async (data: {
+  userName: string;
+  email: string;
+  phone: string;
+  address: string;
+}) => {
+  const session = await auth();
+
+  console.log(session)
+  const response = await fetch(
+    `${baseUrl}/api/auth/update-user-details/${session?.user?.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  console.log(response);
 };
 
 export const fetchPropertyDetails = async (id: string) => {

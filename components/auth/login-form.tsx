@@ -45,10 +45,10 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true);
-
       const response = await credentialLogin(values);
-
+      
       if (response?.error) {
+        setIsLoading(false);
         setError(response?.error);
         return;
       }
@@ -80,6 +80,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="password"

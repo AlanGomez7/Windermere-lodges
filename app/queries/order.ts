@@ -28,3 +28,24 @@ export const createBooking = async (details: any) => {
     throw err;
   }
 };
+
+export const getUserBookings = async(email:string | null | undefined)=>{
+  try{
+    if(email){
+      console.log(email)
+      const bookings = await prisma.enquiryBooking.findMany({
+        where: {
+          email: email
+        },
+        include: {
+          property: true
+        }
+      })
+      return bookings
+    }
+
+    return 
+  }catch(err){
+    throw err;
+  }
+}

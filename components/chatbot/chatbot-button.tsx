@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
-import { ChatbotDialog } from "@/components/chatbot/chatbot-dialog";
 import dynamic from "next/dynamic";
 
 const ChatDialog = dynamic(() =>

@@ -12,33 +12,41 @@ import { BookingConfirmation } from "@/components/booking/booking-confirmation";
 import { useRouter } from "next/navigation";
 
 export default function BookingPage() {
-  const router = useRouter();
   const { searchParams } = useAppContext();
   const [currentStep, setCurrentStep] = useState(2);
+  const [orderDetails, setOrderDetails] = useState<any>();
 
   useEffect(() => {
-    if (!searchParams.dates || !searchParams.lodge) {
-      router.push('/not-found')
+    const details = localStorage.getItem("order");
+    if (details) {
+      try {
+        setOrderDetails(JSON.parse(details));
+      } catch (err) {
+        console.error("Error parsing order from localStorage", err);
+      }
     }
-  },[searchParams, router]);
+  }, []);
 
   return (
     <main className="min-h-screen bg-white">
       <PageHeader
         title="Book Your Stay"
         description="Secure your perfect Lake District getaway"
-        backgroundImage={searchParams?.lodge?.images[0]}
+        backgroundImage={orderDetails?.lodge?.images[0] || "/placeholder.jpg"}
       />
 
       <BookingSteps currentStep={currentStep} />
 
-      <GuestInformation
-        bookingDetails={searchParams}
-        onBack={() => setCurrentStep(currentStep - 1)}
-        isActive={currentStep === 2}
-        setCurrentStep={() => setCurrentStep(currentStep + 1)}
-      />
+      {orderDetails && (
+        <GuestInformation
+          bookingDetails={orderDetails}
+          onBack={() => setCurrentStep((s) => s - 1)}
+          isActive={currentStep === 2}
+          setCurrentStep={() => setCurrentStep(currentStep + 1)}
+        />
+      )}
 
+      {/* instead of extras here, it should be payment */}
       <Extras
         bookingDetails={searchParams}
         onContinue={setCurrentStep}
@@ -56,4 +64,3 @@ export default function BookingPage() {
     </main>
   );
 }
-

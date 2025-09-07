@@ -27,7 +27,7 @@ export default function Favorites() {
       />
       <div className="p-4 lg:p-6 space-y-6 bg-gray-50 min-h-full"></div>
 
-      <Card className="overflow-hidden group-hover:shadow-md transition-shadow duration-200">
+      {/* <Card className="overflow-hidden group-hover:shadow-md transition-shadow duration-200">
         <div className="relative">
           <div className="aspect-w-16 aspect-h-9 relative h-48">
             <Image
@@ -118,7 +118,7 @@ export default function Favorites() {
             Book Now
           </Button>
         </CardFooter>
-      </Card>
+      </Card> */}
     </main>
   );
 }

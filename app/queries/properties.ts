@@ -22,15 +22,6 @@ export async function getLodgeDetails(id: string) {
   }
 }
 
-export async function checkWishlist(lodgeId: string, userId: string) {
-  try {
-    const existing = await prisma.wishlist.findUnique({
-      where: { userId_lodgeId: { userId, lodgeId } },
-    });
-  } catch (err) {
-    throw err;
-  }
-}
 
 export async function removeWishlist(lodgeId: string, userId: string) {
   try {

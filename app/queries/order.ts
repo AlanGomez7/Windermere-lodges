@@ -10,7 +10,8 @@ export const createBooking = async (details: any) => {
   try {
     const response = await prisma.enquiryBooking.create({
       data: {
-        id: result.data.id,
+        // id: result.data.id,
+        enquiryId:result.data.id,
         propertyId: searchParams.lodge.id,
         firstName: form.firstName,
         lastName: form.lastName,

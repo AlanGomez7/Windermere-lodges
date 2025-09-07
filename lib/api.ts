@@ -2,7 +2,6 @@
 
 import { createBooking } from "@/app/queries/order";
 import { auth } from "@/auth";
-import prisma from "./prisma";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const baseUplistingUrl = process.env.UPLISTING_URL;

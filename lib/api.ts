@@ -60,9 +60,9 @@ export const updateUserDetails = async (data: {
 }) => {
   const session = await auth();
 
-  console.log(session)
+  console.log(session);
   const response = await fetch(
-    `${baseUrl}/api/auth/update-user-details/${session?.user?.id}`,
+    `${baseUrl}/api/auth/update-user-details/${session?.user?.email}`,
     {
       method: "PUT",
       headers: {
@@ -72,7 +72,35 @@ export const updateUserDetails = async (data: {
     }
   );
 
-  console.log(response);
+  return response.json();
+};
+
+export const changePassword = async ({
+  passwordData,
+  id,
+}: {
+  passwordData: {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  };
+  id: string;
+}) => {
+  
+  try {
+    const response = await fetch(`${baseUrl}/api/auth/update-password/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passwordData),
+    });
+
+    return response.json()
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 };
 
 export const fetchPropertyDetails = async (id: string) => {

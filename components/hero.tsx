@@ -119,7 +119,7 @@ export const Hero = () => {
               Explore Our Lodges
             </Button>
           </Link>
-          <Link href="/booking">
+          {/* <Link href="/booking">
             <Button
               size="lg"
               variant="outline"
@@ -127,7 +127,7 @@ export const Hero = () => {
             >
               Book Now <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-          </Link>
+          </Link> */}
         </div>
       </div>
 

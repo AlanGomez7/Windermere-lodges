@@ -18,6 +18,7 @@ import {
 import toast from "react-hot-toast";
 import { register } from "module";
 import { registerUser } from "@/lib/api";
+import { credentialLogin } from "@/app/actions/auth";
 
 const formSchema = z.object({
   name: z.string().min(5, {
@@ -49,11 +50,21 @@ export function RegisterForm() {
     const result = await registerUser(values);
     if (result.ok) {
       toast.success(result.message);
-      router.push("/auth/login");
+      const response = await credentialLogin({
+        email: values.email,
+        password: values.password,
+      });
+      if (response?.error) {
+        setIsLoading(false);
+        toast.error(response.message);
+        return;
+      }
+
+      await router.replace("/");
     } else {
       toast.error(result.message);
     }
-    setIsLoading(false)
+    setIsLoading(false);
   }
 
   return (

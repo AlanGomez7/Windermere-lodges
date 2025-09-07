@@ -1,24 +1,33 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Mail, Phone, MapPin, Camera, Save, Loader2 } from "lucide-react";
-// import { useAuth } from "@/contexts/AuthContext"
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Camera,
+  Save,
+  Loader2,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+
 import { PageHeader } from "@/components/page-header";
-import { updateUserDetails } from "@/lib/api";
+import { changePassword, updateUserDetails } from "@/lib/api";
 import toast from "react-hot-toast";
-
-
 
 export default function MyAccount({ user }: any) {
   const [emailErr, setEmailErr] = useState("");
+  const [passwordErr, setPasswordErr] = useState("");
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
     phone: "",
+    role: "",
     address: "",
   });
 
@@ -27,6 +36,7 @@ export default function MyAccount({ user }: any) {
     newPassword: "",
     confirmPassword: "",
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
 
@@ -35,8 +45,9 @@ export default function MyAccount({ user }: any) {
       setFormData({
         userName: user.name ?? "",
         email: user.email ?? "",
-        phone:user.mobile ?? "", // Phone not in current user model
-        address:user.address ?? "", // Address not in current user model
+        phone: user.mobile ?? "", // Phone not in current user model
+        address: user.address ?? "", // Address not in current user model
+        role: user.role ?? "",
       });
     }
   }, []);
@@ -60,9 +71,12 @@ export default function MyAccount({ user }: any) {
 
     setIsLoading(true);
     try {
-      await updateUserDetails(formData);
-
-      toast.success("Profile updated successfully");
+      const response = await updateUserDetails(formData);
+      if (response?.ok) {
+        toast.success("Profile updated successfully");
+      } else {
+        toast.error("Update failed");
+      }
     } catch (error) {
       toast.error("Update failed");
     } finally {
@@ -72,7 +86,7 @@ export default function MyAccount({ user }: any) {
 
   const handleChangePassword = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error("New passwords do not match");
+      setPasswordErr("New passwords do not match");
       return;
     }
 
@@ -84,7 +98,14 @@ export default function MyAccount({ user }: any) {
         confirmPassword: "",
       });
 
-      toast.success("Password changed successfully");
+      const response = await changePassword({ passwordData, id: user?.email });
+
+      console.log(response);
+      if (response.ok) {
+        toast.success("Password updated successfully");
+      } else {
+        toast.error("Password update failed");
+      }
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to change password"
@@ -130,7 +151,7 @@ export default function MyAccount({ user }: any) {
                     src={user?.avatar || "/placeholder.svg?height=96&width=96"}
                   />
                   <AvatarFallback className="bg-gradient-to-br from-teal-100 to-teal-200 text-teal-700 text-3xl">
-                    {getInitials(formData?.userName || "User")}
+                    {getInitials(user?.name || "User")}
                   </AvatarFallback>
                 </Avatar>
                 <Button
@@ -142,26 +163,26 @@ export default function MyAccount({ user }: any) {
                 </Button>
               </div>
               <h2 className="text-xl font-semibold text-gray-900">
-                {user&&user.name || "User"}
+                {(formData && formData?.userName) || "User"}
               </h2>
               <p className="text-sm text-gray-500 mb-4">
-                {user.role || "Admin"}
+                {formData.role || "Admin"}
               </p>
               <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex items-center gap-2 justify-center">
                   <Mail className="w-4 h-4 text-gray-500" />
-                  <span>{user&&user.email}</span>
+                  <span>{formData && formData.email}</span>
                 </div>
                 {formData.phone && (
                   <div className="flex items-center gap-2 justify-center">
                     <Phone className="w-4 h-4 text-gray-500" />
-                    <span>{user&&user.phone}</span>
+                    <span>{formData && formData?.phone}</span>
                   </div>
                 )}
                 {formData.address && (
                   <div className="flex items-center gap-2 justify-center">
                     <MapPin className="w-4 h-4 text-gray-500" />
-                    <span>{user&&user.address}</span>
+                    <span>{formData && formData.address}</span>
                   </div>
                 )}
               </div>
@@ -172,7 +193,7 @@ export default function MyAccount({ user }: any) {
           <Card className="lg:col-span-2 animate-card hover-lift">
             <CardHeader>
               <CardTitle className="text-lg font-semibold">
-                Account Settings
+                Account Details
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -190,12 +211,18 @@ export default function MyAccount({ user }: any) {
                 <div className="space-y-2">
                   <Label htmlFor="account-email">Email Address</Label>
                   <Input
+                    disabled={user?.googleId ? true : false}
                     id="account-email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                   />
                   <p className="text-red-500">{emailErr}</p>
+                  {user.googleId && (
+                    <p className="text-xs text-gray-400">
+                      google login credentials cannot be updated
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -237,8 +264,33 @@ export default function MyAccount({ user }: any) {
             </CardContent>
           </Card>
 
+          <Card className="lg:col-span-1 animate-card hover-lift bg-inherit hidden lg:block">
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <div className="relative mb-4"></div>
+              <h2 className="text-xl font-semibold text-gray-900"></h2>
+              <p className="text-sm text-gray-500 mb-4"></p>
+              <div className="space-y-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 justify-center">
+                  {/* <Mail className="w-4 h-4 text-gray-500" /> */}
+                  <span></span>
+                </div>
+                <div className="flex items-center gap-2 justify-center">
+                  {/* <Phone className="w-4 h-4 text-gray-500" /> */}
+                  <span></span>
+                </div>
+                <div className="flex items-center gap-2 justify-center">
+                  {/* <MapPin className="w-4 h-4 text-gray-500" /> */}
+                  <span></span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Password Change Form */}
-          <Card className="lg:col-span-2 animate-card hover-lift">
+          <Card
+            className="lg:col-span-2 animate-card hover-lift"
+            hidden={user.googleId ? true : false}
+          >
             <CardHeader>
               <CardTitle className="text-lg font-semibold">
                 Change Password

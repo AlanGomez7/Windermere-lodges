@@ -19,7 +19,7 @@ export async function createUser(userDetails: any) {
         password: encryptedPassword,
         role,
         avatar: userDetails.avatar ?? null,
-        slug
+        slug,
       },
     });
     return response;
@@ -28,23 +28,30 @@ export async function createUser(userDetails: any) {
   }
 }
 
-export async function updateProfile(details: any) {
+export async function updateProfile(details: {
+  userName: string;
+  address: string;
+  phone: string;
+  email: string;
+  userId: string;
+}) {
   try {
     const { userName, address, phone, email, userId } = details;
     const response = await prisma.user.update({
-      where:{
-        id:userId
+      where: {
+        email: userId,
       },
-      data:{
-        address: address,
-        name: userName,
-        mobile:phone,
-        email:email
-      }
-    })
+      data: {
+        ...(userName && { name: userName }),
+        ...(address && { address }),
+        ...(phone && { mobile: phone }),
+        ...(email && { email }),
+      },
+    });
 
-    return response
+    return response;
   } catch (err) {
+    console.log(err);
     throw err;
   }
 }
@@ -73,7 +80,6 @@ export const credentialCheck = async (credentials: {
 }) => {
   try {
     const { email, password } = credentials;
-
     const dbUser = await prisma.user.findUnique({
       where: {
         email,
@@ -84,21 +90,48 @@ export const credentialCheck = async (credentials: {
       return null;
     }
 
-
     const status = await bcrypt.compare(password, dbUser.password);
+
     if (status) {
       return {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
-        address:dbUser.address,
-        phone:dbUser.mobile,
+        // address:dbUser.address,
+        // phone:dbUser.mobile,
         image: dbUser.avatar ?? null, // if you store it
       };
     } else {
       return null;
     }
   } catch (err) {
+    console.log(err, "****************")
+    throw err;
+  }
+};
+
+export const updatePassword = async({
+  email,
+  newPassword,
+}: {
+  email: string;
+  newPassword: string;
+}) => {
+  try {
+
+    const encryptedPassword = await bcrypt.hash(newPassword, 12)
+    const response = await prisma.user.update({
+      where:{
+        email
+      },
+      data:{
+        password:encryptedPassword
+      }
+    })
+    
+    return response;
+  } catch (err) {
+    console.log(err, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
     throw err;
   }
 };

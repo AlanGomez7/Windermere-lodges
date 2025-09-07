@@ -107,7 +107,7 @@ export default function DropDown({
             Bookings
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        {/* <DropdownMenuItem asChild>
           <Link href="/favorites">
             <Heart className="mr-4 my-2"/>
             Favorites
@@ -118,7 +118,7 @@ export default function DropDown({
             <Star className="mr-4 my-2"/>
             Reviews & Ratings
           </Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <div className="w-full">

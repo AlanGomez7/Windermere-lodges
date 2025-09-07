@@ -26,7 +26,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         // const { email } = credential;
 
         const user = await credentialCheck({ email, password });
-        console.log(user);
         return user;
       },
     }),
@@ -50,6 +49,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
 
     async session({ session, token }) {
+      console.log(token, session)
+
       if (token.sub) {
         session.user.id = token.sub;
       }
@@ -78,6 +79,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         });
 
         return true;
+        
       } catch (err) {
         console.log(err);
         return false;

@@ -117,6 +117,13 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.truncate-multiline {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
     
 
 @layer base {

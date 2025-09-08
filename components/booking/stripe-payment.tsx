@@ -188,7 +188,7 @@ export function StripePayment({
                     bookingDetails?.guests.pets *
                       bookingDetails.lodge.pets_fee) *
                   100,
-                currency: "usd",
+                currency: "gbp",
               }}
             >
               <CheckoutPage

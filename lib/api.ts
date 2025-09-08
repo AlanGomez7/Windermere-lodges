@@ -25,32 +25,6 @@ export const fetchProperties = async () => {
   return { message: res.message, ok: false };
 };
 
-// export const toggleFavorites = async (lodgeId:string) => {
-//   const session = await auth();
-
-//   if (!session?.user?.id) {
-//     throw new Error("Unauthorized");
-//   }
-
-//   const userId = session.user.id;
-
-//   const existing = await prisma.wishlist.findUnique({
-//     where: {userId_lodgeId: { userId, lodgeId }},
-//   });
-
-//   if (existing) {
-//     await prisma.wishlist.delete({
-//       where: { id: existing.id },
-//     });
-//     return false; // now not a favorite
-//   } else {
-//     await prisma.wishlist.create({
-//       data: { userId, lodgeId },
-//     });
-//     return true; // now a favorite
-//   }
-// };
-
 export const updateUserDetails = async (data: {
   userName: string;
   email: string;

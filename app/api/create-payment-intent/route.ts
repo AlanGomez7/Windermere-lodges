@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { stripe, formatAmountForStripe } from '@/lib/stripe';
+import { stripe } from '@/lib/stripe';
 
 export async function POST(req: Request) {
   try {
     const { amount } = await req.json();
+    console.log(amount, "&&&&&&&&&&&&&&&&")
 
     // Validate amount
     if (!amount || amount <= 0) {
@@ -13,28 +14,12 @@ export async function POST(req: Request) {
       );
     }
 
-    let product = null;
-    // if (productId) {
-    //   product = products.find(p => p.id === productId);
-    //   if (!product) {
-    //     return NextResponse.json(
-    //       { error: 'Product not found' },
-    //       { status: 404 }
-    //     );
-    //   }
-    // }
-
-    // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
       currency: 'gbp',
       automatic_payment_methods: {
         enabled: true,
       },
-    //   metadata: product ? {
-    //     productId: product.id,
-    //     productName: product.name,
-    //   } : undefined,
     });
 
     console.log(paymentIntent.client_secret)

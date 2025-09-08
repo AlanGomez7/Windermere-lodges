@@ -8,6 +8,7 @@ import { GuestInformation } from "@/components/booking/guest-information";
 import { useAppContext } from "../context/context";
 import { BookingConfirmation } from "@/components/booking/booking-confirmation";
 import { StripePayment } from "@/components/booking/stripe-payment";
+import { BookingSteps } from "@/components/booking/booking-steps";
 
 
 export default function BookingPage() {
@@ -34,7 +35,7 @@ export default function BookingPage() {
         backgroundImage={ orderDetails?.lodge?.images[0] || "/placeholder.jpg" }
       />
 
-      {/* <BookingSteps currentStep={currentStep} /> */}
+      <BookingSteps currentStep={currentStep} />
 
       {orderDetails && (
         <GuestInformation

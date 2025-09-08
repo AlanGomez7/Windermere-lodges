@@ -15,6 +15,7 @@ const CheckoutPage = ({
   amount: number;
   setCurrentStep: any;
 }) => {
+  console.log(amount)
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -30,7 +31,7 @@ const CheckoutPage = ({
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, [amount]);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -55,11 +56,13 @@ const CheckoutPage = ({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: "if_required",
+        return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success`,
       },
+      redirect: "if_required",
     });
 
     if (error) {
+      console.log(error);
       setErrorMessage(error.message);
     }
 
@@ -82,7 +85,7 @@ const CheckoutPage = ({
 
   return (
     <>
-    <Button onClick={()=>setCurrentStep()}>back</Button>
+      {/* <Button onClick={()=>setCurrentStep()}>back</Button> */}
       <form onSubmit={handleSubmit} className="bg-white p-2 rounded-md">
         <PaymentElement onReady={() => setElementReady(true)} />
 

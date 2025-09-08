@@ -68,7 +68,7 @@ export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
                     </CardTitle>
                     {/* <Badge variant="secondary">£{lodge.price}/night</Badge> */}
                   </div>
-                  <p className="text-sm text-muted-foreground">{lodge.address}</p>
+                  <CardDescription className="text-sm text-muted-foreground truncate-multiline">{lodge.address}</CardDescription>
                 </CardHeader>
 
                 <CardContent className="pt-6">

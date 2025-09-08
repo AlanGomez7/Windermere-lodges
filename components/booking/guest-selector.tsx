@@ -40,7 +40,7 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
   };
 
   const handlePetsChange = (value: number) => {
-    const newValue = Math.max(0, Math.min(6, value));
+    const newValue = Math.max(0, Math.min(lodge.pets, value));
     setPets(newValue);
     onChange?.({ adults, children, pets: newValue });
   };
@@ -139,35 +139,47 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
             </div>
             <div className="grid grid-cols-3 items-center gap-4">
               <Label htmlFor="children">Pets</Label>
-              <div className="col-span-2 flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => handlePetsChange(pets - 1)}
-                >
-                  -
-                </Button>
-                <Input
-                  id="pets"
-                  type="number"
-                  value={searchParams.guests.pets}
-                  onChange={(e) => handlePetsChange(parseInt(e.target.value))}
-                  min={0}
-                  max={6}
-                  className="h-8 w-14"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => handlePetsChange(pets + 1)}
-                >
-                  +
-                </Button>
-              </div>
+              {lodge?.pets > 0 ? (
+                <>
+                  <div className="col-span-2 flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handlePetsChange(pets - 1)}
+                    >
+                      -
+                    </Button>
+                    <Input
+                      id="pets"
+                      type="number"
+                      value={lodge.pets}
+                      onChange={(e) =>
+                        handlePetsChange(parseInt(e.target.value))
+                      }
+                      min={0}
+                      max={6}
+                      className="h-8 w-14"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handlePetsChange(pets + 1)}
+                    >
+                      +
+                    </Button>
+                  </div>
+                  <p className="text-sm col-span-3 text-gray-400">
+                    Only {lodge?.pets} {lodge?.pets > 1 ? "pets are" : "pet is"}{" "}
+                    allowed
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm col-span-3">Pets are not allowed</p>
+              )}
             </div>
           </div>
         </div>

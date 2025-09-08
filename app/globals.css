@@ -110,7 +110,7 @@ body {
 }
 .loader:before {
   transform-origin: 0 50%;
-  background: #fff;
+  background: #e5e7eb;
 }
 @keyframes spin {
   to {

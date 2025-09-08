@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import Footer from "@/components/footer";
 import { PageHeader } from "@/components/page-header";
-import { BookingSteps } from "@/components/booking/booking-steps";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import { GuestInformation } from "@/components/booking/guest-information";
 import { useAppContext } from "../context/context";
-import { Extras } from "@/components/booking/extras";
 import { BookingConfirmation } from "@/components/booking/booking-confirmation";
+import { StripePayment } from "@/components/booking/stripe-payment";
 
 
 export default function BookingPage() {
@@ -32,10 +31,10 @@ export default function BookingPage() {
       <PageHeader
         title="Book Your Stay"
         description="Secure your perfect Lake District getaway"
-        backgroundImage={orderDetails?.lodge?.images[0] || "/placeholder.jpg"}
+        backgroundImage={ orderDetails?.lodge?.images[0] || "/placeholder.jpg" }
       />
 
-      <BookingSteps currentStep={currentStep} />
+      {/* <BookingSteps currentStep={currentStep} /> */}
 
       {orderDetails && (
         <GuestInformation
@@ -47,10 +46,10 @@ export default function BookingPage() {
       )}
 
       {/* instead of extras here, it should be payment */}
+
       {orderDetails && (
-        <Extras
+        <StripePayment
           bookingDetails={orderDetails}
-          onContinue={setCurrentStep}
           isActive={currentStep === 3}
           onBack={() => setCurrentStep(currentStep - 1)}
           setCurrentStep={() => setCurrentStep(currentStep + 1)}

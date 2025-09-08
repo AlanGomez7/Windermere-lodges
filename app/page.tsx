@@ -10,7 +10,7 @@ import { fetchProperties } from "@/lib/api";
 
 export default async function Home() {
   const lodges = await fetchProperties();
-
+  
   return (
     <main className="min-h-screen bg-white">
       <Hero />

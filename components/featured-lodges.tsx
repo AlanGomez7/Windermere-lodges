@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Star, Users, Maximize, Bath, BedDouble } from "lucide-react";
 
 export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
-  console.log(lodges)
+  console.log(lodges);
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -68,7 +68,7 @@ export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
                     </CardTitle>
                     {/* <Badge variant="secondary">£{lodge.price}/night</Badge> */}
                   </div>
-                  <CardDescription>{lodge.address}</CardDescription>
+                  <p className="text-sm text-muted-foreground">{lodge.address}</p>
                 </CardHeader>
 
                 <CardContent className="pt-6">

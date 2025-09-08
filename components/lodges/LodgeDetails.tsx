@@ -353,6 +353,7 @@ function Gallery({
 }
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
+  console.log(lodge)
   const {
     searchParams,
     setSearchParams,
@@ -366,6 +367,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const [loading, setLoading] = useState<boolean>(false);
   // const [, setLoading] = useState<boolean>(false);
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
+
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(() => {
     const today = new Date();
     today.setDate(today.getDate() + 5); // add 5 days
@@ -424,7 +426,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   };
 
 
-  const handleBooking = ()=>{
+  const handleBooking = ()=>{ 
     localStorage.setItem("order", JSON.stringify(searchParams));
     router.push("/booking")
   }

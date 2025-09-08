@@ -26,8 +26,8 @@ export async function POST(req: Request) {
 
     // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: formatAmountForStripe(amount),
-      currency: 'usd',
+      amount: amount,
+      currency: 'gbp',
       automatic_payment_methods: {
         enabled: true,
       },
@@ -36,6 +36,8 @@ export async function POST(req: Request) {
     //     productName: product.name,
     //   } : undefined,
     });
+
+    console.log(paymentIntent.client_secret)
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {

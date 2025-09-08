@@ -16,9 +16,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppContext } from "@/app/context/context";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Star } from "lucide-react";
+
 interface ContactInfo {
   firstName: string;
   lastName: string;
@@ -99,6 +98,7 @@ export function GuestInformation({
     setContactInfo((prev) => ({ ...prev, [name]: value }));
   };
 
+
   const handleContinue = () => {
     // Validate required fields
     const requiredFields = ["firstName", "lastName", "email", "phone"] as const;
@@ -128,7 +128,7 @@ export function GuestInformation({
 
   return (
     <section
-      className={`px-16 mb-5 min-h-screen flex justify-center ${
+      className={`p-16 mb-5 min-h-screen flex justify-center ${
         isActive ? "block" : "hidden"
       }`}
     >
@@ -148,13 +148,13 @@ export function GuestInformation({
                   New
                 </Badge>
               )}
-              <div className="absolute bottom-4 left-4 flex items-center bg-white bg-opacity-80 px-2 py-1 rounded-full">
+              {/* <div className="absolute bottom-4 left-4 flex items-center bg-white bg-opacity-80 px-2 py-1 rounded-full">
                 <Star
                   className="h-4 w-4 text-yellow-500 mr-1"
                   fill="currentColor"
                 />
                 <span className="text-sm font-medium">4.1</span>
-              </div>
+              </div> */}
               <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
                 £{bookingDetails.lodge.price}/night
               </div>
@@ -173,23 +173,26 @@ export function GuestInformation({
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between text-sm">
                   <span>{nights} Night</span>
-                  <span>${nights && bookingDetails.lodge.price * nights}</span>
+                  <span>
+                    {" "}
+                    &pound;{nights && bookingDetails.lodge.price * nights}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>{bookingDetails.guests.pets} Pets</span>
                   <span>
-                    $
+                    &pound;
                     {bookingDetails.guests.pets * bookingDetails.lodge.pets_fee}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Cleaning fee</span>
-                  <span>${bookingDetails?.lodge.cleaning_fee}</span>
+                  <span> &pound;{bookingDetails?.lodge.cleaning_fee}</span>
                 </div>
                 <div className="flex justify-between font-bold text-md lg:text-lg mt-2">
                   <span>Total Payment</span>
                   <span>
-                    $
+                    &pound;
                     {nights &&
                       bookingDetails.lodge.price * nights +
                         bookingDetails?.lodge.cleaning_fee +
@@ -205,7 +208,9 @@ export function GuestInformation({
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Guest Information</CardTitle>
+              <CardTitle className="text-3xl font-semibold">
+                Guest Information
+              </CardTitle>
               <CardDescription>
                 Please provide your contact details for the booking
               </CardDescription>

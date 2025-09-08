@@ -30,6 +30,7 @@ export function Extras({
   const { orderDetails, searchParams } = useAppContext();
   const [extras, setExtras] = useState<any[]>(bookingDetails.extras || []);
 
+
   const availableExtras = [
     {
       id: "welcome-hamper",
@@ -102,6 +103,8 @@ export function Extras({
   };
 
   const handleContinue = async () => {
+    
+    console.log({ form: orderDetails, bookingDetails })
     const response = await confirmBooking({ form: orderDetails, searchParams });
 
     if(response.ok){
@@ -183,43 +186,7 @@ export function Extras({
             </CardContent>
           </Card>
 
-          {/* <Card>
-            <CardHeader>
-              <CardTitle>Promo Code</CardTitle>
-              <CardDescription>
-                If you have a promotional code, enter it here
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex space-x-2">
-                <Input
-                  placeholder="Enter promo code"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                />
-                <Button
-                  variant="outline"
-                  className="shrink-0"
-                  onClick={applyPromoCode}
-                >
-                  Apply
-                </Button>
-              </div>
-
-              {promoError && (
-                <div className="mt-2 text-sm text-red-600">{promoError}</div>
-              )}
-
-              {promoSuccess && (
-                <Alert className="mt-2 bg-green-50 border-green-200">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-600">
-                    {promoSuccess}
-                  </AlertDescription>
-                </Alert>
-              )}
-            </CardContent>
-          </Card> */}
+    
 
           <div className="flex justify-between">
             <Button onClick={onBack} variant="outline">

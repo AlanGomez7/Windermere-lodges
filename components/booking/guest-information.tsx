@@ -345,14 +345,12 @@ export function GuestInformation({
             </div>
           )}
 
-          <form className="w-full px-4">
             <Button
               onClick={handleContinue}
               className="bg-teal-600 hover:bg-teal-700 w-full space-y-2"
             >
               PROCEED TO PAYMENT
             </Button>
-          </form>
         </div>
       </div>
     </section>

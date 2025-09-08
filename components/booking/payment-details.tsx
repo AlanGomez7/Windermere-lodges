@@ -32,8 +32,8 @@ interface PaymentMethod {
 }
 
 interface PaymentDetailsProps {
-  onContinue: (data: { paymentInfo: PaymentInfo; paymentMethod: string }) => void
-  onBack: () => void
+  onContinue?: (data: { paymentInfo: PaymentInfo; paymentMethod: string }) => void
+  onBack?: () => void
   bookingDetails: BookingDetails
 }
 
@@ -90,25 +90,25 @@ export function PaymentDetails({ onContinue, onBack, bookingDetails }: PaymentDe
     }
 
     setIsSubmitting(true)
-    try {
-      await onContinue({
-        paymentInfo: {
-          cardNumber: cardDetails.cardNumber,
-          expiryDate: cardDetails.expiryDate,
-          cvc: cardDetails.cvc,
-          nameOnCard: cardDetails.nameOnCard,
-        },
-        paymentMethod: selectedPaymentMethod,
-      })
-    } catch (error) {
-      console.error('Payment processing error:', error)
-      toast({
-        title: "Payment error",
-        description: "There was an error processing your payment. Please try again later.",
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
+    // try {
+    //   await onContinue({
+    //     paymentInfo: {
+    //       cardNumber: cardDetails.cardNumber,
+    //       expiryDate: cardDetails.expiryDate,
+    //       cvc: cardDetails.cvc,
+    //       nameOnCard: cardDetails.nameOnCard,
+    //     },
+    //     paymentMethod: selectedPaymentMethod,
+    //   })
+    // } catch (error) {
+    //   console.error('Payment processing error:', error)
+    //   toast({
+    //     title: "Payment error",
+    //     description: "There was an error processing your payment. Please try again later.",
+    //   })
+    // } finally {
+    //   setIsSubmitting(false)
+    // }
   }
 
   const handleCardDetailsChange = (field: keyof CardDetails, value: string) => {

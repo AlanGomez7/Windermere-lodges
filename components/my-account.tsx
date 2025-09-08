@@ -211,7 +211,7 @@ export default function MyAccount({ user }: any) {
                 <div className="space-y-2">
                   <Label htmlFor="account-email">Email Address</Label>
                   <Input
-                    disabled={user?.googleId ? true : false}
+                    disabled={true}
                     id="account-email"
                     type="email"
                     value={formData.email}
@@ -353,3 +353,4 @@ export default function MyAccount({ user }: any) {
     </main>
   );
 }
+

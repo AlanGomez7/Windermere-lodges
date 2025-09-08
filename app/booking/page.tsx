@@ -9,7 +9,7 @@ import { GuestInformation } from "@/components/booking/guest-information";
 import { useAppContext } from "../context/context";
 import { Extras } from "@/components/booking/extras";
 import { BookingConfirmation } from "@/components/booking/booking-confirmation";
-import { useRouter } from "next/navigation";
+
 
 export default function BookingPage() {
   const { searchParams } = useAppContext();
@@ -47,13 +47,15 @@ export default function BookingPage() {
       )}
 
       {/* instead of extras here, it should be payment */}
-      <Extras
-        bookingDetails={searchParams}
-        onContinue={setCurrentStep}
-        isActive={currentStep === 3}
-        onBack={() => setCurrentStep(currentStep - 1)}
-        setCurrentStep={() => setCurrentStep(currentStep + 1)}
-      />
+      {orderDetails && (
+        <Extras
+          bookingDetails={orderDetails}
+          onContinue={setCurrentStep}
+          isActive={currentStep === 3}
+          onBack={() => setCurrentStep(currentStep - 1)}
+          setCurrentStep={() => setCurrentStep(currentStep + 1)}
+        />
+      )}
 
       <BookingConfirmation
         bookingDetails={searchParams}

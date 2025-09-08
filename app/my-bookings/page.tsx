@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Bath, BedDouble, Star, Users } from "lucide-react";
+import { Star } from "lucide-react";
 import Image from "next/image";
 import { getUserBookings } from "../queries/order";
 
@@ -38,11 +38,7 @@ export default async function MyBookings() {
                     className="object-cover"
                     priority
                   />
-                  {/* {result.property.isNew && (
-                <Badge className="absolute top-4 left-4 bg-emerald-600 hover:bg-emerald-700">
-                  New
-                  </Badge>
-              )} */}
+
                   <div className="absolute bottom-4 left-4 flex items-center bg-white bg-opacity-80 px-2 py-1 rounded-full">
                     <Star
                       className="h-4 w-4 text-yellow-500 mr-1"

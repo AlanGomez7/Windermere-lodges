@@ -21,6 +21,8 @@ interface SearchParams {
   guests: {
     adults: number;
     children: number;
+    teens:number;
+    infants:number;
     pets:number
   };
   lodge: Lodge | undefined;
@@ -48,7 +50,7 @@ export function AppWrapper({ children }: { children: ReactNode }) {
   const [isLodgeAvailable, setIsLodgeAvailable] = useState(false);
   const [searchParams, setSearchParams] = useState<SearchParams>({
     dates: undefined,
-    guests: { adults: 2, children: 0, pets:0 },
+    guests: { adults: 2, children: 0, pets:0, infants:0, teens:0 },
     lodge: undefined,
     nights: undefined,
     contactInfo: {

@@ -28,6 +28,7 @@ import Link from "next/link";
 import { useAppContext } from "@/app/context/context";
 import { checkAvailableLodges } from "@/lib/api";
 import { GuestSelector } from "../booking/guest-selector";
+import AboutModal from "../ui/about-modal";
 
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
@@ -353,7 +354,7 @@ function Gallery({
 }
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
-  console.log(lodge)
+  console.log(lodge);
   const {
     searchParams,
     setSearchParams,
@@ -365,8 +366,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
   const [diff, setDiff] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  // const [, setLoading] = useState<boolean>(false);
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
+  const [availability, setAvailability] = useState(false);
+  const [aboutDialog, setAboutDialog] = useState(false);
 
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(() => {
     const today = new Date();
@@ -419,17 +421,16 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
       return;
     }
 
-    setIsLodgeAvailable(true);
+    setAvailability(true);
     setSearchParams(params);
     toast.success("Lodge available");
     setLoading(false);
   };
 
-
-  const handleBooking = ()=>{ 
+  const handleBooking = () => {
     localStorage.setItem("order", JSON.stringify(searchParams));
-    router.push("/booking")
-  }
+    router.push("/booking");
+  };
 
   const router = useRouter();
 
@@ -578,16 +579,23 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Pets fee</span>
-                        <span>${searchParams.guests.pets*lodge.pets_fee}</span>
+                        <span>
+                          ${searchParams.guests.pets * lodge.pets_fee}
+                        </span>
                       </div>
                       <div className="flex justify-between font-bold text-lg mt-2">
                         <span>Total Payment</span>
-                        <span>${(lodge.price * diff) + lodge.cleaning_fee + (searchParams.guests.pets*lodge.pets_fee)}</span>
+                        <span>
+                          $
+                          {lodge.price * diff +
+                            lodge.cleaning_fee +
+                            searchParams.guests.pets * lodge.pets_fee}
+                        </span>
                       </div>
                     </div>
                   )}
 
-                  {diff && !isLodgeAvailable ? (
+                  {diff && !availability ? (
                     <>
                       <Button
                         onClick={() => handleSearch()}
@@ -598,9 +606,12 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       </Button>
                     </>
                   ) : (
-                      <Button className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base" onClick={handleBooking}>
-                        Book Now
-                      </Button>
+                    <Button
+                      className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base"
+                      onClick={handleBooking}
+                    >
+                      Book Now
+                    </Button>
                   )}
                 </CardContent>
               </Card>
@@ -609,60 +620,77 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
           {/* All sections always visible except FAQ */}
           <div className="mt-8">
             {/* Amenities */}
-            {/* <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">Amenities</h2>
-            <div className="flex space-x-6 overflow-x-auto pb-4">
-            {amenitiesToDisplay.map((amenity: string, i: number) => {
-                const iconKey = Object.keys(amenityIconMap).find((key) =>
-                amenity.toLowerCase().includes(key.toLowerCase())
-                );
-                const iconSrc = iconKey ? amenityIconMap[iconKey] : null;
-                
-                if (amenity.startsWith("+")) {
+
+            {/* About */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">About {lodge.name}</h2>
+              <p className="text-gray-700 line-clamp-3">{lodge.description}</p>
+              <Button
+                variant={"secondary"}
+                className="mt-6 p-6 text-lg hover:bg-gray-200 rounded-lg"
+                onClick={() => setAboutDialog(true)}
+              >
+                Show more
+              </Button>
+            </div>
+
+            <AboutModal
+              showDialog={aboutDialog}
+              setShowDialog={setAboutDialog}
+              about={lodge.description}
+            />
+
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">What we offer</h2>
+              <div className="flex space-x-6 overflow-x-auto pb-4">
+                {lodge.features.map((amenity: string, i: number) => {
+                  const iconKey = Object.keys(amenityIconMap).find((key) =>
+                    amenity.toLowerCase().includes(key.toLowerCase())
+                  );
+                  // const iconSrc = iconKey ? amenityIconMap[iconKey] : null;
+
+                  if (amenity.startsWith("+")) {
+                    return (
+                      <div
+                        key={i}
+                        className="flex items-center space-x-2 flex-shrink-0"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                          <span className="text-sm font-semibold">
+                            {amenity.split(" ")[0]}
+                          </span>
+                        </div>
+                        <span className="text-gray-700">
+                          {amenity.split(" ").slice(1).join(" ")}
+                        </span>
+                      </div>
+                    );
+                  }
+
                   return (
                     <div
                       key={i}
                       className="flex items-center space-x-2 flex-shrink-0"
-                      >
-                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                      <span className="text-sm font-semibold">
-                          {amenity.split(" ")[0]}
-                        </span>
+                    >
+                      {/* {iconSrc && (
+                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                          <Image
+                            src={iconSrc}
+                            alt={amenity}
+                            width={24}
+                            height={24}
+                          />
                         </div>
-                        <span className="text-gray-700">
-                        {amenity.split(" ").slice(1).join(" ")}
-                      </span>
+                      )} */}
+                      <span className="text-gray-700">{amenity}</span>
                     </div>
                   );
-                }
+                })}
+              </div>
+            </div>
 
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center space-x-2 flex-shrink-0"
-                  >
-                    {iconSrc && (
-                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                        <Image
-                          src={iconSrc}
-                          alt={amenity}
-                          width={24}
-                          height={24}
-                        />
-                      </div>
-                    )}
-                    <span className="text-gray-700">{amenity}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div> */}
-            {/* About */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">About {lodge.name}</h2>
-              <p className="text-gray-700">{lodge.description}</p>
-            </div>
             {/* Rating & Review */}
+
             <RatingsAndReviews lodge={lodge} user={session} />
 
             <div className="flex flex-wrap justify-center my-16 gap-4">

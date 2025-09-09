@@ -1,35 +1,77 @@
-import { NextResponse } from 'next/server';
-import { stripe } from '@/lib/stripe';
+import { NextResponse } from "next/server";
+import { stripe } from "@/lib/stripe";
+import { getLodgeDetails } from "@/app/queries/properties";
+import { createBooking } from "@/app/queries/order";
+import { findDays } from "@/lib/utils";
+
+type booking = {
+  id: string;
+  firstName: string;
+  lastName: string | null;
+  email: string;
+  mobile: string;
+  arrivalDate: string;
+  departureDate: string;
+  adults: number | null;
+  children: number | null;
+  propertyId: string;
+};
 
 export async function POST(req: Request) {
   try {
-    const { amount } = await req.json();
-    console.log(amount, "&&&&&&&&&&&&&&&&")
+    const { bookingDetails, orderDetails } = await req.json();
+    const { guests, lodge, dates } = bookingDetails;
+
+    if (!guests || !lodge || !dates) {
+      return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+    }
+
+    const nights = findDays(dates.from, dates.to);
+
+    const property = await getLodgeDetails(lodge?.refNo);
+
+    if (!property) throw new Error("Lodge not found");
+
+    const amount =
+      property?.price * nights +
+      guests.pets * property.pets_fee +
+      property?.cleaning_fee;
 
     // Validate amount
     if (!amount || amount <= 0) {
-      return NextResponse.json(
-        { error: 'Invalid amount' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
     }
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
-      currency: 'gbp',
+      amount: amount * 100,
+      currency: "gbp",
       automatic_payment_methods: {
         enabled: true,
       },
     });
 
-    console.log(paymentIntent.client_secret)
+    console.log({
+      orderDetails,
+      bookingDetails,
+      result: null,
+      stripeId: paymentIntent.id
+    })
+
+    await createBooking({
+      userInfo:orderDetails,
+      bookingDetails,
+      result: null,
+      stripeId: paymentIntent.id,
+      amount
+    });
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
+
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    console.error("Error creating payment intent:", error);
     return NextResponse.json(
-      { error: 'Error creating payment intent' },
+      { error: "Error creating payment intent" },
       { status: 500 }
     );
   }
-} 
+}

@@ -8,6 +8,16 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model Wishlist {
+  id         String   @id @default(uuid())
+  userId     String
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, propertyId], map: "wishlist_key")
+}
+
 model User {
   id        String     @id @default(uuid())
   email     String     @unique
@@ -20,8 +30,8 @@ model User {
   googleId  String?
   address   String?
   mobile    String?
-  slug      String    
-  Wishlist  Wishlist[]
+  slug      String     @unique @default(uuid())
+  wishlists Wishlist[]
 }
 
 model Settings {
@@ -65,7 +75,7 @@ model Property {
   name            String
   description     String
   address         String
-  refNo           String                 @default("")
+  refNo           String                 @unique
   longitude       Float
   latitude        Float
   features        String[]               @default([])
@@ -85,7 +95,7 @@ model Property {
   comments        Comment[]
   enquiryBookings EnquiryBooking[]
   galleryImages   PropertyGalleryImage[]
-  Wishlist        Wishlist[]
+  wishlists       Wishlist[]
 }
 
 model Booking {
@@ -145,23 +155,21 @@ model EnquiryBooking {
   mobile        String
   arrivalDate   String
   departureDate String
-  adults        Int?
-  children      Int?
+  adults        Int?                 @default(0)
+  children      Int?                 @default(0)
   message       String?
   status        EnquiryBookingStatus @default(PENDING)
   createdAt     DateTime             @default(now())
-  enquiryId     String
+  enquiryId     String?
+  pets          Int?                 @default(0)
+  userId        String
+  payment       PaymentStatus        @default(PENDING)
+  amount        Int
+  stripeId      String               @unique
+  updatedAt     DateTime             @updatedAt
+  infant        Int?                 @default(0)
+  teens         Int?                 @default(0)
   property      Property             @relation(fields: [propertyId], references: [id])
-}
-
-model Wishlist {
-  id         String   @id
-  userId     String
-  propertyId String
-  Property   Property @relation(fields: [propertyId], references: [id])
-  User       User     @relation(fields: [userId], references: [id])
-
-  @@unique([userId, propertyId])
 }
 
 enum PaymentType {
@@ -181,4 +189,10 @@ enum EnquiryBookingStatus {
   PENDING
   CONFIRMED
   CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESSFUL
+  UNSUCCESSFUL
 }

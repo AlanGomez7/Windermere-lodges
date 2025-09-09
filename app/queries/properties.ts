@@ -11,7 +11,7 @@ export async function getProperties() {
 
 export async function getLodgeDetails(id: string) {
   try {
-    const response = prisma.property.findFirst({
+    const response = prisma.property.findUnique({
       where: {
         refNo: id,
       },
@@ -22,17 +22,3 @@ export async function getLodgeDetails(id: string) {
   }
 }
 
-
-export async function removeWishlist(lodgeId: string, userId: string) {
-  try {
-  } catch (err) {
-    throw err;
-  }
-}
-
-export async function addToWishlist(lodgeId: string, userId: string) {
-  try {
-  } catch (err) {
-    throw err;
-  }
-}

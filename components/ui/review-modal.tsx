@@ -33,7 +33,7 @@ export default function ReviewModal({
       return;
     }
 
-    const response = await submitReview({ rating, review, lodgeId:id });
+    await submitReview({ rating, review, lodgeId:id });
     setShowDialog(false)
   };
 

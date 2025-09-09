@@ -1,7 +1,12 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialProvider from "next-auth/providers/credentials";
-import { checkUser, createUser, credentialCheck } from "./app/queries/auth";
+import {
+  checkGoogleUser,
+  checkUser,
+  createUser,
+  credentialCheck,
+} from "./app/queries/auth";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
@@ -39,9 +44,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        const u = user as unknown as any;
         return {
           ...token,
-          userId: user.id,
+          userId: u.id,
+          method: u.method ?? "google",
         };
       }
 
@@ -49,27 +56,28 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
 
     async session({ session, token }) {
-      console.log(token, session)
-
       if (token.sub) {
         session.user.id = token.sub;
+        (session.user as any).method = token.method;
       }
       return session;
     },
 
-    async signIn({ profile, account }) {
+    async signIn({user, profile, account }) {
       try {
         if (account?.provider === "credentials") {
           return true;
         }
 
-        const user = await checkUser(profile);
+        const dbUser = await checkUser(profile);
+
+        (user as any).id = dbUser?.id
 
         if (user) {
           return true;
         }
 
-        await createUser({
+        const result=await createUser({
           avatar: profile?.picture,
           email: profile?.email,
           password: "" + profile?.updated_at,
@@ -78,8 +86,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           role: "user",
         });
 
+        (user as any).id = result?.id;
+        (user as any).method = "google"
+
         return true;
-        
       } catch (err) {
         console.log(err);
         return false;

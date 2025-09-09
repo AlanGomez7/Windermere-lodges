@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
-// import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+
 
 export async function createUser(userDetails: any) {
   try {
@@ -97,6 +97,7 @@ export const credentialCheck = async (credentials: {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
+        method:"credentials",
         // address:dbUser.address,
         // phone:dbUser.mobile,
         image: dbUser.avatar ?? null, // if you store it
@@ -109,6 +110,20 @@ export const credentialCheck = async (credentials: {
     throw err;
   }
 };
+
+export const checkGoogleUser = async(id:any)=>{
+  try{
+    const response = prisma.user.findFirst({
+      where: {
+        googleId: id
+      }
+    })
+
+    return response;
+  }catch(err){
+    throw err;
+  }
+}
 
 export const updatePassword = async({
   email,

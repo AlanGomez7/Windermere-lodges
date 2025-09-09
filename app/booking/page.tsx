@@ -8,34 +8,53 @@ import { GuestInformation } from "@/components/booking/guest-information";
 import { useAppContext } from "../context/context";
 import { BookingConfirmation } from "@/components/booking/booking-confirmation";
 import { StripePayment } from "@/components/booking/stripe-payment";
-import { BookingSteps } from "@/components/booking/booking-steps";
-
+import { useRouter } from "next/navigation";
 
 export default function BookingPage() {
   const { searchParams } = useAppContext();
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
   const [orderDetails, setOrderDetails] = useState<any>();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const details = localStorage.getItem("order");
-    if (details) {
+    setLoading(true);
+    if (searchParams.dates) {
       try {
-        setOrderDetails(JSON.parse(details));
+        const details = localStorage.getItem("order");
+        setOrderDetails(JSON.parse(details ?? ""));
+        setLoading(false);
       } catch (err) {
         console.error("Error parsing order from localStorage", err);
       }
+      return;
     }
+
+    router.back();
   }, []);
+  console.log(searchParams);
+
+  if (loading) {
+    return (
+      <div className="flex w-screen h-screen justify-center items-center">
+        <span className="loader"></span>
+      </div>
+    );
+  }
+
+  if (!orderDetails) {
+    return null; // or redirect
+  }
 
   return (
     <main className="min-h-screen bg-white">
       <PageHeader
         title="Book Your Stay"
         description="Secure your perfect Lake District getaway"
-        backgroundImage={ orderDetails?.lodge?.images[0] || "/placeholder.jpg" }
+        backgroundImage={orderDetails?.lodge?.images[0] || "/placeholder.jpg"}
       />
 
-      <BookingSteps currentStep={currentStep} />
+      {/* <BookingSteps currentStep={currentStep} /> */}
 
       {orderDetails && (
         <GuestInformation

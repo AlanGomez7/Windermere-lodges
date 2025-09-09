@@ -1,6 +1,6 @@
 "use server";
 
-import { createBooking } from "@/app/queries/order";
+import { createBooking, fetchOrderedLodge, updateOrderPaymentStatus } from "@/app/queries/order";
 import { auth } from "@/auth";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -59,7 +59,6 @@ export const changePassword = async ({
   };
   id: string;
 }) => {
-  
   try {
     const response = await fetch(`${baseUrl}/api/auth/update-password/${id}`, {
       method: "PUT",
@@ -69,7 +68,7 @@ export const changePassword = async ({
       body: JSON.stringify(passwordData),
     });
 
-    return response.json()
+    return response.json();
   } catch (err) {
     console.log(err);
     throw err;
@@ -172,12 +171,28 @@ export const registerUser = async (values: any) => {
   return res;
 };
 
-export const confirmBooking = async ({ form, searchParams }: any) => {
-  const fromDate = searchParams.dates.from;
-  const toDate = searchParams.dates.to;
+export const updateOrderPayment=async({stripeId, status}:any)=>{
+  try{
+    const response = await updateOrderPaymentStatus({stripeId, status});
+    return response;
+  }catch(err){
+    throw err;
+  }
+}
 
-  const checkIn = new Date(fromDate).toISOString().split("T")[0];
-  const checkOut = new Date(toDate).toISOString().split("T")[0];
+export const confirmBooking = async ({
+  orderDetails,
+  bookingDetails,
+  stripeId,
+  amount,
+}: any) => {
+  console.log(orderDetails, bookingDetails, stripeId, amount);
+
+  const fromDate = bookingDetails?.dates.from;
+  const toDate = bookingDetails?.dates.to;
+
+  const checkIn = new Date(fromDate)?.toISOString().split("T")[0];
+  const checkOut = new Date(toDate)?.toISOString().split("T")[0];
 
   const reqBody = {
     data: {
@@ -185,16 +200,16 @@ export const confirmBooking = async ({ form, searchParams }: any) => {
       attributes: {
         check_in: `${checkIn}`,
         check_out: `${checkOut}`,
-        guest_name: `${form.firstName} ${form.lastName}`,
-        guest_email: `${form.email}`,
-        guest_phone: `${form.phone}`,
+        guest_name: `${orderDetails.firstName} ${orderDetails.lastName}`,
+        guest_email: `${orderDetails.email}`,
+        guest_phone: `${orderDetails.phone}`,
         number_of_guests: 3,
       },
       relationships: {
         property: {
           data: {
             type: "properties",
-            id: `${searchParams.lodge.refNo}`,
+            id: `${bookingDetails.lodge.refNo}`,
           },
         },
       },
@@ -208,13 +223,20 @@ export const confirmBooking = async ({ form, searchParams }: any) => {
       "X-Uplisting-Client-Id": `${process.env.UPLISTING_CLIENT_KEY}`,
       "Content-Type": "application/json",
     },
+
     body: JSON.stringify(reqBody),
   });
 
   const result = await response.json();
 
-  if (result.data.id) {
-    const response = await createBooking({ form, searchParams, result });
+  if (result?.data?.id) {
+    const response = await createBooking({
+      orderDetails,
+      bookingDetails,
+      result,
+      stripeId,
+      amount,
+    });
     return { ok: true, response, message: "Booking Successful" };
   } else {
     return { ok: false, response: result, message: "Something went wrong" };
@@ -222,6 +244,8 @@ export const confirmBooking = async ({ form, searchParams }: any) => {
 };
 
 export const submitReview = async (reviews: any) => {
+  const session = await auth();
+  reviews.userId = session?.user?.id;
   await fetch(`${baseUrl}/api/create-review`, {
     method: "POST",
     headers: {
@@ -229,4 +253,19 @@ export const submitReview = async (reviews: any) => {
     },
     body: JSON.stringify(reviews),
   });
+};
+
+export const orderedLodge = async (lodgeId: string) => {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("Please login");
+    }
+
+    const response = await fetchOrderedLodge(session.user.id, lodgeId);
+    console.log(response);
+    return response;
+  } catch (err) {
+    throw err;
+  }
 };

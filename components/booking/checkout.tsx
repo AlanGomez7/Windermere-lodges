@@ -6,38 +6,44 @@ import {
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
-import { Button } from "../ui/button";
+import { useAppContext } from "@/app/context/context";
+import { confirmBooking, updateOrderPayment } from "@/lib/api";
 
 const CheckoutPage = ({
   amount,
   setCurrentStep,
+  bookingDetails,
+  orderDetails,
 }: {
   amount: number;
   setCurrentStep: any;
+  bookingDetails: any;
+  orderDetails: any;
 }) => {
-  console.log(amount)
   const stripe = useStripe();
   const elements = useElements();
+
   const [errorMessage, setErrorMessage] = useState<string>();
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
   const [elementReady, setElementReady] = useState(false);
 
   useEffect(() => {
-    fetch("/api/create-payment-intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: amount }),
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-  }, []);
+    if (orderDetails) {
+      fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingDetails, orderDetails }),
+      })
+        .then((res) => res.json())
+        .then((data) => setClientSecret(data.clientSecret));
+    }
+  }, [amount]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!stripe || !elements || !clientSecret) return;
     setLoading(true);
-
     // Wait for PaymentElement to be mounted
     if (!elementReady) {
       setErrorMessage("Payment form is still loading, please wait.");
@@ -46,13 +52,14 @@ const CheckoutPage = ({
     }
 
     const { error: submitError } = await elements.submit();
+
     if (submitError) {
       setErrorMessage(submitError.message);
       setLoading(false);
       return;
     }
 
-    const { error } = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       clientSecret,
       confirmParams: {
@@ -62,13 +69,20 @@ const CheckoutPage = ({
     });
 
     if (error) {
-      console.log(error);
-      setErrorMessage(error.message);
+      setErrorMessage(error.message)
+    } else {
+      const response = updateOrderPayment({
+        stripeId: paymentIntent.id,
+        status: "SUCCESSFUL",
+      });
+      setCurrentStep();
+      setLoading(false);
     }
-
-    setCurrentStep();
-    setLoading(false);
   };
+
+  if (!orderDetails) {
+    return <>loading....</>;
+  }
 
   if (!clientSecret) {
     return (
@@ -90,7 +104,7 @@ const CheckoutPage = ({
         <PaymentElement onReady={() => setElementReady(true)} />
 
         {errorMessage && (
-          <div className="text-red-600 text-sm mt-2">{errorMessage}</div>
+          <div className="text-red-600 text-lg mt-2">{errorMessage}</div>
         )}
 
         <button

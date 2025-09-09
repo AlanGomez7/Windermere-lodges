@@ -13,29 +13,38 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, Download, Calendar, MessageSquare } from "lucide-react";
+import { useAppContext } from "@/app/context/context";
+import { createBooking } from "@/app/queries/order";
 
 interface BookingConfirmationProps {
   bookingDetails: any;
-  isActive:boolean
+  isActive: boolean;
 }
 
 export function BookingConfirmation({
   bookingDetails,
-  isActive
+  isActive,
 }: BookingConfirmationProps) {
+  
+  const { orderDetails } = useAppContext();
 
   const router = useRouter();
   const [bookingNumber, setBookingNumber] = useState<string>("");
   const [nights, setNights] = useState<number>(3);
 
+  // const saveOrder = async () => {
+  //   const result = await createBooking({ orderDetails, bookingDetails, stripeId:89089, amount:460 });
+  // };
 
+  // useEffect(() => {
+  //   saveOrder();
+  // }, [isActive]);
 
   useEffect(() => {
     const bookingNumber = "WL" + Math.floor(100000 + Math.random() * 900000);
     setBookingNumber(bookingNumber);
-    findDifference()
+    findDifference();
   }, []);
-
 
   const findDifference = () => {
     const date1 = Number(new Date(bookingDetails.dates?.from));
@@ -68,8 +77,17 @@ export function BookingConfirmation({
     router.push("/contact");
   };
 
+  const handleBack = () => {
+    localStorage.clear();
+    router.replace("/");
+  };
+
   return (
-    <section className={`px-16 mb-5 min-h-screen flex justify-center ${isActive ? 'block' : 'hidden'}`}>
+    <section
+      className={`p-16 mb-5 min-h-screen flex justify-center ${
+        isActive ? "block" : "hidden"
+      }`}
+    >
       <div className="container md:px-16">
         <div className="space-y-6">
           <div className="text-center">
@@ -225,7 +243,7 @@ export function BookingConfirmation({
                     <div className="flex justify-between">
                       <span>Service Fees</span>
                       <span>
-                        £ 100
+                        £ {bookingDetails.lodge.cleaning_fee}
                         {/* {Math.round(
                           bookingDetails.lodge
                             ? bookingDetails.lodge.price *
@@ -239,7 +257,11 @@ export function BookingConfirmation({
                     <div className="flex justify-between font-bold pt-2">
                       <span>Total Paid</span>
                       <span>
-                        £ {(bookingDetails.lodge?.price*nights) + 100}
+                        £{" "}
+                        {bookingDetails.lodge?.price * nights +
+                          bookingDetails.lodge?.cleaning_fee +
+                          bookingDetails.guests.pets *
+                            bookingDetails.lodge.pets_fee}
                         {/* {bookingDetails.lodge
                           ? Math.round(
                               bookingDetails.lodge.price *
@@ -264,7 +286,7 @@ export function BookingConfirmation({
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex flex-wrap gap-2">
+            {/* <CardFooter className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
                 className="flex items-center"
@@ -289,7 +311,7 @@ export function BookingConfirmation({
                 <MessageSquare className="mr-2 h-4 w-4" />
                 Contact Support
               </Button>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
 
           <Card>
@@ -348,7 +370,7 @@ export function BookingConfirmation({
 
           <div className="text-center">
             <Button
-              onClick={() => router.push("/")}
+              onClick={() => handleBack()}
               className="bg-teal-600 hover:bg-teal-700"
             >
               Return to Homepage

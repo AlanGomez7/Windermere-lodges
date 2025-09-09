@@ -1,23 +1,23 @@
 "use client";
 
-import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
 import Image from "next/image";
 import { Elements } from "@stripe/react-stripe-js";
-
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./checkout";
+import { findDays } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { createBooking } from "@/app/queries/order";
+import { useAppContext } from "@/app/context/context";
+
 interface ContactInfo {
   firstName: string;
   lastName: string;
@@ -44,7 +44,6 @@ interface GuestInformationProps {
   onBack?: () => void;
   bookingDetails: BookingDetails;
   isActive: boolean;
-
   setCurrentStep: () => void;
 }
 
@@ -53,48 +52,26 @@ export function StripePayment({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
-  console.log(bookingDetails);
 
   const [nights, setNights] = useState<number>(0);
-  const [amount, setAmount] = useState();
-
-  const findDifference = () => {
-    const date1 = new Date(bookingDetails?.dates.from);
-    const date2 = new Date(bookingDetails?.dates.to);
-    // Difference in milliseconds
-    const diffMs = date2.getTime() - date1.getTime();
-
-    // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    console.log(diffDays);
-    return diffDays;
-  };
+  const { orderDetails } = useAppContext();
 
   useEffect(() => {
-    const nights = findDifference();
-    const price = findAmount();
-    setAmount(price);
+    const nights = findDays(
+      bookingDetails?.dates?.from,
+      bookingDetails?.dates?.to
+    );
     setNights(nights);
   }, []);
-
-  const findAmount = () => {
-    let amount;
-    if (nights) {
-      amount =
-        bookingDetails.lodge.price * nights +
-        bookingDetails?.lodge.cleaning_fee +
-        bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee;
-    }
-
-    return amount;
-  };
-
-  const handleContinue = () => {};
 
   if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
     throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
   }
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+
+  if (!orderDetails) {
+    return null
+  }
 
   return (
     <section
@@ -102,11 +79,11 @@ export function StripePayment({
         isActive ? "block" : "hidden"
       }`}
     >
-      <div className="container flex justify-center gap-8 flex-col lg:flex-row">
+      <div className="container flex justify-between gap-8">
         {/* <div className="w-[500px] shadow-lg">
             Payment secured with stripe
         </div> */}
-        <div className="w-[500px]">
+        <div className="w-[500px] hidden lg:block">
           <Card className="flex-col gap-8 ">
             <div className="relative h-64 w-100 p-0">
               <Image
@@ -177,31 +154,32 @@ export function StripePayment({
             </CardContent>
             {/* <CardFooter></CardFooter> */}
           </Card>
-          <div className="w-full mt-8">
-            <Elements
-              stripe={stripePromise}
-              options={{
-                mode: "payment",
-                amount:
-                  (bookingDetails.lodge.price * nights +
-                    bookingDetails?.lodge.cleaning_fee +
-                    bookingDetails?.guests.pets *
-                      bookingDetails.lodge.pets_fee) *
-                  100,
-                currency: "gbp",
-              }}
-            >
-              <CheckoutPage
-                setCurrentStep={setCurrentStep}
-                amount={
-                  (bookingDetails.lodge.price * nights +
-                    bookingDetails?.lodge.cleaning_fee +
-                    bookingDetails?.guests.pets *
-                      bookingDetails.lodge.pets_fee)
-                }
-              />
-            </Elements>
-          </div>
+        </div>
+
+        <div className="flex-1 lg:pl-16">
+          <Elements
+            stripe={stripePromise}
+            options={{
+              mode: "payment",
+              amount:
+                (bookingDetails.lodge.price * nights +
+                  bookingDetails?.lodge.cleaning_fee +
+                  bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee) *
+                100,
+              currency: "gbp",
+            }}
+          >
+            <CheckoutPage
+              bookingDetails={bookingDetails}
+              setCurrentStep={setCurrentStep}
+              orderDetails={orderDetails}
+              amount={
+                bookingDetails.lodge.price * nights +
+                bookingDetails?.lodge.cleaning_fee +
+                bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee
+              }
+            />
+          </Elements>
         </div>
       </div>
     </section>

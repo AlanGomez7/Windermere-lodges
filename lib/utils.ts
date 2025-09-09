@@ -1,59 +1,60 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function formatCreditCardNumber(value: string): string {
-  const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "")
-  const matches = v.match(/\d{4,16}/g)
-  const match = (matches && matches[0]) || ""
-  const parts = []
+  const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+  const matches = v.match(/\d{4,16}/g);
+  const match = (matches && matches[0]) || "";
+  const parts = [];
 
   for (let i = 0, len = match.length; i < len; i += 4) {
-    parts.push(match.substring(i, i + 4))
+    parts.push(match.substring(i, i + 4));
   }
 
   if (parts.length) {
-    return parts.join(" ")
+    return parts.join(" ");
   }
-  return value
+  return value;
 }
 
 export function formatExpiryDate(value: string): string {
-  const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "")
-  
+  const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+
   if (v.length >= 2) {
-    const month = v.slice(0, 2)
-    const year = v.slice(2)
+    const month = v.slice(0, 2);
+    const year = v.slice(2);
     if (parseInt(month) > 12) {
-      return "12" + (year ? "/" + year : "")
+      return "12" + (year ? "/" + year : "");
     }
-    return month + (year ? "/" + year : "")
+    return month + (year ? "/" + year : "");
   }
-  return v
+  return v;
 }
 
 export function formatCVC(value: string): string {
-  return value.replace(/\s+/g, "").replace(/[^0-9]/gi, "").slice(0, 3)
+  return value
+    .replace(/\s+/g, "")
+    .replace(/[^0-9]/gi, "")
+    .slice(0, 3);
 }
 
 export function getErrorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
 }
 
-
 export class HttpError extends Error {
   statusCode: number;
 
   constructor(message: string, statusCode: number) {
     super(message); // Call the parent Error class constructor
-    this.name = 'HttpError'; // Set the name of the error for identification
+    this.name = "HttpError"; // Set the name of the error for identification
     this.statusCode = statusCode;
   }
 }
-
 
 type Resource = {
   id: string;
@@ -80,7 +81,7 @@ export function hydrateResourceById(
 
     if (Array.isArray(rel.data)) {
       // to-many relationship
-      return rel.data.map((r:any) => {
+      return rel.data.map((r: any) => {
         const found = includedMap[`${r.type}-${r.id}`];
         return found ? { ...r, ...found.attributes } : r;
       });
@@ -111,4 +112,13 @@ export function hydrateResourceById(
   return hydrated;
 }
 
+export const findDays = (checkIn: string, checkOut: string) => {
+  const date1 = new Date(checkIn);
+  const date2 = new Date(checkOut);
+  // Difference in milliseconds
+  const diffMs = date2.getTime() - date1.getTime();
 
+  // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  return diffDays;
+};

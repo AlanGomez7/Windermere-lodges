@@ -53,8 +53,6 @@ export function GuestInformation({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
-  console.log(bookingDetails);
-
   const [nights, setNights] = useState<number | undefined>(0);
 
   const findDifference = () => {
@@ -65,7 +63,6 @@ export function GuestInformation({
 
     // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    console.log(diffDays);
     return diffDays;
   };
 
@@ -98,7 +95,6 @@ export function GuestInformation({
     setContactInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-
   const handleContinue = () => {
     // Validate required fields
     const requiredFields = ["firstName", "lastName", "email", "phone"] as const;
@@ -121,9 +117,10 @@ export function GuestInformation({
       return;
     }
 
+    localStorage.setItem("userInfo", JSON.stringify(contactInfo));
+    setOrderDetails(contactInfo);
     setError("");
     setCurrentStep();
-    setOrderDetails(contactInfo);
   };
 
   return (
@@ -350,12 +347,12 @@ export function GuestInformation({
             </div>
           )}
 
-            <Button
-              onClick={handleContinue}
-              className="bg-teal-600 hover:bg-teal-700 w-full space-y-2"
-            >
-              PROCEED TO PAYMENT
-            </Button>
+          <Button
+            onClick={handleContinue}
+            className="bg-teal-600 hover:bg-teal-700 w-full space-y-2"
+          >
+            PROCEED TO PAYMENT
+          </Button>
         </div>
       </div>
     </section>

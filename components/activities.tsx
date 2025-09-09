@@ -63,7 +63,7 @@ export const Activities = () => {
                   src={activity.image || "/placeholder.svg"}
                   alt={activity.title}
                   fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105 group-hover:blur-[2px]"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105 group-hover:brightness-50"
                 />
                 <div className="absolute inset-0 flex flex-col items-end bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <span className="w-full text-white text-2xl font-bold p-6 text-center">

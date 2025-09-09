@@ -16,33 +16,40 @@ interface GuestSelectorProps {
   onChange?: (guests: {
     adults: number;
     children: number;
+    teens: number;
+    infants: number;
     pets: number;
   }) => void;
   lodge?: any;
 }
 
 export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
-  const { searchParams } = useAppContext();
-  const [adults, setAdults] = React.useState(2);
-  const [children, setChildren] = React.useState(0);
-  const [pets, setPets] = React.useState(0);
 
-  const handleAdultsChange = (value: number) => {
-    const newValue = Math.max(1, Math.min(lodge.guests, value));
-    setAdults(newValue);
-    onChange?.({ adults: newValue, children, pets });
-  };
+  // state for all guest types
+  const [guests, setGuests] = React.useState({
+    adults: 2,
+    children: 0,
+    teens: 0,
+    infants: 0,
+    pets: 0,
+  });
 
-  const handleChildrenChange = (value: number) => {
-    const newValue = Math.max(0, Math.min(6, value));
-    setChildren(newValue);
-    onChange?.({ adults, children: newValue, pets });
-  };
+  // helper: max 6 guests (excluding pets)
+  const totalGuests = guests.adults + guests.children + guests.teens;
+  const maxGuests = 6;
 
-  const handlePetsChange = (value: number) => {
-    const newValue = Math.max(0, Math.min(lodge.pets, value));
-    setPets(newValue);
-    onChange?.({ adults, children, pets: newValue });
+  const updateGuest = (type: keyof typeof guests, value: number, maxLimit?: number) => {
+    const safeValue = Math.max(0, Math.min(maxLimit ?? maxGuests, value));
+
+    // enforce total limit (excluding pets)
+    const newTotal =
+      (type === "pets" ? totalGuests : totalGuests - guests[type]) + safeValue;
+
+    if (type !== "pets" && newTotal > maxGuests) return;
+
+    const updated = { ...guests, [type]: safeValue };
+    setGuests(updated);
+    onChange?.(updated);
   };
 
   return (
@@ -50,137 +57,110 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
       <PopoverTrigger asChild>
         <Button variant="outline" className="w-full justify-start">
           <Users className="mr-2 h-4 w-4" />
-          {searchParams.guests.adults}{" "}
-          {searchParams.guests.adults === 1 ? "Adult" : "Adults"}
-          {searchParams.guests.children > 0 &&
-            `, ${searchParams.guests.children} ${
-              searchParams.guests.children === 1 ? "Child" : "Children"
-            }`}
-          {searchParams.guests.pets > 0 &&
-            `, ${searchParams.guests.pets} ${
-              searchParams.guests.pets === 1 ? "Pet" : "Pets"
-            }`}
+          {guests.adults} {guests.adults === 1 ? "Adult" : "Adults"}
+          {guests.children > 0 &&
+            `, ${guests.children} ${guests.children === 1 ? "Child" : "Children"}`}
+          {guests.teens > 0 &&
+            `, ${guests.teens} ${guests.teens === 1 ? "Teen" : "Teens"}`}
+          {guests.infants > 0 &&
+            `, ${guests.infants} ${guests.infants === 1 ? "Infant" : "Infants"}`}
+          {guests.pets > 0 &&
+            `, ${guests.pets} ${guests.pets === 1 ? "Pet" : "Pets"}`}
         </Button>
       </PopoverTrigger>
+
       <PopoverContent className="w-80">
         <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="font-medium leading-none">Guests</h4>
-            <p className="text-sm text-muted-foreground">
-              Add the number of guests for your stay.
-            </p>
-          </div>
-          <div className="grid gap-4">
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="adults">Adults</Label>
+          <h4 className="font-medium">Guests</h4>
+          <p className="text-sm text-muted-foreground">
+            Add the number of guests for your stay (max {maxGuests} guests, excluding pets).
+          </p>
+
+          {[
+            { label: "Adults", key: "adults", min: 1, max: lodge?.guests ?? maxGuests },
+            { label: "Children", key: "children", min: 0, max: maxGuests },
+            { label: "Teens", key: "teens", min: 0, max: maxGuests },
+            { label: "Infants", key: "infants", min: 0, max: 1 },
+          ].map(({ label, key, min, max }) => (
+            <div key={key} className="grid grid-cols-3 items-center gap-4">
+              <Label htmlFor={key}>{label}</Label>
+
               <div className="col-span-2 flex items-center gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
                   className="h-8 w-8"
-                  onClick={() => handleAdultsChange(adults - 1)}
+                  onClick={() => updateGuest(key as any, guests[key as keyof typeof guests] - 1, max)}
+                  disabled={guests[key as keyof typeof guests] <= min}
                 >
                   -
                 </Button>
                 <Input
-                  id="adults"
+                  id={key}
                   type="number"
-                  value={searchParams.guests.adults}
-                  onChange={(e) => handleAdultsChange(parseInt(e.target.value))}
-                  min={1}
-                  max={lodge ? lodge.guest : 5}
-                  className="h-8 w-14"
+                  value={guests[key as keyof typeof guests]}
+                  onChange={(e) => updateGuest(key as any, parseInt(e.target.value) || 0, max)}
+                  min={min}
+                  max={max}
+                  className="h-8 w-14 text-center"
                 />
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
                   className="h-8 w-8"
-                  onClick={() => handleAdultsChange(adults + 1)}
+                  onClick={() => updateGuest(key as any, guests[key as keyof typeof guests] + 1, max)}
+                  disabled={totalGuests >= maxGuests && key !== "pets"}
                 >
                   +
                 </Button>
               </div>
             </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="children">Children</Label>
-              <div className="col-span-2 flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => handleChildrenChange(children - 1)}
-                >
-                  -
-                </Button>
-                <Input
-                  id="children"
-                  type="number"
-                  value={searchParams.guests.children}
-                  onChange={(e) =>
-                    handleChildrenChange(parseInt(e.target.value))
-                  }
-                  min={0}
-                  max={6}
-                  className="h-8 w-14"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => handleChildrenChange(children + 1)}
-                >
-                  +
-                </Button>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="children">Pets</Label>
-              {lodge?.pets > 0 ? (
-                <>
-                  <div className="col-span-2 flex items-center gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => handlePetsChange(pets - 1)}
-                    >
-                      -
-                    </Button>
-                    <Input
-                      id="pets"
-                      type="number"
-                      value={lodge.pets}
-                      onChange={(e) =>
-                        handlePetsChange(parseInt(e.target.value))
-                      }
-                      min={0}
-                      max={6}
-                      className="h-8 w-14"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => handlePetsChange(pets + 1)}
-                    >
-                      +
-                    </Button>
-                  </div>
-                  <p className="text-sm col-span-3 text-gray-400">
-                    Only {lodge?.pets} {lodge?.pets > 1 ? "pets are" : "pet is"}{" "}
-                    allowed
-                  </p>
-                </>
-              ) : (
-                <p className="text-sm col-span-3">Pets are not allowed</p>
-              )}
-            </div>
+          ))}
+
+          <div className="grid grid-cols-3 items-center gap-4">
+            {lodge?.pets > 0 ? (
+              <>
+                <Label htmlFor="pets">Pets</Label>
+                <div className="col-span-2 flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => updateGuest("pets", guests.pets - 1, lodge.pets)}
+                    disabled={guests.pets <= 0}
+                  >
+                    -
+                  </Button>
+                  <Input
+                    id="pets"
+                    type="number"
+                    value={guests.pets}
+                    onChange={(e) => updateGuest("pets", parseInt(e.target.value) || 0, lodge.pets)}
+                    min={0}
+                    max={lodge.pets}
+                    className="h-8 w-14 text-center"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => updateGuest("pets", guests.pets + 1, lodge.pets)}
+                    disabled={guests.pets >= lodge.pets}
+                  >
+                    +
+                  </Button>
+                </div>
+                <p className="text-sm col-span-3 text-gray-400">
+                  Only {lodge?.pets} {lodge?.pets > 1 ? "pets are" : "pet is"} allowed
+                </p>
+              </>
+            ) : (
+              <p className="text-sm col-span-3">Pets are not allowed</p>
+            )}
           </div>
         </div>
       </PopoverContent>

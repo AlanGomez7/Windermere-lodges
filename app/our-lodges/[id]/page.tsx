@@ -8,11 +8,11 @@ import { fetchPropertyDetails } from "@/lib/api";
 export default async function LodgeDetailsPage({
   params,
 }: {
-  params:  { id: string }
-  searchParams: any;
+  params: Promise<{id: string}>
 }) {
   const session = await auth();
-  const { id } = params;
+  const { id } = await params;
+  console.log(id)
   const lodge = await fetchPropertyDetails(id);
   
   if (!lodge) return notFound();

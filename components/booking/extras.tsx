@@ -104,15 +104,15 @@ export function Extras({
 
   const handleContinue = async () => {
     
-    console.log({ form: orderDetails, bookingDetails })
-    const response = await confirmBooking({ form: orderDetails, searchParams });
+    // console.log({ form: orderDetails, bookingDetails })
+    // const response = await confirmBooking({ form: orderDetails, searchParams });
 
-    if(response.ok){
-      toast.success(response.message)
-      setCurrentStep();
-    }else{
-      toast.error(response.message)
-    }
+    // if(response.ok){
+    //   toast.success(response.message)
+    //   setCurrentStep();
+    // }else{
+    //   toast.error(response.message)
+    // }
   };
 
   return (

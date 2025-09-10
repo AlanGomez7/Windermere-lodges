@@ -12,11 +12,13 @@ import {
 import Image from "next/image";
 import { getUserBookings } from "../queries/order";
 import EmptyList from "@/components/empty-ui";
+import UserNotFound from "@/components/no-user-found";
 
 export default async function MyBookings() {
   const session = await auth();
   const bookings = await getUserBookings(session && session.user?.email);
-const nights=3;
+  const nights = 3;
+
   return (
     <main className="min-h-screen bg-white">
       <PageHeader
@@ -25,10 +27,11 @@ const nights=3;
         backgroundImage="https://images.unsplash.com/photo-1506260408121-e353d10b87c7?q=80&w=1920&auto=format&fit=crop"
       />
 
+      {!session?.user?.id && (<UserNotFound/>)}
       {bookings?.length === 0 ? (
         <EmptyList />
       ) : (
-        <section className="py-20 bg-gray-50 px-16">
+        <section className="py-20 bg-white px-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {bookings &&
               bookings.map((r, i: number) => (

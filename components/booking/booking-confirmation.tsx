@@ -7,14 +7,13 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, Download, Calendar, MessageSquare } from "lucide-react";
-import { useAppContext } from "@/app/context/context";
-import { createBooking } from "@/app/queries/order";
+import { findDays } from "@/lib/utils";
+
 
 interface BookingConfirmationProps {
   bookingDetails: any;
@@ -26,41 +25,30 @@ export function BookingConfirmation({
   isActive,
 }: BookingConfirmationProps) {
   
-  const { orderDetails } = useAppContext();
-
   const router = useRouter();
   const [bookingNumber, setBookingNumber] = useState<string>("");
-  const [nights, setNights] = useState<number>(3);
-
-  // const saveOrder = async () => {
-  //   const result = await createBooking({ orderDetails, bookingDetails, stripeId:89089, amount:460 });
-  // };
-
-  // useEffect(() => {
-  //   saveOrder();
-  // }, [isActive]);
+  const nights = findDays(bookingDetails.dates.from, bookingDetails?.dates?.to)
 
   useEffect(() => {
     const bookingNumber = "WL" + Math.floor(100000 + Math.random() * 900000);
     setBookingNumber(bookingNumber);
-    findDifference();
   }, []);
 
-  const findDifference = () => {
-    const date1 = Number(new Date(bookingDetails.dates?.from));
-    const date2 = Number(new Date(bookingDetails.dates?.to));
+  // const findDifference = () => {
+  //   const date1 = Number(new Date(bookingDetails.dates?.from));
+  //   const date2 = Number(new Date(bookingDetails.dates?.to));
 
-    // Difference in milliseconds
-    const diffMs = date2 - date1;
+  //   // Difference in milliseconds
+  //   const diffMs = date2 - date1;
 
-    // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  //   // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
+  //   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    console.log(diffDays);
-    setNights(diffDays);
+  //   console.log(diffDays);
+  //   setNights(diffDays);
 
-    return diffDays;
-  };
+  //   return diffDays;
+  // };
 
   const generatePdf = () => {
     // In a real app, this would generate and download a booking confirmation PDF
@@ -127,8 +115,8 @@ export function BookingConfirmation({
                             {new Date(
                               bookingDetails.dates.to
                             ).toLocaleDateString()}
-                            ({bookingDetails.nights}{" "}
-                            {bookingDetails.nights === 1 ? "night" : "nights"})
+                            ({nights}{" "}
+                            {nights === 1 ? "night" : "nights"})
                           </p>
                         )}
                       <p className="text-gray-600">

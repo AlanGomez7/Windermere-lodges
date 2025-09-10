@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import NavbarWrapper from "@/components/navbar-wrapper";
 import { AppWrapper } from "./context/context";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Windermere Lodges",
@@ -21,7 +22,9 @@ export default async function RootLayout({
       <body>
         <main className="min-h-screen bg-white">
           <NavbarWrapper />
-          <AppWrapper>{children}</AppWrapper>
+          <SessionProvider>
+            <AppWrapper>{children}</AppWrapper>
+          </SessionProvider>
           <Toaster
             position="bottom-center"
             toastOptions={{ style: { maxWidth: "500px" } }}

@@ -8,30 +8,20 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Wishlist {
-  id         String   @id @default(uuid())
-  userId     String
-  propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
-
-  @@unique([userId, propertyId], map: "wishlist_key")
-}
-
 model User {
-  id        String     @id @default(uuid())
-  email     String     @unique
+  id        String    @id @default(uuid())
+  email     String    @unique
   name      String
   password  String
-  role      String     @default("admin")
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  role      String    @default("admin")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   avatar    String?
   googleId  String?
   address   String?
   mobile    String?
-  slug      String     @unique @default(uuid())
-  wishlists Wishlist[]
+  slug      String    @unique @default(uuid())
+  comments  Comment[]
 }
 
 model Settings {
@@ -57,7 +47,6 @@ model Visitor {
   verifiedAt         DateTime?
   createdAt          DateTime           @default(now())
   bookings           Booking[]
-  comments           Comment[]
   verificationCodes  VerificationCode[]
 }
 
@@ -95,7 +84,6 @@ model Property {
   comments        Comment[]
   enquiryBookings EnquiryBooking[]
   galleryImages   PropertyGalleryImage[]
-  wishlists       Wishlist[]
 }
 
 model Booking {
@@ -143,7 +131,7 @@ model Comment {
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
   property   Property      @relation(fields: [propertyId], references: [id])
-  visitor    Visitor       @relation(fields: [visitorId], references: [id])
+  visitor    User          @relation(fields: [visitorId], references: [id])
 }
 
 model EnquiryBooking {

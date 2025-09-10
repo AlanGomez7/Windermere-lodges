@@ -23,12 +23,14 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "../ui/visually-hidden";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import RatingsAndReviews from "./ratings-and-reviews";
-import ReviewCard from "../review-card";
+import ReviewCard from "../cards/review-card";
 import Link from "next/link";
 import { useAppContext } from "@/app/context/context";
 import { checkAvailableLodges } from "@/lib/api";
 import { GuestSelector } from "../booking/guest-selector";
 import AboutModal from "../ui/about-modal";
+import ReviewWrapper from "./review-wrapper";
+import ReviewList from "../review-wrapper";
 
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
@@ -354,13 +356,7 @@ function Gallery({
 }
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
-  console.log(lodge);
-  const {
-    searchParams,
-    setSearchParams,
-    isLodgeAvailable,
-    setIsLodgeAvailable,
-  } = useAppContext();
+  const { searchParams, setSearchParams } = useAppContext();
 
   const { dates, guests } = searchParams;
 
@@ -389,8 +385,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     setDiff(nights);
     setSearchParams({ ...searchParams, nights });
   }, [checkInDate, checkOutDate]);
-
-  console.log(searchParams);
 
   const findDifference = () => {
     const date1 = Number(new Date(checkInDate ? checkInDate : ""));
@@ -693,11 +687,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
             <RatingsAndReviews lodge={lodge} user={session} />
 
-            <div className="flex flex-wrap justify-center my-16 gap-4">
-              {testimonials.map((testimonial: any, indx: number) => (
-                <ReviewCard testimonial={testimonial} key={indx} />
-              ))}
-            </div>
+            <ReviewList lodge={lodge}/>
             {/* Location */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Location</h2>

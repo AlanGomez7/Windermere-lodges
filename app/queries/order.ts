@@ -23,6 +23,7 @@ export const createBooking = async ({
 
   try {
     const response = await prisma.enquiryBooking.create({
+      
       data: {
         userId: session?.user?.id ?? `guest_${randomUUID()}`,
         enquiryId: result ? result.data.id : null,
@@ -35,12 +36,15 @@ export const createBooking = async ({
         departureDate: checkOut,
         adults: bookingDetails.guests.adults,
         children: bookingDetails.guests.children,
+        teens: bookingDetails.guests.teens,
+        infant:bookingDetails.guests.infants,
         pets: bookingDetails.guests.pets,
         message: userInfo?.specialRequests,
         amount,
         stripeId,
       } as Prisma.EnquiryBookingUncheckedCreateInput,
     });
+
     return response;
   } catch (err) {
     throw err;
@@ -70,6 +74,7 @@ export const getUserBookings = async (email: string | null | undefined) => {
 
 export const fetchOrderedLodge = async (userId: string, lodgeId: string) => {
   try {
+
     const lodge = await prisma.enquiryBooking.findFirst({
       where: {
         userId: userId, // pass the user's ID

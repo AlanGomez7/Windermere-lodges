@@ -50,13 +50,6 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log({
-      orderDetails,
-      bookingDetails,
-      result: null,
-      stripeId: paymentIntent.id
-    })
-
     await createBooking({
       userInfo:orderDetails,
       bookingDetails,

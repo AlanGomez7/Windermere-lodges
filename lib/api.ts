@@ -1,6 +1,11 @@
 "use server";
 
-import { createBooking, fetchOrderedLodge, updateOrderPaymentStatus } from "@/app/queries/order";
+import {
+  createBooking,
+  fetchOrderedLodge,
+  updateOrderPaymentStatus,
+} from "@/app/queries/order";
+import { getPropertyReviews, getReviews } from "@/app/queries/properties";
 import { auth } from "@/auth";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -158,6 +163,22 @@ export const checkAvailableLodges = async (
   }
 };
 
+export const isLodgeBeenBooked = async (userId: string, propertyId: string) => {
+  const session = await auth();
+
+  try {
+    if (!userId) {
+      throw new Error("User not logged in");
+    }
+
+    const response = await fetchOrderedLodge(userId, propertyId);
+
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const registerUser = async (values: any) => {
   const response = await fetch(`${baseUrl}/api/auth/register`, {
     method: "POST",
@@ -171,14 +192,14 @@ export const registerUser = async (values: any) => {
   return res;
 };
 
-export const updateOrderPayment=async({stripeId, status}:any)=>{
-  try{
-    const response = await updateOrderPaymentStatus({stripeId, status});
+export const updateOrderPayment = async ({ stripeId, status }: any) => {
+  try {
+    const response = await updateOrderPaymentStatus({ stripeId, status });
     return response;
-  }catch(err){
+  } catch (err) {
     throw err;
   }
-}
+};
 
 export const confirmBooking = async ({
   orderDetails,
@@ -244,16 +265,48 @@ export const confirmBooking = async ({
 };
 
 export const submitReview = async (reviews: any) => {
-  const session = await auth();
-  reviews.userId = session?.user?.id;
-  await fetch(`${baseUrl}/api/create-review`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(reviews),
-  });
+  try {
+    console.log(reviews);
+    const session = await auth();
+    reviews.userId = session?.user?.id;
+    await fetch(`${baseUrl}/api/create-review`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reviews),
+    });
+  } catch (err) {
+    throw err;
+  }
 };
+
+export const fetchReviews = async (userId: string) => {
+  try {
+    if (!userId) {
+      throw new Error("Please login");
+    }
+    const reviews = await getReviews(userId);
+
+    return reviews;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const fetchPropertyReviews = async(lodgeId:string)=>{
+  console.log(lodgeId)
+  try{
+    if(!lodgeId){
+      throw new Error("Invalid lodge id")
+    }
+
+    const response = await getPropertyReviews(lodgeId);
+    return response
+  }catch(err){
+    throw err;
+  }
+}
 
 export const orderedLodge = async (lodgeId: string) => {
   try {

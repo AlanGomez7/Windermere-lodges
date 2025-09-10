@@ -13,7 +13,7 @@ export default function ReviewModal({
   showDialog: boolean;
   setShowDialog: (value: boolean) => void;
   lodgeName: string;
-  id:string
+  id: string;
 }) {
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>("");
@@ -33,8 +33,10 @@ export default function ReviewModal({
       return;
     }
 
-    await submitReview({ rating, review, lodgeId:id });
-    setShowDialog(false)
+    // const result = addReviewsAndRating()
+
+    await submitReview({ rating, review, lodgeId: id });
+    setShowDialog(false);
   };
 
   return (
@@ -57,6 +59,7 @@ export default function ReviewModal({
                 <h2 className="text-2xl text-center font-semibold mb-8 text-gray-900 flex items-center gap-3">
                   {lodgeName}
                 </h2>
+                <p>{err && "Rating should be atleast 1 star"}</p>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map((value) => (
                     <label key={value} className="cursor-pointer">
@@ -87,7 +90,7 @@ export default function ReviewModal({
                 onChange={(e) => setReview(e.target.value)}
                 placeholder="Share us about the experience you had"
                 required
-                className="min-h-40 w-full border rounded-lg px-4 py-2 placeholder:text-lg mt-8"
+                className="min-h-40 min-w-full text-xl border rounded-lg px-4 py-2 font-xl mt-8"
               />
 
               <button

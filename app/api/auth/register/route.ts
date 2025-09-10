@@ -7,7 +7,6 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const { name, email, password } = await request.json();
-    console.log(name, email, password)
     
     if(!name || !email || !password){
       throw new Error('Invalid credentials')

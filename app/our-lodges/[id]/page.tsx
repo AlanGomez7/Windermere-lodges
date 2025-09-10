@@ -17,6 +17,7 @@ export default async function LodgeDetailsPage({
   const session = await auth();
   const { id } = await params;
   const lodge = await fetchPropertyDetails(id);
+  console.log(lodge, "888888888888")
   
   if (!lodge) return notFound();
   return <LodgeDetails lodge={lodge} session={session}/>

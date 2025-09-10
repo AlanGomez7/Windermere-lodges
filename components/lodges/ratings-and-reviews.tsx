@@ -3,8 +3,9 @@
 import { Star, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import ReviewModal from "../ui/review-modal";
+import { isLodgeBeenBooked } from "@/lib/api";
+import { useSession } from "next-auth/react";
 
 export default function RatingsAndReviews({
   lodge,
@@ -13,11 +14,22 @@ export default function RatingsAndReviews({
   lodge: any;
   user: any;
 }) {
+  const [isOrdered, setIsOrdered] = useState(false);
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
 
-  useEffect(()=>{
-    // const 
-  },[lodge]);
+  const handleFetchData = async (userId: string) => {
+    const isOrdered = await isLodgeBeenBooked(userId, lodge?.id);
+    if (isOrdered) {
+      setIsOrdered(true);
+    }
+  };
 
+  useEffect(() => {
+    if (userId) {
+      handleFetchData(userId);
+    }
+  }, [lodge, userId]);
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
@@ -93,27 +105,25 @@ export default function RatingsAndReviews({
       </div>
 
       <div className="flex justify-between mt-10">
-        <h2 className="text-md font-bold mb-4">Send us your feedback</h2>
-        {!user ? (
-          <Link href={"/auth/login"}>
-            <Button className="bg-emerald-600 hover:bg-emerald-700">
+        {!user || !isOrdered ? (
+          <></>
+        ) : (
+          <>
+            <h2 className="text-md font-bold mb-4">Send us your feedback</h2>
+            <Button
+              className="bg-emerald-600 hover:bg-emerald-700"
+              onClick={() => setShowDialog(true)}
+            >
               Rate Us
             </Button>
-          </Link>
-        ) : (
-          <Button
-            className="bg-emerald-600 hover:bg-emerald-700"
-            onClick={() => setShowDialog(true)}
-          >
-            Rate Us
-          </Button>
+          </>
         )}
       </div>
 
       <ReviewModal
         showDialog={showDialog}
         setShowDialog={setShowDialog}
-        id={lodge.refNo}
+        id={lodge.id}
         lodgeName={lodge.nickname}
       />
     </>

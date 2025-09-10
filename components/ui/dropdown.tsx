@@ -112,13 +112,14 @@ export default function DropDown({
             <Heart className="mr-4 my-2"/>
             Favorites
           </Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem>*/}
         <DropdownMenuItem asChild>
           <Link href="/reviews-and-ratings">
             <Star className="mr-4 my-2"/>
             Reviews & Ratings
           </Link>
-        </DropdownMenuItem> */}
+        </DropdownMenuItem>
+        
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <div className="w-full">

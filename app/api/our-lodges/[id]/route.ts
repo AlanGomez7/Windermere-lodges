@@ -9,9 +9,11 @@ export async function GET(request: Request, { params }: any) {
     throw new Error("id not valid");
   }
 
+
   try {
+  console.log(id);
     const response = await getLodgeDetails(id);
-    // console.log(response, "uuuu")
+    console.log(response, "uuuu")
     if (!response) {
       return notFound();
     }

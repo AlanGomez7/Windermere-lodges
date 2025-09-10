@@ -52,7 +52,6 @@ export function StripePayment({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
-
   const [nights, setNights] = useState<number>(0);
   const { orderDetails } = useAppContext();
 
@@ -64,13 +63,21 @@ export function StripePayment({
     setNights(nights);
   }, []);
 
+  let amount = 1;
+  if (nights) {
+    amount =
+      bookingDetails.lodge.price * nights +
+      bookingDetails?.lodge.cleaning_fee +
+      bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee;
+  }
+
   if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
     throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
   }
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
   if (!orderDetails) {
-    return null
+    return null;
   }
 
   return (
@@ -98,13 +105,6 @@ export function StripePayment({
                   New
                 </Badge>
               )}
-              {/* <div className="absolute bottom-4 left-4 flex items-center bg-white bg-opacity-80 px-2 py-1 rounded-full">
-                <Star
-                  className="h-4 w-4 text-yellow-500 mr-1"
-                  fill="currentColor"
-                />
-                <span className="text-sm font-medium">4.1</span>
-              </div> */}
               <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
                 £{bookingDetails.lodge.price}/night
               </div>
@@ -143,11 +143,7 @@ export function StripePayment({
                   <span>Total Payment</span>
                   <span>
                     &pound;
-                    {nights &&
-                      bookingDetails.lodge.price * nights +
-                        bookingDetails?.lodge.cleaning_fee +
-                        bookingDetails?.guests.pets *
-                          bookingDetails.lodge.pets_fee}
+                    {nights && amount}
                   </span>
                 </div>
               </div>
@@ -161,11 +157,7 @@ export function StripePayment({
             stripe={stripePromise}
             options={{
               mode: "payment",
-              amount:
-                (bookingDetails.lodge.price * nights +
-                  bookingDetails?.lodge.cleaning_fee +
-                  bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee) *
-                100,
+              amount: amount * 100,
               currency: "gbp",
             }}
           >
@@ -173,11 +165,7 @@ export function StripePayment({
               bookingDetails={bookingDetails}
               setCurrentStep={setCurrentStep}
               orderDetails={orderDetails}
-              amount={
-                bookingDetails.lodge.price * nights +
-                bookingDetails?.lodge.cleaning_fee +
-                bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee
-              }
+              amount={amount}
             />
           </Elements>
         </div>

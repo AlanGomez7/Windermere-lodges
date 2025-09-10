@@ -130,7 +130,7 @@ export function GuestInformation({
       }`}
     >
       <div className="container flex gap-8 flex-col lg:flex-row">
-        <div className="w-[500px]">
+        <div>
           <Card>
             <div className="relative h-64 w-100">
               <Image

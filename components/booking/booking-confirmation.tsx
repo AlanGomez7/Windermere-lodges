@@ -13,6 +13,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, Download, Calendar, MessageSquare } from "lucide-react";
 import { findDays } from "@/lib/utils";
+import { useAppContext } from "@/app/context/context";
 
 
 interface BookingConfirmationProps {
@@ -24,6 +25,9 @@ export function BookingConfirmation({
   bookingDetails,
   isActive,
 }: BookingConfirmationProps) {
+
+  const {orderSuccess} = useAppContext();
+  console.log(orderSuccess)
   
   const router = useRouter();
   const [bookingNumber, setBookingNumber] = useState<string>("");

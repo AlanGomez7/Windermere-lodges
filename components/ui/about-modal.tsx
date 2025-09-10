@@ -1,5 +1,4 @@
 import { X } from "lucide-react";
-import { useState } from "react";
 
 export default function AboutModal({
   setShowDialog,
@@ -15,7 +14,11 @@ export default function AboutModal({
       {showDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
           <div
-            className="bg-white rounded-2xl justify-center shadow-2xl pl-14 pr-8 py-10 w-1/2 max-w-2xl relative overflow-y-auto max-h-full  border border-gray-200"
+            className="
+      bg-white rounded-2xl shadow-2xl relative overflow-y-auto border border-gray-200
+      w-full h-full max-w-none m-0
+      sm:w-1/2 sm:max-w-2xl sm:h-auto sm:pl-14 sm:pr-8 sm:py-10 sm:
+    "
             style={{ scrollbarGutter: "stable" }}
           >
             <button
@@ -25,9 +28,8 @@ export default function AboutModal({
             >
               <X className="w-6 h-6" />
             </button>
-            {about}
+            <div className="pt-5">{about}</div>
           </div>
-
         </div>
       )}
     </>

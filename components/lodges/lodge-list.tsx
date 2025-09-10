@@ -1,13 +1,6 @@
 "use client";
 
 import { use, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Star, Users, Maximize, BedDouble, Bath, Heart } from "lucide-react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import LodgeCard from "../cards/lodge-card";
 
 // Sample lodge data
@@ -81,9 +74,9 @@ const lodges = [
 
 export function LodgeList({ properties }: { properties: any }) {
   const lodges: any = use(properties);
+  console.log(lodges);
 
   const [favorites, setFavorites] = useState<number[]>([]);
-  const router = useRouter();
 
   const toggleFavorite = (id: number) => {
     if (favorites.includes(id)) {

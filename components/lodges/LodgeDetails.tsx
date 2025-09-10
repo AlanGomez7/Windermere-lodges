@@ -59,50 +59,6 @@ const amenitiesToDisplay = [
   "+11 More",
 ];
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    location: "London, UK",
-    image: "https://i.pravatar.cc/150?img=1",
-    rating: 5,
-    text: "Absolutely stunning location and impeccable service. The lodge exceeded all our expectations. We'll definitely be back!",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    location: "Manchester, UK",
-    image: "https://i.pravatar.cc/150?img=2",
-    rating: 5,
-    text: "Perfect getaway spot. The amenities were top-notch and the views were breathtaking. Highly recommend!",
-  },
-  {
-    id: 3,
-    name: "Emma Williams",
-    location: "Edinburgh, UK",
-    image: "https://i.pravatar.cc/150?img=3",
-    rating: 5,
-    text: "Our family had an amazing time. The lodge was spacious, clean, and had everything we needed. Great location for exploring.",
-  },
-  {
-    id: 4,
-    name: "David Clark",
-    location: "Bristol, UK",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop",
-    rating: 5,
-    text: "This was our third stay at Windermere Lodges, and it just keeps getting better. The attention to detail and quality of the accommodations is outstanding.",
-  },
-  {
-    id: 5,
-    name: "Olivia Parker",
-    location: "York, UK",
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1887&auto=format&fit=crop",
-    rating: 5,
-    text: "We brought our whole family and had an amazing time. The kids loved exploring the grounds, and we loved the peace and luxury of our lodge.",
-  },
-];
 
 function Gallery({
   images,

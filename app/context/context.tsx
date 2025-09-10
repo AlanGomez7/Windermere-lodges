@@ -48,6 +48,7 @@ export function AppWrapper({ children }: { children: ReactNode }) {
   const [properties, setProperties] = useState<any[]>();
   const [orderDetails, setOrderDetails] = useState<any>(undefined);
   const [isLodgeAvailable, setIsLodgeAvailable] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState<any>(undefined)
   const [searchParams, setSearchParams] = useState<SearchParams>({
     dates: undefined,
     guests: { adults: 2, children: 0, pets:0, infants:0, teens:0 },
@@ -69,6 +70,8 @@ export function AppWrapper({ children }: { children: ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        setOrderSuccess,
+        orderSuccess,
         isLodgeAvailable,
         setIsLodgeAvailable,
         searchParams,

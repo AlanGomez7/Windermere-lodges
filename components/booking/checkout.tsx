@@ -7,7 +7,7 @@ import {
   PaymentElement,
 } from "@stripe/react-stripe-js";
 import { useAppContext } from "@/app/context/context";
-import { confirmBooking, updateOrderPayment } from "@/lib/api";
+import { updateOrderPayment } from "@/lib/api";
 
 const CheckoutPage = ({
   amount,
@@ -20,6 +20,7 @@ const CheckoutPage = ({
   bookingDetails: any;
   orderDetails: any;
 }) => {
+  const { setOrderDetails, setOrderSuccess } = useAppContext();
   const stripe = useStripe();
   const elements = useElements();
 
@@ -69,11 +70,32 @@ const CheckoutPage = ({
     });
 
     if (error) {
-      setErrorMessage(error.message)
+      setErrorMessage(error.message);
     } else {
-      const response = updateOrderPayment({
+      const response = await updateOrderPayment({
+        orderDetails,
+        bookingDetails,
         stripeId: paymentIntent.id,
         status: "SUCCESSFUL",
+      });
+
+      setOrderSuccess(response)
+      setOrderDetails({
+        dates: undefined,
+        guests: { adults: 2, children: 0, pets: 0, infants: 0, teens: 0 },
+        lodge: undefined,
+        nights: undefined,
+        contactInfo: {
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          address: "",
+          city: "",
+          postalCode: "",
+          country: "",
+          specialRequests: "",
+        },
       });
       setCurrentStep();
       setLoading(false);

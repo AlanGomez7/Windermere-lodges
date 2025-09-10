@@ -154,6 +154,7 @@ export const checkAvailableLodges = async (
 
     return { data: selectedLodge, ok: true, included };
   } catch (err) {
+    console.log(err);
     return {
       data: [],
       included: [],
@@ -164,8 +165,6 @@ export const checkAvailableLodges = async (
 };
 
 export const isLodgeBeenBooked = async (userId: string, propertyId: string) => {
-  const session = await auth();
-
   try {
     if (!userId) {
       throw new Error("User not logged in");
@@ -192,10 +191,62 @@ export const registerUser = async (values: any) => {
   return res;
 };
 
-export const updateOrderPayment = async ({ stripeId, status }: any) => {
+export const updateOrderPayment = async ({
+  orderDetails,
+  bookingDetails,
+  stripeId,
+  status,
+}: any) => {
   try {
-    const response = await updateOrderPaymentStatus({ stripeId, status });
-    return response;
+    const fromDate = bookingDetails?.dates.from;
+    const toDate = bookingDetails?.dates.to;
+
+    const checkIn = new Date(fromDate)?.toISOString().split("T")[0];
+    const checkOut = new Date(toDate)?.toISOString().split("T")[0];
+
+    const reqBody = {
+      data: {
+        type: "bookings",
+        attributes: {
+          check_in: `${checkIn}`,
+          check_out: `${checkOut}`,
+          guest_name: `${orderDetails.firstName} ${orderDetails.lastName}`,
+          guest_email: `${orderDetails.email}`,
+          guest_phone: `${orderDetails.phone}`,
+          number_of_guests: 3,
+        },
+        relationships: {
+          property: {
+            data: {
+              type: "properties",
+              id: `${bookingDetails.lodge.refNo}`,
+            },
+          },
+        },
+      },
+    };
+
+    const response = await fetch(`${baseUplistingUrl}/v2/bookings`, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${process.env.UPLISTING_KEY}`,
+        "X-Uplisting-Client-Id": `${process.env.UPLISTING_CLIENT_KEY}`,
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify(reqBody),
+    });
+
+    const result = await response.json();
+
+    const res = await updateOrderPaymentStatus({
+      orderDetails,
+      bookingDetails,
+      stripeId,
+      result,
+      status,
+    });
+    return res;
   } catch (err) {
     throw err;
   }
@@ -207,60 +258,16 @@ export const confirmBooking = async ({
   stripeId,
   amount,
 }: any) => {
-  console.log(orderDetails, bookingDetails, stripeId, amount);
-
-  const fromDate = bookingDetails?.dates.from;
-  const toDate = bookingDetails?.dates.to;
-
-  const checkIn = new Date(fromDate)?.toISOString().split("T")[0];
-  const checkOut = new Date(toDate)?.toISOString().split("T")[0];
-
-  const reqBody = {
-    data: {
-      type: "bookings",
-      attributes: {
-        check_in: `${checkIn}`,
-        check_out: `${checkOut}`,
-        guest_name: `${orderDetails.firstName} ${orderDetails.lastName}`,
-        guest_email: `${orderDetails.email}`,
-        guest_phone: `${orderDetails.phone}`,
-        number_of_guests: 3,
-      },
-      relationships: {
-        property: {
-          data: {
-            type: "properties",
-            id: `${bookingDetails.lodge.refNo}`,
-          },
-        },
-      },
-    },
-  };
-
-  const response = await fetch(`${baseUplistingUrl}/v2/bookings`, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${process.env.UPLISTING_KEY}`,
-      "X-Uplisting-Client-Id": `${process.env.UPLISTING_CLIENT_KEY}`,
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify(reqBody),
-  });
-
-  const result = await response.json();
-
-  if (result?.data?.id) {
+  try {
     const response = await createBooking({
       orderDetails,
       bookingDetails,
-      result,
       stripeId,
       amount,
     });
-    return { ok: true, response, message: "Booking Successful" };
-  } else {
-    return { ok: false, response: result, message: "Something went wrong" };
+    return response;
+  } catch (err) {
+    throw err;
   }
 };
 
@@ -294,19 +301,19 @@ export const fetchReviews = async (userId: string) => {
   }
 };
 
-export const fetchPropertyReviews = async(lodgeId:string)=>{
-  console.log(lodgeId)
-  try{
-    if(!lodgeId){
-      throw new Error("Invalid lodge id")
+export const fetchPropertyReviews = async (lodgeId: string) => {
+  console.log(lodgeId);
+  try {
+    if (!lodgeId) {
+      throw new Error("Invalid lodge id");
     }
 
     const response = await getPropertyReviews(lodgeId);
-    return response
-  }catch(err){
+    return response;
+  } catch (err) {
     throw err;
   }
-}
+};
 
 export const orderedLodge = async (lodgeId: string) => {
   try {

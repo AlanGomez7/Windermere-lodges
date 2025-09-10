@@ -5,44 +5,43 @@ import { Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
 
 export const createBooking = async ({
-  userInfo,
+  orderDetails,
   bookingDetails,
   result,
   stripeId,
   amount,
 }: any) => {
-  console.log({ userInfo, bookingDetails, result, stripeId });
-  const session = await auth();
-
-  const checkIn = new Date(bookingDetails?.dates?.from)
-    .toISOString()
-    .split("T")[0];
-  const checkOut = new Date(bookingDetails?.dates?.to)
-    .toISOString()
-    .split("T")[0];
-
   try {
+    const session = await auth();
+    const checkIn = new Date(bookingDetails?.dates?.from)
+      .toISOString()
+      .split("T")[0];
+    const checkOut = new Date(bookingDetails?.dates?.to)
+      .toISOString()
+      .split("T")[0];
+
+    const userData = {
+      userId: session?.user?.id ?? `guest_${randomUUID()}`,
+      enquiryId: result ? result.data.id : null,
+      firstName: orderDetails?.firstName,
+      lastName: orderDetails?.lastName,
+      propertyId: bookingDetails?.lodge?.id,
+      email: orderDetails?.email,
+      mobile: orderDetails?.phone,
+      arrivalDate: checkIn,
+      departureDate: checkOut,
+      adults: bookingDetails.guests.adults,
+      children: bookingDetails.guests.children,
+      teens: bookingDetails.guests.teens,
+      infant: bookingDetails.guests.infants,
+      pets: bookingDetails.guests.pets,
+      message: orderDetails?.specialRequests,
+      amount,
+      stripeId,
+    };
+
     const response = await prisma.enquiryBooking.create({
-      
-      data: {
-        userId: session?.user?.id ?? `guest_${randomUUID()}`,
-        enquiryId: result ? result.data.id : null,
-        firstName: userInfo?.firstName,
-        lastName: userInfo?.lastName,
-        propertyId: bookingDetails?.lodge?.id,
-        email: userInfo?.email,
-        mobile: userInfo?.phone,
-        arrivalDate: checkIn,
-        departureDate: checkOut,
-        adults: bookingDetails.guests.adults,
-        children: bookingDetails.guests.children,
-        teens: bookingDetails.guests.teens,
-        infant:bookingDetails.guests.infants,
-        pets: bookingDetails.guests.pets,
-        message: userInfo?.specialRequests,
-        amount,
-        stripeId,
-      } as Prisma.EnquiryBookingUncheckedCreateInput,
+      data: userData as Prisma.EnquiryBookingUncheckedCreateInput,
     });
 
     return response;
@@ -74,7 +73,6 @@ export const getUserBookings = async (email: string | null | undefined) => {
 
 export const fetchOrderedLodge = async (userId: string, lodgeId: string) => {
   try {
-
     const lodge = await prisma.enquiryBooking.findFirst({
       where: {
         userId: userId, // pass the user's ID
@@ -83,31 +81,44 @@ export const fetchOrderedLodge = async (userId: string, lodgeId: string) => {
         payment: "SUCCESSFUL", // PaymentStatus enum (if you also want paid ones only)
       },
     });
-    
-    return lodge
+
+    return lodge;
   } catch (err) {
     throw err;
   }
 };
 
 enum STATUS {
-  SUCCESSFUL="SUCCESSFUL",
-  PENDING="PENDING",
-  UNSUCCESSFUL="UNSUCCESSFUL"
+  SUCCESSFUL = "SUCCESSFUL",
+  PENDING = "PENDING",
+  UNSUCCESSFUL = "UNSUCCESSFUL",
 }
 
-export const updateOrderPaymentStatus = async({stripeId, status}:{stripeId:string, status: STATUS})=>{
-  try{
+export const updateOrderPaymentStatus = async ({
+  orderDetails,
+  bookingDetails,
+  stripeId,
+  result,
+  status,
+}: {
+  bookingDetails: any;
+  orderDetails: any;
+  stripeId: string;
+  result: any;
+  status: STATUS;
+}) => {
+  try {
     const response = prisma.enquiryBooking.update({
       where: {
         stripeId: stripeId,
       },
-      data:{
-        payment: status
-      }
-    })
-    return response
-  }catch(err){
+      data: {
+        payment: status,
+        enquiryId: result ? result.data.id : null,
+      },
+    });
+    return response;
+  } catch (err) {
     throw err;
   }
-}
+};

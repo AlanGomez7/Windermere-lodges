@@ -50,13 +50,12 @@ export const createBooking = async ({
   }
 };
 
-export const getUserBookings = async (email: string | null | undefined) => {
+export const getUserBookings = async (id: string | null | undefined) => {
   try {
-    if (email) {
-      console.log(email);
+    if (id) {
       const bookings = await prisma.enquiryBooking.findMany({
         where: {
-          email: email,
+          userId: id,
         },
         include: {
           property: true,
@@ -70,6 +69,23 @@ export const getUserBookings = async (email: string | null | undefined) => {
     throw err;
   }
 };
+
+export const getPropertiesWithId = async(ids: string[])=>{
+  try{
+    
+    const response = await prisma.property.findMany({
+      where: {
+        refNo: {
+          in : ids
+        }
+      }
+    })
+
+    return response;
+  }catch(err){
+    throw err;
+  }
+}
 
 export const fetchOrderedLodge = async (userId: string, lodgeId: string) => {
   try {

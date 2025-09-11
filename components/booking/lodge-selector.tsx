@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 import {
   Command,
   CommandEmpty,
@@ -16,7 +17,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 
 interface Lodge {
   id: string;
@@ -58,7 +58,7 @@ export function LodgeSelector({ onChange, properties }: LodgeSelectorProps) {
       </PopoverTrigger>
       <PopoverContent className="w-[400px] p-0">
         <Command>
-          <CommandInput placeholder="Search lodges..." />
+          {/* <CommandInput placeholder="Search lodges..." /> */}
           <CommandEmpty>No lodge found.</CommandEmpty>
           <CommandGroup>
             {properties?.map((lodge:any) => (

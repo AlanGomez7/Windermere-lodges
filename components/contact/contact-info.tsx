@@ -18,11 +18,11 @@ export function ContactInfo() {
               <p className="text-gray-600 mt-1">
                 Windermere Lodges,
                 <br />
-                Windermere Road,
+                Bartle Houese,
                 <br />
-                Bowness-on-Windermere,
+                Oxford Court,
                 <br />
-                Cumbria, LA23 3HH
+                Manchester, England
               </p>
               <Button variant="link" className="text-teal-600 h-auto p-0 mt-1">
                 View on map
@@ -30,7 +30,7 @@ export function ContactInfo() {
             </div>
           </div>
 
-          <div className="flex items-start">
+          {/* <div className="flex items-start">
             <Phone className="h-5 w-5 text-teal-600 mt-1 mr-3" />
             <div>
               <h4 className="font-medium">Phone</h4>
@@ -41,7 +41,7 @@ export function ContactInfo() {
               </p>
               <p className="text-sm text-gray-500 mt-1">For bookings and general inquiries</p>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex items-start">
             <Mail className="h-5 w-5 text-teal-600 mt-1 mr-3" />
@@ -49,7 +49,7 @@ export function ContactInfo() {
               <h4 className="font-medium">Email</h4>
               <p className="text-gray-600 mt-1">
                 <a href="mailto:info@windermerelodges.com" className="hover:text-teal-600">
-                  info@windermerelodges.com
+                  info@lodgelets.co.uk
                 </a>
               </p>
               <p className="text-sm text-gray-500 mt-1">We aim to respond within 24 hours</p>

@@ -6,13 +6,14 @@ import { useEffect, useState } from "react";
 import ReviewModal from "../ui/review-modal";
 import { isLodgeBeenBooked } from "@/lib/api";
 import { useSession } from "next-auth/react";
+import { ratingsInfo } from "@/lib/utils";
 
 export default function RatingsAndReviews({
-  lodge,
   user,
+  lodge,
 }: {
-  lodge: any;
   user: any;
+  lodge: any;
 }) {
   const [isOrdered, setIsOrdered] = useState(false);
   const { data: session } = useSession();
@@ -25,6 +26,8 @@ export default function RatingsAndReviews({
     }
   };
 
+  const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
+
   useEffect(() => {
     if (userId) {
       handleFetchData(userId);
@@ -34,9 +37,10 @@ export default function RatingsAndReviews({
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const ratingSummary = {
-    average: 4.0,
+    average: avgRating,
     label: "Very Good",
-    total: 250,
+    total: totalNoOfReviews,
+    stars: new Array(avgRating).fill(''),
     breakdown: [
       { stars: 5, label: "Excellent", count: 100, color: "bg-amber-400" },
       { stars: 4, label: "Very Good", count: 74, color: "bg-amber-400" },
@@ -61,10 +65,9 @@ export default function RatingsAndReviews({
               <span className="flex-col text-black font-bold rounded-sm px-5 py-2 text-xl flex items-center gap-2">
                 <div>{ratingSummary.average.toFixed(1)}</div>
                 <div className="flex">
-                  <Star className="inline-block w-3 h-4 fill-emerald-600 text-emerald-600 ml-1" />
-                  <Star className="inline-block w-3 h-4 fill-emerald-600 text-emerald-600 ml-1" />
-                  <Star className="inline-block w-3 h-4 fill-emerald-600 text-emerald-600 ml-1" />
-                  <Star className="inline-block w-3 h-4 fill-emerald-600 text-emerald-600 ml-1" />
+                  {ratingSummary.stars.map((_, index) => (
+                    <Star className="inline-block w-3 h-4 fill-emerald-600 text-emerald-600 ml-1" key={index}/>
+                  ))}
                 </div>
               </span>
               <div className="flex flex-col justify-center ml-4">

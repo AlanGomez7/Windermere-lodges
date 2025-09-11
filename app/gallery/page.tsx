@@ -1,11 +1,13 @@
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
-import { PageHeader } from "@/components/page-header"
-import { GalleryTabs } from "@/components/gallery/gallery-tabs"
-import { ChatbotButton } from "@/components/chatbot/chatbot-button"
-import NavbarWrapper from "@/components/navbar-wrapper"
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+import { PageHeader } from "@/components/page-header";
+import { GalleryTabs } from "@/components/gallery/gallery-tabs";
+import { ChatbotButton } from "@/components/chatbot/chatbot-button";
+import NavbarWrapper from "@/components/navbar-wrapper";
 
-export default function GalleryPage() {
+export default async function GalleryPage( params: { id: Promise<string> }) {
+  const {id} = await params
+  console.log(id)
   return (
     <main className="min-h-screen bg-white">
       {/* <NavbarWrapper /> */}
@@ -24,6 +26,5 @@ export default function GalleryPage() {
       <Footer />
       <ChatbotButton />
     </main>
-  )
+  );
 }
-

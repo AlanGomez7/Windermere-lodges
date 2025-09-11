@@ -9,9 +9,9 @@ import Image from "next/image";
 import image1 from "../public/Main-banners/windermere1.jpg";
 import image2 from "../public/Main-banners/windermere2.jpg";
 import image3 from "../public/Main-banners/windermere3.jpg";
-import image4 from "../public/Main-banners/windermere4.jpg";
+// import image4 from "../public/Main-banners/windermere4.jpg";
 
-const sliderImages = [image1, image2, image3, image4];
+const sliderImages = [image1, image2, image3];
 
 export const Hero = () => {
 

@@ -13,33 +13,54 @@ const activities = [
     image: trekking,
 
     description:
-      "Staying with us means you’re minutes away from the Lake District’s most iconic gems! Wander the charming streets of Windermere & Bowness, step into the world of Beatrix Potter, or hike historic trails in Grasmere and Coniston. Discover Keswick’s adventure spirit, cruise stunning lakes, or tour grand National Trust estates and castles.",
+      "Staying with us means you’re minutes away from the Lake District’s most iconic gems! Wander the charming streets of Windermere & Bowness, step into the world of Beatrix Potter, or hike historic trails in Grasmere and Coniston.",
   },
   {
     title: "Cruises & Ferries",
     image: sightseeing,
     description:
-      "Set sail on England’s largest lake with unforgettable cruises, ferries, and boat hires! Enjoy scenic public cruises, quick car ferries, self-drive boats, or luxury private charters. With family-friendly routes, combo tickets to top attractions, and even dog-friendly options, Windermere offers the perfect lake adventure for relaxation, fun, and breathtaking views.",
+      "Set sail on England’s largest lake with unforgettable cruises, ferries, and boat hires! Enjoy scenic public cruises, quick car ferries, self-drive boats, or luxury private charters.",
   },
   {
     title: "Outdoor activites",
     image: kayaking,
 
     description:
-      "Discover thrilling outdoor experiences just minutes away! From peaceful kayaking and paddleboarding on Lake Windermere to adrenaline-pumping ghyll scrambling through waterfalls and ravines, there’s something for every adventurer. With expert guides, top-class equipment, and breathtaking scenery, the Lake District promises unforgettable memories for families, friends, and explorers of all abilities.",
+      "Discover thrilling outdoor experiences just minutes away! From peaceful kayaking and paddleboarding on Lake Windermere to adrenaline-pumping ghyll scrambling through waterfalls and ravines, there’s something for every adventurer.",
   },
   {
     title: "Family walks",
     image: image1,
 
     description:
-      "From gentle lakeside strolls to thrilling climbs, the Lake District offers unforgettable family walks for all ages. Enjoy pushchair-friendly paths around Buttermere and Tarn Hows, scenic climbs like Catbells and Orrest Head, or adventurous treks up Helvellyn and Scafell Pike. Stunning views, fresh air, and cosy tea stops make every walk a perfect family memory.",
+      "From gentle lakeside strolls to thrilling climbs, the Lake District offers unforgettable family walks for all ages. Enjoy pushchair-friendly paths around Buttermere and Tarn Hows, scenic climbs like Catbells and Orrest Head, or adventurous treks up Helvellyn and Scafell Pike",
   },
 ];
 
 export const Activities = () => {
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20">
+      <div className="container mx-auto px-4 pb-20">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8">
+            Discover White Cross Bay
+          </h2>
+          <p className="text-lg text-gray-600 max-w-5xl mx-auto">
+            Located on the eastern shore of Windermere, White Cross Bay provides
+            an ideal setting for families and couples alike. With direct access
+            to the lake, you'll be surrounded by the serene beauty of the
+            countryside and woodland. Venture out to nearby towns like
+            Bowness-on-Windermere and Ambleside, known for their historic
+            architecture, delightful cafes, and local boutiques. Naturally, with
+            Windermere, Coniston and Ullswater so close by, it's a great spot
+            for watersports, but you'll find plenty of opportunities for
+            walking, climbing, cycling and canyoning, too. Back on park, you'll
+            find everything you need for total relaxation with an indoor pool,
+            plenty of activities for all ages, a yummy menu courtesy of our
+            onsite restaurant, and a beer garden.
+          </p>
+        </div>
+      </div>
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -52,29 +73,47 @@ export const Activities = () => {
         </div>
 
         {/* <Link href={"/activities"}> */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 ">
           {activities.map((activity, index) => (
-            <Card
+            <div
+              className="relative h-96 group overflow-hidden rounded-md"
               key={index}
-              className="overflow-hidden border-0 shadow-lg group relative cursor-pointer"
             >
-              <div className="relative h-96">
-                <Image
-                  src={activity.image || "/placeholder.svg"}
-                  alt={activity.title}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105 group-hover:brightness-50"
-                />
-                <div className="absolute inset-0 flex flex-col items-end bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="w-full text-white text-2xl font-bold p-6 text-center">
-                    {activity.title}
-                  </span>
-                  <span className="w-full text-white px-2 text-center">
-                    {activity.description}
-                  </span>
-                </div>
+              <Image
+                src={activity.image || "/placeholder.svg"}
+                alt={activity.title}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105 brightness-25"
+              />
+
+              {/* Overlay that darkens on hover */}
+              <div
+                className="
+      absolute inset-0 bg-black/40 
+      transition-colors duration-500 
+      group-hover:bg-black/90
+    "
+              />
+
+              {/* Title (initially visible) */}
+              <span className="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold transition-all duration-300 group-hover:top-6 group-hover:items-start">
+                {activity.title}
+              </span>
+
+              {/* Description (hidden until hover) */}
+              <div
+                className="
+      absolute inset-0 flex flex-col justify-center items-center
+      text-white px-4 text-center opacity-0 
+      transition-opacity duration-500 group-hover:opacity-100
+      group-hover:mt-8
+    "
+              >
+                <span className="max-w-md text-base leading-relaxed">
+                  {activity.description}
+                </span>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
         {/* </Link> */}

@@ -122,3 +122,14 @@ export const findDays = (checkIn: string, checkOut: string) => {
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   return diffDays;
 };
+
+export const ratingsInfo = (comments: Record<any, string>[]) => {
+  const numberOfReviews = comments.length
+  const sum = comments.reduce((acc: number, curr: any) => {
+    acc = curr.rating + acc;
+    return acc;
+  }, 0);
+
+  const rating = Math.ceil(sum / numberOfReviews)
+  return [rating, numberOfReviews]
+};

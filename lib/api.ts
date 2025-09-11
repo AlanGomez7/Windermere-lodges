@@ -3,9 +3,15 @@
 import {
   createBooking,
   fetchOrderedLodge,
+  getPropertiesWithId,
   updateOrderPaymentStatus,
 } from "@/app/queries/order";
-import { getPropertyReviews, getReviews } from "@/app/queries/properties";
+import {
+  getAllLodgeComments,
+  getLodgeComments,
+  getPropertyReviews,
+  getUserReviews,
+} from "@/app/queries/properties";
 import { auth } from "@/auth";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -13,7 +19,7 @@ const baseUplistingUrl = process.env.UPLISTING_URL;
 
 interface AvailabilityResponse {
   ok: boolean;
-  data: any[];
+  data:  Record<string, any>[];
   included: any[];
   message?: string;
 }
@@ -28,6 +34,18 @@ export const fetchProperties = async () => {
     return res.lodges;
   }
   return { message: res.message, ok: false };
+};
+
+export const fetchPropertiesWithIds = async (ids: string[]) => {
+  try {
+    if (!ids || ids.length === 0) {
+      throw new Error("No ids found");
+    }
+    const res = await getPropertiesWithId(ids);
+    return res;
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const updateUserDetails = async (data: {
@@ -96,33 +114,42 @@ export const fetchPropertyDetails = async (id: string) => {
 export const checkAvailableLodges = async (
   params: any
 ): Promise<AvailabilityResponse> => {
-  if (!params.dates) {
+  if (!params?.dates?.from || !params?.dates?.to) {
     return {
       data: [],
       included: [],
-      message: "please select a date",
-      ok: false,
-    };
-  }
-
-  if (!params.lodge) {
-    return {
-      data: [],
-      included: [],
-      message: "Please select a lodge",
+      message: "Please select a valid date range",
       ok: false,
     };
   }
 
   try {
-    const fromDate = params.dates.from;
-    const toDate = params.dates.to;
+    const checkIn = new Date(params.dates.from);
+    const checkOut = new Date(params.dates.to);
 
-    const checkIn = new Date(fromDate).toISOString().split("T")[0];
-    const checkOut = new Date(toDate).toISOString().split("T")[0];
+    if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
+      return {
+        data: [],
+        included: [],
+        message: "Invalid date format",
+        ok: false,
+      };
+    }
+
+    const checkInStr = checkIn.toISOString().split("T")[0];
+    const checkOutStr = checkOut.toISOString().split("T")[0];
+
+    if (!process.env.UPLISTING_KEY) {
+      return {
+        data: [],
+        included: [],
+        message: "Missing Uplisting API key",
+        ok: false,
+      };
+    }
 
     const response = await fetch(
-      `${baseUplistingUrl}/availability?check_in=${checkIn}&check_out=${checkOut}`,
+      `${baseUplistingUrl}/availability?check_in=${checkInStr}&check_out=${checkOutStr}`,
       {
         method: "GET",
         headers: {
@@ -131,34 +158,74 @@ export const checkAvailableLodges = async (
         },
       }
     );
-    const result = (await response.json()) as AvailabilityResponse;
-    console.log(result);
 
     if (!response.ok) {
       return {
         data: [],
         included: [],
-        message: "Uplisting key error",
+        message: `Uplisting API error (${response.status})`,
         ok: false,
       };
     }
 
+    const result = (await response.json()) as AvailabilityResponse;
     const { data, included } = result;
 
-    if (data.length === 0)
-      return { data, included, ok: false, message: "Lodge not available" };
+    if (!Array.isArray(data) || data.length === 0) {
+      return {
+        data: [],
+        included: [],
+        message: "No available lodges on these days",
+        ok: false,
+      };
+    }
 
-    const { lodge } = params;
+    // Filter for selected lodge if provided
+    if (params.lodge?.id) {
+      const selectedLodge = data.find((d: any) => {
+        if(d.id === params.lodge.refNo)return d.id
+      });
 
-    const selectedLodge = data.find((d: any) => d.id === lodge.id);
 
-    return { data: selectedLodge, ok: true, included };
+
+      if (!selectedLodge) {
+        return {
+          data: [],
+          included,
+          message: "Lodge not available",
+          ok: false,
+        };
+      }
+
+
+      console.log(selectedLodge)
+      return {
+        data: [selectedLodge.id],
+        included,
+        message: "Lodge available",
+        ok: true,
+      };
+    }
+
+    const availableLodges = data.map((d) => {
+      if (d.id) {
+        return d.id;
+      }
+    });
+
+    console.log(availableLodges);
+    return {
+      data: availableLodges,
+      included,
+      message: "Lodges found",
+      ok: true,
+    };
   } catch (err) {
-    console.log(err);
+    console.error("checkAvailableLodges error:", err);
     return {
       data: [],
       included: [],
-      message: "Something went wrong",
+      message: "Something went wrong fetching availability",
       ok: false,
     };
   }
@@ -171,7 +238,6 @@ export const isLodgeBeenBooked = async (userId: string, propertyId: string) => {
     }
 
     const response = await fetchOrderedLodge(userId, propertyId);
-
     return response;
   } catch (err) {
     throw err;
@@ -293,7 +359,7 @@ export const fetchReviews = async (userId: string) => {
     if (!userId) {
       throw new Error("Please login");
     }
-    const reviews = await getReviews(userId);
+    const reviews = await getUserReviews(userId);
 
     return reviews;
   } catch (err) {
@@ -324,6 +390,27 @@ export const orderedLodge = async (lodgeId: string) => {
 
     const response = await fetchOrderedLodge(session.user.id, lodgeId);
     console.log(response);
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const fetchLodgeComments = async (lodgeId: any) => {
+  try {
+    if (!lodgeId) {
+      throw new Error("Innvalid lodge id");
+    }
+    const response = getLodgeComments(lodgeId);
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const fetchAllComments = async () => {
+  try {
+    const response = getAllLodgeComments();
     return response;
   } catch (err) {
     throw err;

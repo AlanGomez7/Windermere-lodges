@@ -32,7 +32,6 @@ export default function BookingPage() {
 
     router.back();
   }, []);
-  console.log(searchParams);
 
   if (loading) {
     return (

@@ -1,5 +1,12 @@
-import Link from "next/link"
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react"
+import Link from "next/link";
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 
 const Footer = () => {
   return (
@@ -10,8 +17,9 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Windermere Lodges</h3>
             <p className="text-gray-300 mb-4">
-              Luxury lodges in the heart of the Lake District, offering unforgettable experiences in one of England's
-              most beautiful landscapes.
+              Luxury lodges in the heart of the Lake District, offering
+              unforgettable experiences in one of England's most beautiful
+              landscapes.
             </p>
             {/* <div className="flex space-x-4">
               <a href="#" className="text-gray-300 hover:text-emerald-400 transition-colors">
@@ -31,7 +39,10 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/our-lodges" className="text-gray-300 hover:text-emerald-400 transition-colors">
+                <Link
+                  href="/our-lodges"
+                  className="text-gray-300 hover:text-emerald-400 transition-colors"
+                >
                   Our Lodges
                 </Link>
               </li>
@@ -41,12 +52,18 @@ const Footer = () => {
                 </Link>
               </li> */}
               <li>
-                <Link href="/activities" className="text-gray-300 hover:text-emerald-400 transition-colors">
+                <Link
+                  href="/activities"
+                  className="text-gray-300 hover:text-emerald-400 transition-colors"
+                >
                   Activities
                 </Link>
               </li>
               <li>
-                <Link href="/gallery" className="text-gray-300 hover:text-emerald-400 transition-colors">
+                <Link
+                  href="/gallery"
+                  className="text-gray-300 hover:text-emerald-400 transition-colors"
+                >
                   Gallery
                 </Link>
               </li>
@@ -56,7 +73,10 @@ const Footer = () => {
                 </Link>
               </li> */}
               <li>
-                <Link href="/contact" className="text-gray-300 hover:text-emerald-400 transition-colors">
+                <Link
+                  href="/contact"
+                  className="text-gray-300 hover:text-emerald-400 transition-colors"
+                >
                   Contact Us
                 </Link>
               </li>
@@ -70,16 +90,17 @@ const Footer = () => {
               <li className="flex items-start">
                 <MapPin className="mr-2 h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <span className="text-gray-300">
-                  Windermere Road, Bowness-on-Windermere, Cumbria, LA23 3HH, United Kingdom
+                  Windermere Lodges, Bartle Houese, Oxford Court, Manchester,
+                  England
                 </span>
               </li>
-              <li className="flex items-center">
+              {/* <li className="flex items-center">
                 <Phone className="mr-2 h-5 w-5 text-emerald-400" />
                 <span className="text-gray-300">+44 (0) 1539 123456</span>
-              </li>
+              </li> */}
               <li className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 text-emerald-400" />
-                <span className="text-gray-300">info@windermerelodges.com</span>
+                <span className="text-gray-300">info@lodgeslets.co.uk</span>
               </li>
             </ul>
           </div>
@@ -87,7 +108,9 @@ const Footer = () => {
           {/* Newsletter */}
           <div>
             <h3 className="text-xl font-bold mb-4">Newsletter</h3>
-            <p className="text-gray-300 mb-4">Subscribe to our newsletter for special offers and updates.</p>
+            <p className="text-gray-300 mb-4">
+              Subscribe to our newsletter for special offers and updates.
+            </p>
             <form className="space-y-2">
               <input
                 type="email"
@@ -107,16 +130,26 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              &copy; {new Date().getFullYear()} Windermere Lodges. All rights reserved.
+              &copy; {new Date().getFullYear()} Windermere Lodges. All rights
+              reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/privacy-policy" className="text-gray-400 hover:text-emerald-400 text-sm">
+              <Link
+                href="/privacy-policy"
+                className="text-gray-400 hover:text-emerald-400 text-sm"
+              >
                 Privacy Policy
               </Link>
-              <Link href="/terms-of-service" className="text-gray-400 hover:text-emerald-400 text-sm">
+              <Link
+                href="/terms-of-service"
+                className="text-gray-400 hover:text-emerald-400 text-sm"
+              >
                 Terms of Service
               </Link>
-              <Link href="/cookie-policy" className="text-gray-400 hover:text-emerald-400 text-sm">
+              <Link
+                href="/cookie-policy"
+                className="text-gray-400 hover:text-emerald-400 text-sm"
+              >
                 Cookie Policy
               </Link>
             </div>
@@ -124,8 +157,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
-
+export default Footer;

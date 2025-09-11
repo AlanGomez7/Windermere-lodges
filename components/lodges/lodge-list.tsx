@@ -2,6 +2,7 @@
 
 import { use, useState } from "react";
 import LodgeCard from "../cards/lodge-card";
+import { useSearchParams } from "next/navigation";
 
 // Sample lodge data
 const lodges = [
@@ -74,7 +75,17 @@ const lodges = [
 
 export function LodgeList({ properties }: { properties: any }) {
   const lodges: any = use(properties);
-  console.log(lodges);
+
+  // const [availableLodges, setAvailableLodges] = useState(lodges);
+
+  // const searchParams = useSearchParams();
+  // const ids = searchParams.get("ids")?.split(",") ?? [];
+
+  // useState(()=>{
+
+  // }, [])
+
+  // console.log(lodges);
 
   const [favorites, setFavorites] = useState<number[]>([]);
 

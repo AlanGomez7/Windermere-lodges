@@ -2,12 +2,26 @@ import Footer from "@/components/footer";
 import { PageHeader } from "@/components/page-header";
 import { LodgeList } from "@/components/lodges/lodge-list";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
-import { fetchProperties } from "@/lib/api";
+import { fetchProperties, fetchPropertiesWithIds } from "@/lib/api";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
+import { array } from "zod";
 
-export default function OurLodgesPage() {
-  const lodges = fetchProperties();
+export default function OurLodgesPage({
+  searchParams,
+}: {
+  searchParams: { ids?: string };
+}) {
+  const ids: string[] = searchParams.ids?.split(",") ?? [];
+
+  let lodges: Promise<any>;
+
+  if (ids.length > 0) {
+    lodges = fetchPropertiesWithIds(ids);
+  } else {
+    lodges = fetchProperties();
+  }
+
   return (
     <main className="min-h-screen bg-white">
       <PageHeader
@@ -19,8 +33,8 @@ export default function OurLodgesPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-row">
-            <Suspense fallback={<Loading/>}>
-              <LodgeList properties={lodges}/>
+            <Suspense fallback={<Loading />}>
+              <LodgeList properties={lodges} />
             </Suspense>
           </div>
         </div>

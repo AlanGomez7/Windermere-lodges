@@ -4,7 +4,6 @@ import { auth } from "@/auth";
 import { fetchReviews } from "@/lib/api";
 import UserNotFound from "@/components/no-user-found";
 
-
 export default async function YourReviews() {
   const session = await auth();
 
@@ -25,15 +24,15 @@ export default async function YourReviews() {
 
       {!session && <UserNotFound />}
 
-      {
-       session&&<div className="lg:p-6 space-y-6 bg-white min-h-full">
+      {session && (
+        <div className="lg:p-6 space-y-6 bg-white min-h-full">
           <div className="flex gap-6 flex-wrap justify-center">
-            {reviews.map((testimonial, id) => (
+            {reviews.length>0?(reviews.map((testimonial, id) => (
               <ReviewCard testimonial={testimonial} key={id} />
-            ))}
+            ))):(<>No review yet</>)}
           </div>
         </div>
-      }
+      )}
     </main>
   );
 }

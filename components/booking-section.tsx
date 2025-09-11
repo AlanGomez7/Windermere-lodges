@@ -11,6 +11,7 @@ import { checkAvailableLodges } from "@/lib/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/app/context/context";
+import { data } from "@/data/lodges";
 
 interface SearchParams {
   dates: DateRange | undefined;
@@ -44,21 +45,33 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
     setProperties(lodges);
   }, []);
 
-
   const handleSearch = async () => {
     setLoading(true);
     const response = await checkAvailableLodges(searchParams);
+    console.log(response);
 
     if (!response.ok) {
       setIsLodgeAvailable(false);
-
       toast.error(response?.message ?? "Something went wrong");
       setLoading(false);
       return;
     }
 
-    setIsLodgeAvailable(true);
-    router.push(`/our-lodges/${searchParams.lodge?.refNo}`);
+    if (response.ok && response.message) {
+      console.log(response.data);
+      toast.success(response?.message);
+    }
+
+
+    if(response.data.length === 1){
+      router.push(`/our-lodges/${response.data[0]}`)
+      return
+    }
+
+    const query = new URLSearchParams({ ids: response.data.join(",") });
+    console.log(query.toString())
+    router.push(`/our-lodges?${query.toString()}`);
+    
     setLoading(false);
   };
 

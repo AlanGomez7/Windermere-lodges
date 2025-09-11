@@ -5,7 +5,6 @@ import Image from "next/image";
 import Footer from "../footer";
 import { PageHeader } from "../page-header";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 
@@ -16,21 +15,19 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn, ratingsInfo } from "@/lib/utils";
 import { Icons } from "../ui/icons";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { VisuallyHidden } from "../ui/visually-hidden";
+
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import RatingsAndReviews from "./ratings-and-reviews";
-import ReviewCard from "../cards/review-card";
-import Link from "next/link";
+
 import { useAppContext } from "@/app/context/context";
 import { checkAvailableLodges } from "@/lib/api";
 import { GuestSelector } from "../booking/guest-selector";
 import AboutModal from "../ui/about-modal";
-import ReviewWrapper from "./review-wrapper";
 import ReviewList from "../review-wrapper";
+import Link from "next/link";
 
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
@@ -59,11 +56,12 @@ const amenitiesToDisplay = [
   "+11 More",
 ];
 
-
 function Gallery({
   images,
   lodgeName,
+  lodgeId,
 }: {
+  lodgeId:string;
   images: string[];
   lodgeName: string;
 }) {
@@ -174,106 +172,12 @@ function Gallery({
           </svg>
         </button>
         {/* Image Count */}
-        <div className="absolute right-3 bottom-3 bg-black/80 text-white rounded px-3 py-1 text-sm z-10 font-semibold">
-          {current + 1} / {total}
-        </div>
+        <Link href={`/gallery?id=${lodgeId}`}>
+          <Button className="absolute  right-3 bottom-3 bg-gray-100 hover:bg-gray-200 text-black rounded px-3 text-sm z-10 font-light">
+            Show all images
+          </Button>
+        </Link>
         {/* Modal/Lightbox */}
-        <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-          <DialogContent className="max-w-5xl p-0 bg-black/95 border-none flex flex-col items-center justify-center">
-            <VisuallyHidden asChild>
-              <DialogTitle>Gallery images for {lodgeName}</DialogTitle>
-            </VisuallyHidden>
-            {/* Add DialogTitle for accessibility, hidden visually */}
-            <h2 id="gallery-dialog-title" className="sr-only">
-              Gallery images for {lodgeName}
-            </h2>
-            <div
-              className="relative w-full flex items-center justify-center"
-              style={{ minHeight: 500 }}
-            >
-              {/* Left Arrow */}
-              {total > 1 && (
-                <button
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 z-20"
-                  onClick={handlePrev}
-                  aria-label="Previous image"
-                >
-                  <svg
-                    width="32"
-                    height="32"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M15 18l-6-6 6-6" />
-                  </svg>
-                </button>
-              )}
-              {/* Main Zoomed Image */}
-              <Image
-                src={images[current]}
-                alt={lodgeName + "zoomed"}
-                width={1200}
-                height={800}
-                className="object-contain max-h-[80vh] w-auto mx-auto rounded"
-                draggable={false}
-              />
-              {/* Right Arrow */}
-              {total > 1 && (
-                <button
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 z-20"
-                  onClick={handleNext}
-                  aria-label="Next image"
-                >
-                  <svg
-                    width="32"
-                    height="32"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M9 6l6 6-6 6" />
-                  </svg>
-                </button>
-              )}
-              {/* Image Count */}
-              <div className="absolute right-4 bottom-4 bg-black/80 text-white rounded px-3 py-1 text-sm z-20">
-                {current + 1} / {total}
-              </div>
-            </div>
-            {/* Thumbnails in Modal */}
-            <div className="flex gap-2 mt-4 max-w-full overflow-x-auto pb-2">
-              {images.map((img, idx) => (
-                <button
-                  key={img + idx}
-                  className={`relative rounded overflow-hidden border-2 ${
-                    idx === current
-                      ? "border-emerald-600"
-                      : "border-transparent"
-                  }`}
-                  onClick={() => handleThumbClick(idx)}
-                  tabIndex={0}
-                  aria-label={`Show image ${idx + 1}`}
-                >
-                  <Image
-                    src={img}
-                    alt={lodgeName + " thumbnail"}
-                    width={80}
-                    height={60}
-                    className={`object-cover w-20 h-14 ${
-                      idx === current ? "" : "opacity-80"
-                    }`}
-                  />
-                  {idx === current && (
-                    <span className="absolute inset-0 ring-2 ring-emerald-600 rounded pointer-events-none"></span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </DialogContent>
-        </Dialog>
       </div>
       {/* Vertical Divider */}
       <div className="w-px bg-gray-200 mx-2" />
@@ -327,6 +231,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     today.setDate(today.getDate() + 5); // add 5 days
     return today;
   });
+
+  const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
+  const noOfReviewStars = new Array(5).fill("");
 
   useEffect(() => {
     if (dates) {
@@ -414,11 +321,11 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
               <div className="flex items-center gap-2 rounded-lg bg-green-100 p-2 text-green-800">
                 <div className="flex items-center gap-1">
                   <span className="font-bold text-lg">{lodge.rating}</span>
-                  <span className="text-lg">4★</span>
+                  <span className="text-lg">{avgRating}★</span>
                 </div>
                 <div className="text-xs">
                   <p className="font-semibold">Very Good</p>
-                  <p>254 ratings</p>
+                  <p>{totalNoOfReviews} ratings</p>
                 </div>
               </div>
             </div>
@@ -426,14 +333,14 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
           <div className="flex flex-col md:flex-row gap-8">
             <div className="flex-1">
-              <Gallery images={lodge.images} lodgeName={lodge.name} />
+              <Gallery images={lodge.images} lodgeName={lodge.name} lodgeId={lodge.id}/>
             </div>
             <div className="w-full md:w-96">
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-baseline gap-2 mb-4">
                     <span className="text-3xl font-bold">
-                      ${lodge.price}.00
+                      &pound;{lodge.price}.00
                     </span>
                     <span className="text-sm text-gray-500">/per night</span>
                   </div>
@@ -521,22 +428,22 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                     <div className="flex flex-col gap-2">
                       <div className="flex justify-between text-sm">
                         <span>{diff} Night</span>
-                        <span>${diff * lodge.price}</span>
+                        <span>&pound;{diff * lodge.price}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Cleaning fee</span>
-                        <span>${lodge.cleaning_fee}</span>
+                        <span>&pound;{lodge.cleaning_fee}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Pets fee</span>
                         <span>
-                          ${searchParams.guests.pets * lodge.pets_fee}
+                          &pound;{searchParams.guests.pets * lodge.pets_fee}
                         </span>
                       </div>
                       <div className="flex justify-between font-bold text-lg mt-2">
                         <span>Total Payment</span>
                         <span>
-                          $
+                          &pound;
                           {lodge.price * diff +
                             lodge.cleaning_fee +
                             searchParams.guests.pets * lodge.pets_fee}
@@ -643,7 +550,8 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
             <RatingsAndReviews lodge={lodge} user={session} />
 
-            <ReviewList lodge={lodge}/>
+            <ReviewList lodgeId={lodge && lodge?.id} />
+
             {/* Location */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Location</h2>

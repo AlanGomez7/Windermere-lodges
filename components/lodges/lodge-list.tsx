@@ -11,27 +11,6 @@ export function LodgeList({ properties }: { properties: any }) {
   const lodges: any = use(properties);
 
   const [favorites, setFavorites] = useState<number[]>([]);
-  const { setSearchParams } = useAppContext();
-
-  useEffect(() => {
-    setSearchParams({
-      dates: undefined,
-      guests: { adults: 2, children: 0, pets: 0, infants: 0, teens: 0 },
-      lodge: undefined,
-      nights: undefined,
-      contactInfo: {
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        address: "",
-        city: "",
-        postalCode: "",
-        country: "",
-        specialRequests: "",
-      },
-    });
-  }, []);
 
   const toggleFavorite = (id: number) => {
     if (favorites.includes(id)) {

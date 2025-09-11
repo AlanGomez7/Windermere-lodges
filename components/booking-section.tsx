@@ -62,16 +62,20 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
       toast.success(response?.message);
     }
 
+    if (response.data.length === 1) {
+      router.push(`/our-lodges/${response.data[0]}`);
 
-    if(response.data.length === 1){
-      router.push(`/our-lodges/${response.data[0]}`)
-      return
+      setSearchParams({
+        ...searchParams,
+        lodge:undefined
+      });
+      return;
     }
 
     const query = new URLSearchParams({ ids: response.data.join(",") });
-    console.log(query.toString())
+    console.log(query.toString());
     router.push(`/our-lodges?${query.toString()}`);
-    
+
     setLoading(false);
   };
 

@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import lakeAccess from "../public/icons/Access to the lake.svg";
+import lakeAccess from "@/public/icons/Access to the lake.svg";
 import beerGarden from "../public/icons/Beer Garden.svg";
 import wifi from "../public/icons/wifi.svg";
 import shop from "../public/icons/Convenience Shop.svg";
@@ -82,8 +82,8 @@ export const Amenities = () => {
                   {/* <Icon className="h-12 w-12 text-emerald-600 mb-2" /> */}
                   {amenity.icon && (
                     <Image
-                      src={amenity.icon}
-                      className="h-16 w-16 text-emerald-600 mb-2"
+                      src={Icon}
+                      className="h-16 w-16 mb-2"
                       alt="icons"
                     />
                   )}

@@ -12,6 +12,7 @@ export default async function OurLodgesPage({
   searchParams: Promise<{ ids?: string }>;
 }) {
 
+
   const ids: string[] = (await searchParams).ids?.split(",") ?? [];
   let lodges: Promise<any>;
 

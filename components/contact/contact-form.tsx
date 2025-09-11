@@ -1,64 +1,83 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Loader2, Send } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Loader2, Send } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Checkbox } from "../ui/checkbox";
 
 export function ContactForm() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [marketing, setMarketing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     subject: "",
     message: "",
-  })
-  const { toast } = useToast()
+    // subscribed: marketing,
+  });
+  const { toast } = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, subject: value }))
-  }
+    setFormData((prev) => ({ ...prev, subject: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     // Simulate form submission
     setTimeout(() => {
-      setIsLoading(false)
+      setIsLoading(false);
       toast({
         title: "Message sent",
         description: "We'll get back to you as soon as possible.",
-      })
+      });
       setFormData({
         name: "",
         email: "",
         phone: "",
         subject: "",
         message: "",
-      })
-    }, 1500)
-  }
+      });
+    }, 1500);
+  };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Send Us a Message</CardTitle>
         <CardDescription>
-          We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.
+          We'd love to hear from you. Fill out the form below and we'll get back
+          to you as soon as possible.
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -128,9 +147,27 @@ export function ContactForm() {
               required
             />
           </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="marketing"
+              checked={marketing}
+              onCheckedChange={(checked) => setMarketing(checked as boolean)}
+            />
+            <Label
+              htmlFor="marketing"
+              className="text-sm font-normal cursor-pointer"
+            >
+              I would like to receive special offers and updates from Windermere
+              Lodges
+            </Label>
+          </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-700" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="w-full bg-teal-600 hover:bg-teal-700"
+            disabled={isLoading}
+          >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -146,6 +183,5 @@ export function ContactForm() {
         </CardFooter>
       </form>
     </Card>
-  )
+  );
 }
-

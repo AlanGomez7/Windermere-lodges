@@ -78,6 +78,9 @@ export const getPropertiesWithId = async(ids: string[])=>{
         refNo: {
           in : ids
         }
+      },
+      include:{
+        comments: true
       }
     })
 

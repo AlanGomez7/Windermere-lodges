@@ -19,7 +19,7 @@ const baseUplistingUrl = process.env.UPLISTING_URL;
 
 interface AvailabilityResponse {
   ok: boolean;
-  data:  Record<string, any>[];
+  data: Record<string, any>[];
   included: any[];
   message?: string;
 }
@@ -182,11 +182,13 @@ export const checkAvailableLodges = async (
 
     // Filter for selected lodge if provided
     if (params.lodge?.id) {
+      console.log("++++++++++++++++++++++++())()(()()()()()()()()()()()()");
+      console.log(data);
+      console.log("++++++++++++++++++++++++())()(()()()()()()()()()()()()");
+
       const selectedLodge = data.find((d: any) => {
-        if(d.id === params.lodge.refNo)return d.id
+        if (d.id === params.lodge.refNo) return d.id;
       });
-
-
 
       if (!selectedLodge) {
         return {
@@ -197,8 +199,8 @@ export const checkAvailableLodges = async (
         };
       }
 
+      // console.log(selectedLodge)
 
-      console.log(selectedLodge)
       return {
         data: [selectedLodge.id],
         included,
@@ -208,11 +210,10 @@ export const checkAvailableLodges = async (
     }
 
     const availableLodges = data.map((d) => {
-      if (d.id) {
-        return d.id;
-      }
+      return d.id;
     });
 
+    console.log("===================================");
     console.log(availableLodges);
     return {
       data: availableLodges,

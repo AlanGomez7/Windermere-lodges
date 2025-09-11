@@ -3,14 +3,12 @@ import Footer from "@/components/footer";
 import { PageHeader } from "@/components/page-header";
 import { GalleryTabs } from "@/components/gallery/gallery-tabs";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
-import NavbarWrapper from "@/components/navbar-wrapper";
+import { Suspense } from "react";
+import Loading from "@/components/loading";
 
-export default async function GalleryPage( params: { id: Promise<string> }) {
-  const {id} = await params
-  console.log(id)
+export default async function GalleryPage() {
   return (
     <main className="min-h-screen bg-white">
-      {/* <NavbarWrapper /> */}
       <PageHeader
         title="Our Gallery"
         description="Experience the beauty of Windermere Lodges"
@@ -19,7 +17,9 @@ export default async function GalleryPage( params: { id: Promise<string> }) {
 
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <GalleryTabs />
+          <Suspense fallback={<Loading/>}>
+            <GalleryTabs />
+          </Suspense>
         </div>
       </section>
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ImageGallery } from "./image-gallery"
 import { useSearchParams } from "next/navigation"
@@ -10,7 +10,6 @@ export function GalleryTabs() {
   const searchParams = useSearchParams();
   const lodgeId = searchParams.get("id");
 
-  console.log(lodgeId);
 
   const [activeTab, setActiveTab] = useState("images")
   const [isClient, setIsClient] = useState(false)
@@ -26,6 +25,7 @@ export function GalleryTabs() {
 
 
   return (
+
     <Tabs defaultValue={lodgeId?`${lodgeId}`:"6514f268-d14a-42aa-89bb-2e6ac51b14c5"} onValueChange={setActiveTab} className="w-full">
       <div className="flex justify-center mb-8">
         <TabsList className="grid w-auto grid-cols-3">

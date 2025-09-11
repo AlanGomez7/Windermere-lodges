@@ -5,15 +5,14 @@ import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import { fetchProperties, fetchPropertiesWithIds } from "@/lib/api";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
-import { array } from "zod";
 
-export default function OurLodgesPage({
+export default async function OurLodgesPage({
   searchParams,
 }: {
-  searchParams: { ids?: string };
+  searchParams: Promise<{ ids?: string }>;
 }) {
-  const ids: string[] = searchParams.ids?.split(",") ?? [];
 
+  const ids: string[] = (await searchParams).ids?.split(",") ?? [];
   let lodges: Promise<any>;
 
   if (ids.length > 0) {

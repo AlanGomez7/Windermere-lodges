@@ -2,10 +2,8 @@ import Shimmer from "./ui/shimmer";
 
 function Loading() {
   return (
-    <div className="flex gap-3">
-      <Shimmer />
-      <Shimmer />
-      <Shimmer />
+    <div className="flex w-screen h-screen justify-center items-center">
+      <span className="loader"></span>
     </div>
   );
 }

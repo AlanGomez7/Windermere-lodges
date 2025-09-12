@@ -109,11 +109,11 @@ export default function LodgeCard({ lodge, needsButton }: any) {
             <Button
               onClick={(e) => {
                 e.preventDefault();
-                router.push("/booking");
+                router.push(`/our-lodges/${lodge.refNo}`);
               }}
               className="bg-emerald-600 font-bold hover:bg-emerald-700"
             >
-              Book Now
+              See availability
             </Button>
           </CardFooter>
         )}

@@ -21,10 +21,10 @@ export default async function RootLayout({
     <html lang="en">
       <body>
         <main className="min-h-screen bg-white">
-          <NavbarWrapper />
-          <SessionProvider>
-            <AppWrapper>{children}</AppWrapper>
-          </SessionProvider>
+          <AppWrapper>
+            <NavbarWrapper />
+            <SessionProvider>{children}</SessionProvider>
+          </AppWrapper>
           <Toaster
             position="bottom-center"
             toastOptions={{ style: { maxWidth: "500px" } }}

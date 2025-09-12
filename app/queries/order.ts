@@ -70,25 +70,24 @@ export const getUserBookings = async (id: string | null | undefined) => {
   }
 };
 
-export const getPropertiesWithId = async(ids: string[])=>{
-  try{
-    
+export const getPropertiesWithId = async (ids: string[]) => {
+  try {
     const response = await prisma.property.findMany({
       where: {
         refNo: {
-          in : ids
-        }
+          in: ids,
+        },
       },
-      include:{
-        comments: true
-      }
-    })
+      include: {
+        comments: true,
+      },
+    });
 
     return response;
-  }catch(err){
+  } catch (err) {
     throw err;
   }
-}
+};
 
 export const fetchOrderedLodge = async (userId: string, lodgeId: string) => {
   try {
@@ -136,6 +135,27 @@ export const updateOrderPaymentStatus = async ({
         enquiryId: result ? result.data.id : null,
       },
     });
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getRatingInfo = async (lodgeId: string) => {
+  try {
+    const response = await prisma.comment.groupBy({
+      by: ["rating"],
+      where: {
+        propertyId: lodgeId,
+      },
+      _count: {
+        rating: true,
+      },
+      _sum: {
+        rating: true
+      }
+    });
+
     return response;
   } catch (err) {
     throw err;

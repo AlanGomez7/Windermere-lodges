@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import lakeAccess from "@/public/icons/Access to the lake.svg";
+import lakeAccess from "../public/icons/Access to the lake.svg";
 import beerGarden from "../public/icons/Beer Garden.svg";
 import wifi from "../public/icons/wifi.svg";
 import shop from "../public/icons/Convenience Shop.svg";

@@ -73,8 +73,8 @@ export function ContactForm() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Send Us a Message</CardTitle>
+      <CardHeader className="items-start text-left">
+        <CardTitle className="text-xl">Send Us a Message</CardTitle>
         <CardDescription>
           We'd love to hear from you. Fill out the form below and we'll get back
           to you as soon as possible.

@@ -1,10 +1,8 @@
-import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { PageHeader } from "@/components/page-header"
 import { ContactForm } from "@/components/contact/contact-form"
 import { ContactInfo } from "@/components/contact/contact-info"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
-import NavbarWrapper from "@/components/navbar-wrapper"
 
 export default function ContactPage() {
   return (

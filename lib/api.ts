@@ -4,6 +4,7 @@ import {
   createBooking,
   fetchOrderedLodge,
   getPropertiesWithId,
+  getRatingInfo,
   updateOrderPaymentStatus,
 } from "@/app/queries/order";
 import {
@@ -244,6 +245,19 @@ export const isLodgeBeenBooked = async (userId: string, propertyId: string) => {
     throw err;
   }
 };
+
+export const fetchRatingData = async (lodgeId:string)=>{
+  try{
+    if(!lodgeId){
+      throw new Error("Invalid id")
+    }
+
+    const response = await getRatingInfo(lodgeId);
+    return response
+  }catch(err){
+    throw err;
+  }
+}
 
 export const registerUser = async (values: any) => {
   const response = await fetch(`${baseUrl}/api/auth/register`, {

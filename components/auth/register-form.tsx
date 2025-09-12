@@ -16,7 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import toast from "react-hot-toast";
-import { register } from "module";
 import { registerUser } from "@/lib/api";
 import { credentialLogin } from "@/app/actions/auth";
 
@@ -59,12 +58,10 @@ export function RegisterForm() {
         toast.error(response.message);
         return;
       }
-
       await router.replace("/");
     } else {
       toast.error(result.message);
     }
-    setIsLoading(false);
   }
 
   return (

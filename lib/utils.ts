@@ -124,12 +124,31 @@ export const findDays = (checkIn: string, checkOut: string) => {
 };
 
 export const ratingsInfo = (comments: Record<any, string>[]) => {
-  const numberOfReviews = comments.length
+  const numberOfReviews = comments.length;
   const sum = comments.reduce((acc: number, curr: any) => {
     acc = curr.rating + acc;
     return acc;
   }, 0);
 
-  const rating = Math.ceil(sum / numberOfReviews)
-  return [rating, numberOfReviews]
+  const rating = Math.ceil(sum / numberOfReviews);
+  return [rating, numberOfReviews];
 };
+
+type RatingItem = { rating: number; count: number };
+
+export function normalizeRatings(
+  response: { rating: number | null; _count: { rating: number } }[]
+): RatingItem[] {
+  const map = new Map<number, number>();
+
+  response.forEach(r => {
+    if (r.rating) {
+      map.set(r.rating, r._count.rating);
+    }
+  });
+
+  return Array.from({ length: 5 }, (_, i) => {
+    const rating = i + 1;
+    return { rating, count: map.get(rating) ?? 0 };
+  });
+}

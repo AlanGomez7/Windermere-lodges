@@ -40,28 +40,17 @@ const amenityIconMap: Record<string, string> = {
 };
 
 const policyIconMap: Record<string, keyof typeof Icons> = {
-  "Check-in & Check-out": "calendarClock",
+  "House rules": "calendarClock",
   "Cancellation Policy": "ban",
-  "Property Maintenance & Damage Policy": "wrench",
+  "Safety & Property": "wrench",
 };
-
-const amenitiesToDisplay = [
-  "Lake Access",
-  "Wifi",
-  "Shared Pool",
-  "Washing Machine",
-  "Hair Dryer",
-  "Kitchen",
-  "TV",
-  "+11 More",
-];
 
 function Gallery({
   images,
   lodgeName,
   lodgeId,
 }: {
-  lodgeId:string;
+  lodgeId: string;
   images: string[];
   lodgeName: string;
 }) {
@@ -235,6 +224,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
   const noOfReviewStars = new Array(5).fill("");
 
+
   useEffect(() => {
     if (dates) {
       setCheckInDate(dates.from);
@@ -333,7 +323,11 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
           <div className="flex flex-col md:flex-row gap-8">
             <div className="flex-1">
-              <Gallery images={lodge.images} lodgeName={lodge.name} lodgeId={lodge.id}/>
+              <Gallery
+                images={lodge.images}
+                lodgeName={lodge.name}
+                lodgeId={lodge.id}
+              />
             </div>
             <div className="w-full md:w-96">
               <Card>
@@ -529,16 +523,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       key={i}
                       className="flex items-center space-x-2 flex-shrink-0"
                     >
-                      {/* {iconSrc && (
-                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                          <Image
-                            src={iconSrc}
-                            alt={amenity}
-                            width={24}
-                            height={24}
-                          />
-                        </div>
-                      )} */}
                       <span className="text-gray-700">{amenity}</span>
                     </div>
                   );
@@ -565,53 +549,88 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
             </div>
 
             {/* Rules and Policies */}
-            {/* <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">Rules & Policies</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {lodge.policies.map((policy: any, i: number) => {
-                const IconComponent = Icons[
-                  policyIconMap[policy.label]
-                ] as Icon;
-                return (
-                  <div key={i} className="flex items-start gap-4">
-                    {IconComponent && (
-                      <IconComponent className="h-8 w-8 text-emerald-600 mt-1" />
-                    )}
-                    <div>
-                      <h3 className="font-bold text-sm">{policy.label}</h3>
-                      <p className="text-gray-800 font-light">{policy.value}</p>
+            <div className="mb-8 mt-16">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6">
+                Rules & Policies
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    label: "House rules",
+                    value: "Check in after 3 pm & check out before 10 am",
+                  },
+                  {
+                    label: "Cancellation Policy",
+                    value: "Free cancellation for 48 hours.",
+                  },
+                  {
+                    label: "Safety & Property",
+                    value: `${lodge.guests} guests maximum`,
+                  },
+                ].map((policy: any) => {
+                  const IconComponent = Icons[policyIconMap[policy.label]];
+                  return (
+                    <div
+                      key={policy.label}
+                      className="rounded-xl border bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="h-10 w-10 rounded-full bg-emerald-50 text-emerald-600 grid place-items-center">
+                          {IconComponent && (
+                            <IconComponent
+                              className="h-6 w-6"
+                              aria-hidden="true"
+                            />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-base font-semibold">
+                            {policy.label}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {policy.value}
+                          </p>
+                          <Button
+                            variant="link"
+                            className="p-0 mt-2 text-emerald-700 hover:text-emerald-800"
+                          >
+                            show more
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
                   );
-              })}
-            </div>
-          </div> */}
-            {/* FAQ (accordion) */}
-            {/* <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">FAQ</h2>
-            <div>
-            {lodge.faqs.map((faq: any, i: number) => (
-                <div key={i} className="mb-2 border-b">
-                  <button
-                    className="w-full text-left font-semibold py-3 flex justify-between items-center focus:outline-none"
-                    onClick={() => setShowFAQ(i === showFAQ ? null : i)}
-                  >
-                    {faq.q}
-                    <span
-                      className={`ml-2 transition-transform ${
-                        showFAQ === i ? "rotate-90" : ""
-                      }`}
-                      >
-                      ▶
-                    </span>
-                    </button>
-                  {showFAQ === i && (
-                    <div className="text-gray-700 pb-3 pl-2">{faq.a}</div>
-                  )}
-                </div>
-              ))}
+                })}
               </div>
-          </div> */}
+            </div>
+            {/* FAQ (accordion) */}
+
+            {/* <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">FAQ</h2>
+              <div>
+                {lodge.faqs.map((faq: any, i: number) => (
+                  <div key={i} className="mb-2 border-b">
+                    <button
+                      className="w-full text-left font-semibold py-3 flex justify-between items-center focus:outline-none"
+                      onClick={() => setShowFAQ(i === showFAQ ? null : i)}
+                    >
+                      {faq.q}
+                      <span
+                        className={`ml-2 transition-transform ${
+                          showFAQ === i ? "rotate-90" : ""
+                        }`}
+                      >
+                        ▶
+                      </span>
+                    </button>
+                    {showFAQ === i && (
+                      <div className="text-gray-700 pb-3 pl-2">{faq.a}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div> */}
           </div>
         </div>
       </>

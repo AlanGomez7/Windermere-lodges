@@ -14,13 +14,13 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-white">
       <Hero />
-      <BookingSection lodges={lodges} />
-      <FeaturedLodges lodges={lodges} />
-      <Amenities />
-      <Activities />
-      <Testimonials />
-      <Footer />
-      <ChatbotButton />
+      <BookingSection lodges={lodges}/>
+      <FeaturedLodges lodges={lodges}/>
+      <Amenities/>
+      <Activities/>
+      <Testimonials/>
+      <Footer/>
+      <ChatbotButton/>
     </main>
   );
 }

@@ -6,6 +6,7 @@ import image1 from "@/public/activities/activity.png";
 import sightseeing from "@/public/activities/sightseeing.jpg";
 import kayaking from "@/public/activities/kayaking.jpg";
 import trekking from "@/public/activities/trekking.jpg";
+import discoverWCB from "@/public/discoverwcb.jpg"
 
 const activities = [
   {
@@ -40,12 +41,12 @@ const activities = [
 export const Activities = () => {
   return (
     <section className="py-20">
-      <div className="container mx-auto px-4 pb-20">
-        <div className="text-center mb-12">
+      <div className="container mx-auto px-4 pb-20 flex flex-col md:flex-row items-start gap-8">
+        <div className="md:w-1/2 text-center md:text-left mb-12 md:mb-0">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">
             Discover White Cross Bay
           </h2>
-          <p className="text-lg text-gray-600 max-w-5xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-5xl mx-auto text-left">
             Located on the eastern shore of Windermere, White Cross Bay provides
             an ideal setting for families and couples alike. With direct access
             to the lake, you'll be surrounded by the serene beauty of the
@@ -59,6 +60,17 @@ export const Activities = () => {
             plenty of activities for all ages, a yummy menu courtesy of our
             onsite restaurant, and a beer garden.
           </p>
+        </div>
+
+        {/* Image panel */}
+        <div className="relative w-full md:w-1/2 aspect-[4/3] md:aspect-[3/2] lg:aspect-[16/10]">
+          <Image
+            src={discoverWCB || "/placeholder.svg"}
+            alt={"discover white cross bay"}
+            fill
+            className="object-cover rounded-lg"
+            priority
+          />
         </div>
       </div>
       <div className="container mx-auto px-4">

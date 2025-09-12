@@ -6,8 +6,8 @@ export function ContactInfo() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle>Contact Information</CardTitle>
+        <CardHeader className="items-start text-left">
+          <CardTitle className="text-xl">Contact Information</CardTitle>
           <CardDescription>Get in touch with our friendly team</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -71,8 +71,8 @@ export function ContactInfo() {
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Connect With Us</CardTitle>
+        <CardHeader className="items-start text-left">
+          <CardTitle className="text-xl">Connect With Us</CardTitle>
           <CardDescription>Follow us on social media for updates and special offers</CardDescription>
         </CardHeader>
         <CardContent>

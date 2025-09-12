@@ -143,7 +143,7 @@ export default function MyAccount({ user }: any) {
       <div className="p-4 lg:p-6 space-y-6 bg-gray-50 min-h-full">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Profile Card */}
-          <Card className="lg:col-span-1 animate-card hover-lift">
+          <Card className="lg:col-span-1 animate-card hover-lift shadow-md">
             <CardContent className="p-6 flex flex-col items-center text-center">
               <div className="relative mb-4">
                 <Avatar className="w-24 h-24 animate-float">
@@ -196,7 +196,7 @@ export default function MyAccount({ user }: any) {
                 Account Details
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 shadow-md">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="user">User Name</Label>
@@ -288,7 +288,7 @@ export default function MyAccount({ user }: any) {
 
           {/* Password Change Form */}
           <Card
-            className="lg:col-span-2 animate-card hover-lift"
+            className="lg:col-span-2 animate-card hover-lift shadow-md"
             hidden={user.googleId ? true : false}
           >
             <CardHeader>

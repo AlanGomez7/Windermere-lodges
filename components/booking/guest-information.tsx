@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -17,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppContext } from "@/app/context/context";
 import Image from "next/image";
+import { format } from "date-fns";
 
 interface ContactInfo {
   firstName: string;
@@ -125,12 +127,12 @@ export function GuestInformation({
 
   return (
     <section
-      className={`p-16 mb-5 min-h-screen flex justify-center ${
+      className={`p-6 lg:p-16 mb-5 min-h-screen flex justify-center ${
         isActive ? "block" : "hidden"
       }`}
     >
       <div className="container flex gap-8 flex-col lg:flex-row">
-        <div>
+        <div className="basis-3/6 ">
           <Card>
             <div className="relative h-64 w-100">
               <Image
@@ -157,17 +159,54 @@ export function GuestInformation({
               </div>
             </div>
 
-            <CardHeader className="flex">
+            <CardHeader className="flex ">
               <div className="flex justify-between items-start w-full">
                 <CardTitle className="text-lg lg:text-xl font-bold">
                   {bookingDetails.lodge.nickname}
                 </CardTitle>
               </div>
-              <CardDescription>{bookingDetails.lodge.address}</CardDescription>
+              <CardDescription className="text-start">
+                {bookingDetails.lodge.address}
+              </CardDescription>
             </CardHeader>
 
             <CardContent className="pt-6">
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 shadow-md rounded-lg p-6">
+                <div className="flex justify-between font-bold text-md lg:text-lg mt-2">
+                  <span>Booking details</span>
+                </div>
+                <hr></hr>
+
+                <div className="flex justify-between text-sm">
+                  <span>Check in</span>
+                  <span>
+                    {" "}
+                    {format(
+                      new Date(bookingDetails.dates.from),
+                      "MMMM do yyyy"
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Check out</span>
+                  <span>
+                    {format(new Date(bookingDetails.dates.to), "MMMM do yyyy")}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Nights</span>
+                  <span> {nights} Nights</span>
+                </div>
+              </div>
+            </CardContent>
+
+            <CardContent className="">
+              <div className="flex flex-col gap-2 shadow-md rounded-md  p-6">
+                <div className="flex justify-between font-bold text-md lg:text-lg mt-2">
+                  <span>Payment Summary</span>
+                </div>
+                <hr className="mb-6" />
+
                 <div className="flex justify-between text-sm">
                   <span>{nights} Night</span>
                   <span>
@@ -186,7 +225,9 @@ export function GuestInformation({
                   <span>Cleaning fee</span>
                   <span> &pound;{bookingDetails?.lodge.cleaning_fee}</span>
                 </div>
-                <div className="flex justify-between font-bold text-md lg:text-lg mt-2">
+                <hr className="mb-6" />
+
+                <div className="flex justify-between font-bold text-md lg:text-xl mt-2">
                   <span>Total Payment</span>
                   <span>
                     &pound;
@@ -202,8 +243,8 @@ export function GuestInformation({
           </Card>
         </div>
 
-        <div className="space-y-6">
-          <Card>
+        <div className="shadow-md">
+          <Card className="">
             <CardHeader>
               <CardTitle className="text-3xl font-semibold">
                 Guest Information
@@ -213,7 +254,7 @@ export function GuestInformation({
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">
@@ -340,19 +381,20 @@ export function GuestInformation({
               </div>
             </CardContent>
           </Card>
+          <CardFooter>
+            <Button
+              onClick={handleContinue}
+              className="bg-teal-600 hover:bg-teal-700 w-full space-y-2 lg:mt-10"
+            >
+              PROCEED TO PAYMENT
+            </Button>
+          </CardFooter>
 
           {error && (
             <div className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600">
               {error}
             </div>
           )}
-
-          <Button
-            onClick={handleContinue}
-            className="bg-teal-600 hover:bg-teal-700 w-full space-y-2"
-          >
-            PROCEED TO PAYMENT
-          </Button>
         </div>
       </div>
     </section>

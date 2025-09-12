@@ -16,7 +16,6 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn, ratingsInfo } from "@/lib/utils";
-import { Icons } from "../ui/icons";
 import { useRouter } from "next/navigation";
 
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
@@ -28,7 +27,10 @@ import { GuestSelector } from "../booking/guest-selector";
 import AboutModal from "../ui/about-modal";
 import ReviewList from "../review-wrapper";
 import Link from "next/link";
+import KnowMore from "../ui/know-more";
 
+import { Icons } from "../ui/icons";
+import ListingModal from "../ui/listings-modal";
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
   Wifi: "/icons/wifi.png",
@@ -206,6 +208,7 @@ function Gallery({
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const { searchParams, setSearchParams } = useAppContext();
+  const [showAmenities, setShowAmenities] = useState(false);
 
   const { dates, guests } = searchParams;
 
@@ -223,7 +226,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
   const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
   const noOfReviewStars = new Array(5).fill("");
-
 
   useEffect(() => {
     if (dates) {
@@ -493,31 +495,30 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">What we offer</h2>
-              <div className="flex space-x-6 overflow-x-auto pb-4">
-                {lodge.features.map((amenity: string, i: number) => {
+              <div className="flex space-x-6 pb-4">
+                {lodge.features.slice(0,3).map((amenity: string, i: number) => {
                   const iconKey = Object.keys(amenityIconMap).find((key) =>
                     amenity.toLowerCase().includes(key.toLowerCase())
                   );
                   // const iconSrc = iconKey ? amenityIconMap[iconKey] : null;
 
-                  if (amenity.startsWith("+")) {
-                    return (
-                      <div
-                        key={i}
-                        className="flex items-center space-x-2 flex-shrink-0"
-                      >
-                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                          <span className="text-sm font-semibold">
-                            {amenity.split(" ")[0]}
-                          </span>
-                        </div>
-                        <span className="text-gray-700">
-                          {amenity.split(" ").slice(1).join(" ")}
-                        </span>
-                      </div>
-                    );
-                  }
-
+                  // if (amenity.startsWith("+")) {
+                  //   return (
+                  //     <div
+                  //       key={i}
+                  //       className="flex items-center space-x-2 flex-shrink-0"
+                  //     >
+                  //       <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                  //         <span className="text-sm font-semibold">
+                  //           {amenity.split(" ")[0]}
+                  //         </span>
+                  //       </div>
+                  //       <span className="text-gray-700">
+                  //         {amenity.split(" ").slice(1).join(" ")}
+                  //       </span>
+                  //     </div>
+                  //   );
+                  // }
                   return (
                     <div
                       key={i}
@@ -527,8 +528,17 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                     </div>
                   );
                 })}
+                <Button variant={"secondary"} onClick={() => setShowAmenities(true)}>
+                  Show all {lodge.features.length} amenities
+                </Button>
               </div>
             </div>
+
+            <ListingModal
+              showDialog={showAmenities}
+              setShowDialog={setShowAmenities}
+              value={[{ title: "Amenities", data: lodge.features }]}
+            />
 
             {/* Rating & Review */}
 
@@ -559,78 +569,26 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                   {
                     label: "House rules",
                     value: "Check in after 3 pm & check out before 10 am",
+                    data: [],
                   },
                   {
                     label: "Cancellation Policy",
                     value: "Free cancellation for 48 hours.",
+                    data: [],
                   },
                   {
                     label: "Safety & Property",
                     value: `${lodge.guests} guests maximum`,
+                    data: [],
                   },
-                ].map((policy: any) => {
-                  const IconComponent = Icons[policyIconMap[policy.label]];
-                  return (
-                    <div
-                      key={policy.label}
-                      className="rounded-xl border bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="h-10 w-10 rounded-full bg-emerald-50 text-emerald-600 grid place-items-center">
-                          {IconComponent && (
-                            <IconComponent
-                              className="h-6 w-6"
-                              aria-hidden="true"
-                            />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-base font-semibold">
-                            {policy.label}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {policy.value}
-                          </p>
-                          <Button
-                            variant="link"
-                            className="p-0 mt-2 text-emerald-700 hover:text-emerald-800"
-                          >
-                            show more
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  );
+                ].map((policy: any, indx) => {
+                  return <KnowMore policy={policy} key={indx} />;
                 })}
+                {/* <ListingModal /> */}
               </div>
             </div>
             {/* FAQ (accordion) */}
 
-            {/* <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">FAQ</h2>
-              <div>
-                {lodge.faqs.map((faq: any, i: number) => (
-                  <div key={i} className="mb-2 border-b">
-                    <button
-                      className="w-full text-left font-semibold py-3 flex justify-between items-center focus:outline-none"
-                      onClick={() => setShowFAQ(i === showFAQ ? null : i)}
-                    >
-                      {faq.q}
-                      <span
-                        className={`ml-2 transition-transform ${
-                          showFAQ === i ? "rotate-90" : ""
-                        }`}
-                      >
-                        ▶
-                      </span>
-                    </button>
-                    {showFAQ === i && (
-                      <div className="text-gray-700 pb-3 pl-2">{faq.a}</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div> */}
           </div>
         </div>
       </>

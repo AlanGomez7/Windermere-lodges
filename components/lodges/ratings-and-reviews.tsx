@@ -27,8 +27,6 @@ export default function RatingsAndReviews({
     }
   };
 
-  const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
-
   useEffect(() => {
     if (userId) {
       handleFetchData(userId);
@@ -36,24 +34,6 @@ export default function RatingsAndReviews({
   }, [lodge, userId]);
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
-
-  const ratingSummary = {
-    average: avgRating,
-    label: "Very Good",
-    total: totalNoOfReviews,
-    stars: new Array(avgRating).fill(''),
-    breakdown: [
-      { stars: 5, label: "Excellent", count: 100, color: "bg-amber-400" },
-      { stars: 4, label: "Very Good", count: 74, color: "bg-amber-400" },
-      { stars: 3, label: "Good", count: 53, color: "bg-amber-400" },
-      { stars: 2, label: "Average", count: 10, color: "bg-amber-400" },
-      { stars: 1, label: "Poor", count: 13, color: "bg-amber-400" },
-    ],
-  };
-
-  // const maxCount = Math.max(...ratingSummary.breakdown.map((b) => b.count));
-
-  // needs serious rework after booking is sorted
 
   return (
     <>

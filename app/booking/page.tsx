@@ -11,6 +11,7 @@ import { StripePayment } from "@/components/booking/stripe-payment";
 import { useRouter } from "next/navigation";
 
 export default function BookingPage() {
+  
   const { searchParams } = useAppContext();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
@@ -50,7 +51,7 @@ export default function BookingPage() {
       <PageHeader
         title="Book Your Stay"
         description="Secure your perfect Lake District getaway"
-        backgroundImage={orderDetails?.lodge?.images[0] || "/placeholder.jpg"}
+        backgroundImage={orderDetails?.lodge?.images[2] || "/placeholder.jpg"}
       />
 
       {/* <BookingSteps currentStep={currentStep} /> */}

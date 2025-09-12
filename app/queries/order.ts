@@ -70,6 +70,31 @@ export const getUserBookings = async (id: string | null | undefined) => {
   }
 };
 
+
+
+export const cancelBooking = async (
+  orderId: string,
+) => {
+  try {
+    
+    if(!orderId){
+      throw new Error("Invalid id")
+    }
+    const response = await prisma.enquiryBooking.update({
+      where:{
+        id: orderId
+      },
+      data: {
+        status: "CANCELLED"
+      },
+    });
+
+    return response
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getPropertiesWithId = async (ids: string[]) => {
   try {
     const response = await prisma.property.findMany({
@@ -100,21 +125,23 @@ export const fetchOrderedLodge = async (userId: string, lodgeId: string) => {
       },
     });
 
+    console.log(
+      lodge,
+      "=++++++++++++++++++++++++++++++++++++++++++========================"
+    );
     return lodge;
   } catch (err) {
     throw err;
   }
 };
 
-enum STATUS {
+enum PAYMENTSTATUS {
   SUCCESSFUL = "SUCCESSFUL",
   PENDING = "PENDING",
   UNSUCCESSFUL = "UNSUCCESSFUL",
 }
 
 export const updateOrderPaymentStatus = async ({
-  orderDetails,
-  bookingDetails,
   stripeId,
   result,
   status,
@@ -123,7 +150,7 @@ export const updateOrderPaymentStatus = async ({
   orderDetails: any;
   stripeId: string;
   result: any;
-  status: STATUS;
+  status: PAYMENTSTATUS;
 }) => {
   try {
     const response = prisma.enquiryBooking.update({
@@ -152,8 +179,8 @@ export const getRatingInfo = async (lodgeId: string) => {
         rating: true,
       },
       _sum: {
-        rating: true
-      }
+        rating: true,
+      },
     });
 
     return response;

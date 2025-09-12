@@ -6,6 +6,7 @@ import ReviewCard from "./cards/review-card";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Star } from "lucide-react";
+import { Button } from "./ui/button";
 
 export default function ReviewList({ lodgeId }: { lodgeId: string }) {
   const [comments, setComments] = useState<any[]>([]);
@@ -51,6 +52,7 @@ export default function ReviewList({ lodgeId }: { lodgeId: string }) {
             </div>
             <p className="text-gray-600 line-clamp-4">{testimonial.content}</p>
           </CardContent>
+          <Button variant={"link"}>Show more</Button>
         </Card>
       ))}
     </div>

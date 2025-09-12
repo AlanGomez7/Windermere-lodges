@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  cancelBooking,
   createBooking,
   fetchOrderedLodge,
   getPropertiesWithId,
@@ -99,6 +100,19 @@ export const changePassword = async ({
   }
 };
 
+export const cancelUserBooking = async (orderId: string) => {
+  try {
+    if (!orderId) {
+      throw new Error("Invalid id");
+    }
+
+    const response = await cancelBooking(orderId);
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const fetchPropertyDetails = async (id: string) => {
   const response = await fetch(`${baseUrl}/api/our-lodges/${id}`, {
     method: "GET",
@@ -183,10 +197,6 @@ export const checkAvailableLodges = async (
 
     // Filter for selected lodge if provided
     if (params.lodge?.id) {
-      console.log("++++++++++++++++++++++++())()(()()()()()()()()()()()()");
-      console.log(data);
-      console.log("++++++++++++++++++++++++())()(()()()()()()()()()()()()");
-
       const selectedLodge = data.find((d: any) => {
         if (d.id === params.lodge.refNo) return d.id;
       });
@@ -246,18 +256,18 @@ export const isLodgeBeenBooked = async (userId: string, propertyId: string) => {
   }
 };
 
-export const fetchRatingData = async (lodgeId:string)=>{
-  try{
-    if(!lodgeId){
-      throw new Error("Invalid id")
+export const fetchRatingData = async (lodgeId: string) => {
+  try {
+    if (!lodgeId) {
+      throw new Error("Invalid id");
     }
 
     const response = await getRatingInfo(lodgeId);
-    return response
-  }catch(err){
+    return response;
+  } catch (err) {
     throw err;
   }
-}
+};
 
 export const registerUser = async (values: any) => {
   const response = await fetch(`${baseUrl}/api/auth/register`, {

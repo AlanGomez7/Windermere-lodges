@@ -138,6 +138,15 @@ export const checkAvailableLodges = async (
     };
   }
 
+    if (params?.dates?.from === params?.dates?.to) {
+    return {
+      data: [],
+      included: [],
+      message: "Please select a valid date range",
+      ok: false,
+    };
+  }
+
   try {
     const checkIn = new Date(params.dates.from);
     const checkOut = new Date(params.dates.to);
@@ -158,7 +167,7 @@ export const checkAvailableLodges = async (
       return {
         data: [],
         included: [],
-        message: "Missing Uplisting API key",
+        message: "Some thing went wrong",
         ok: false,
       };
     }
@@ -178,7 +187,7 @@ export const checkAvailableLodges = async (
       return {
         data: [],
         included: [],
-        message: `Uplisting API error (${response.status})`,
+        message: `Something went wrong`,
         ok: false,
       };
     }
@@ -224,8 +233,6 @@ export const checkAvailableLodges = async (
       return d.id;
     });
 
-    console.log("===================================");
-    console.log(availableLodges);
     return {
       data: availableLodges,
       included,
@@ -237,7 +244,7 @@ export const checkAvailableLodges = async (
     return {
       data: [],
       included: [],
-      message: "Something went wrong fetching availability",
+      message: "Something went wrong",
       ok: false,
     };
   }

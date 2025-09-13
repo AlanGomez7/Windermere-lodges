@@ -28,3 +28,34 @@ export const createReview = async ({
     throw err;
   }
 };
+
+
+export const createEnquiryData = async (data: { name:string, phone:string, email:string, subscribe:boolean, message:string, subject:string }) => {
+  try {
+
+    const { name, phone, email, subscribe, message, subject } = data;
+    
+    if (!name || !phone || !email || !message || !subject) {
+      throw new Error("invalid inputs");
+    }
+
+    const response = await prisma.enquiry.create({
+      data:{
+        name:name,
+        mobile: phone,
+        email,
+        subject,
+        subscribe,
+        message,
+        status: 'PENDING'
+      }
+    })
+
+    return response;
+
+  } catch (err) {
+    throw err;
+  }
+};
+
+

@@ -200,12 +200,12 @@ export const galleryImagesByLodge: Record<string, GalleryImage[]> = {
       category: "interior",
       featured: false,
     },
-    {
-      src: "/Glenridding/pool.jpeg",
-      alt: "Glenridding interior",
-      category: "interior",
-      featured: true,
-    },
+    // {
+    //   src: "/Glenridding/pool.jpeg",
+    //   alt: "Glenridding interior",
+    //   category: "interior",
+    //   featured: true,
+    // },
     {
       src: "/Glenridding/exterior.jpeg",
       alt: "Glenridding exterior",

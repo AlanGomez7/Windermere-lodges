@@ -134,6 +134,19 @@ model Comment {
   visitor    User          @relation(fields: [visitorId], references: [id])
 }
 
+model Enquiry {
+  id        String        @id @default(uuid())
+  name      String
+  email     String
+  mobile    String
+  subject   String
+  message   String
+  subscribe Boolean
+  status    EnquiryStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
 model EnquiryBooking {
   id            String               @id @default(uuid())
   propertyId    String
@@ -158,6 +171,11 @@ model EnquiryBooking {
   infant        Int?                 @default(0)
   teens         Int?                 @default(0)
   property      Property             @relation(fields: [propertyId], references: [id])
+}
+
+enum EnquiryStatus {
+  PENDING
+  REPLIED
 }
 
 enum PaymentType {

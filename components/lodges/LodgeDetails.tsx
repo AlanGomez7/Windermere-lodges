@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { cn, ratingsInfo } from "@/lib/utils";
+import { cn, findDays, ratingsInfo } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
@@ -225,31 +225,18 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   });
 
   const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
-  const noOfReviewStars = new Array(5).fill("");
 
   useEffect(() => {
     if (dates) {
       setCheckInDate(dates.from);
       setCheckOutDate(dates.to);
     }
-    return;
-  }, []);
 
-  useEffect(() => {
-    const nights = findDifference();
+    const nights = findDays(checkInDate, checkOutDate);
+    console.log(nights)
     setDiff(nights);
-    setSearchParams({ ...searchParams, nights });
-  }, [checkInDate, checkOutDate]);
-
-  const findDifference = () => {
-    const date1 = Number(new Date(checkInDate ? checkInDate : ""));
-    const date2 = Number(new Date(checkOutDate ? checkOutDate : ""));
-    // Difference in milliseconds
-    const diffMs = date2 - date1;
-    // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
+    return;
+  }, [lodge , checkInDate, checkOutDate]);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -496,39 +483,44 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">What we offer</h2>
               <div className="flex space-x-6 pb-4">
-                {lodge.features.slice(0,3).map((amenity: string, i: number) => {
-                  const iconKey = Object.keys(amenityIconMap).find((key) =>
-                    amenity.toLowerCase().includes(key.toLowerCase())
-                  );
-                  // const iconSrc = iconKey ? amenityIconMap[iconKey] : null;
+                {lodge.features
+                  .slice(0, 3)
+                  .map((amenity: string, i: number) => {
+                    const iconKey = Object.keys(amenityIconMap).find((key) =>
+                      amenity.toLowerCase().includes(key.toLowerCase())
+                    );
+                    // const iconSrc = iconKey ? amenityIconMap[iconKey] : null;
 
-                  // if (amenity.startsWith("+")) {
-                  //   return (
-                  //     <div
-                  //       key={i}
-                  //       className="flex items-center space-x-2 flex-shrink-0"
-                  //     >
-                  //       <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                  //         <span className="text-sm font-semibold">
-                  //           {amenity.split(" ")[0]}
-                  //         </span>
-                  //       </div>
-                  //       <span className="text-gray-700">
-                  //         {amenity.split(" ").slice(1).join(" ")}
-                  //       </span>
-                  //     </div>
-                  //   );
-                  // }
-                  return (
-                    <div
-                      key={i}
-                      className="flex items-center space-x-2 flex-shrink-0"
-                    >
-                      <span className="text-gray-700">{amenity}</span>
-                    </div>
-                  );
-                })}
-                <Button variant={"secondary"} onClick={() => setShowAmenities(true)}>
+                    // if (amenity.startsWith("+")) {
+                    //   return (
+                    //     <div
+                    //       key={i}
+                    //       className="flex items-center space-x-2 flex-shrink-0"
+                    //     >
+                    //       <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                    //         <span className="text-sm font-semibold">
+                    //           {amenity.split(" ")[0]}
+                    //         </span>
+                    //       </div>
+                    //       <span className="text-gray-700">
+                    //         {amenity.split(" ").slice(1).join(" ")}
+                    //       </span>
+                    //     </div>
+                    //   );
+                    // }
+                    return (
+                      <div
+                        key={i}
+                        className="flex items-center space-x-2 flex-shrink-0"
+                      >
+                        <span className="text-gray-700">{amenity}</span>
+                      </div>
+                    );
+                  })}
+                <Button
+                  variant={"secondary"}
+                  onClick={() => setShowAmenities(true)}
+                >
                   Show all {lodge.features.length} amenities
                 </Button>
               </div>
@@ -588,7 +580,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
               </div>
             </div>
             {/* FAQ (accordion) */}
-
           </div>
         </div>
       </>

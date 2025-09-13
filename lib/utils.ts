@@ -112,15 +112,21 @@ export function hydrateResourceById(
   return hydrated;
 }
 
-export const findDays = (checkIn: string, checkOut: string) => {
-  const date1 = new Date(checkIn);
-  const date2 = new Date(checkOut);
-  // Difference in milliseconds
-  const diffMs = date2.getTime() - date1.getTime();
+export const findDays = (
+  checkIn: Date | undefined,
+  checkOut: Date | undefined
+) => {
+  if (checkIn && checkOut) {
+    const date1 = new Date(checkIn);
+    const date2 = new Date(checkOut);
+    // Difference in milliseconds
+    const diffMs = date2.getTime() - date1.getTime();
+    // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    return diffDays;
+  }
 
-  // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  return diffDays;
+  return 0;
 };
 
 export const ratingsInfo = (comments: Record<any, string>[]) => {
@@ -141,7 +147,7 @@ export function normalizeRatings(
 ): RatingItem[] {
   const map = new Map<number, number>();
 
-  response.forEach(r => {
+  response.forEach((r) => {
     if (r.rating) {
       map.set(r.rating, r._count.rating);
     }

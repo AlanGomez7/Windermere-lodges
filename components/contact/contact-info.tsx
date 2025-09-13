@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { MapPin, Phone, Mail, Clock, Facebook, Twitter, Instagram, Linkedin } from "lucide-react"
+import Link from "next/link"
 
 export function ContactInfo() {
   return (
@@ -48,9 +49,10 @@ export function ContactInfo() {
             <div>
               <h4 className="font-medium">Email</h4>
               <p className="text-gray-600 mt-1">
-                <a href="mailto:info@windermerelodges.com" className="hover:text-teal-600">
+                <Link href="info@lodgelets.co.uk" className="hover:text-teal-600">
                   info@lodgelets.co.uk
-                </a>
+                    
+                </Link>
               </p>
               <p className="text-sm text-gray-500 mt-1">We aim to respond within 24 hours</p>
             </div>

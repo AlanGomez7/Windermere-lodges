@@ -17,7 +17,7 @@ export default async function GalleryPage() {
 
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <Suspense fallback={<Loading/>}>
+          <Suspense fallback={<Loading />}>
             <GalleryTabs />
           </Suspense>
         </div>

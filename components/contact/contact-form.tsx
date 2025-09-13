@@ -25,6 +25,8 @@ import {
 import { Loader2, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "../ui/checkbox";
+import { postEnquiryData } from "@/lib/api";
+import toast from "react-hot-toast";
 
 export function ContactForm() {
   const [marketing, setMarketing] = useState(false);
@@ -37,7 +39,6 @@ export function ContactForm() {
     message: "",
     // subscribed: marketing,
   });
-  const { toast } = useToast();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -50,25 +51,29 @@ export function ContactForm() {
     setFormData((prev) => ({ ...prev, subject: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    const data = {...formData, subscribe: marketing}
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Message sent",
-        description: "We'll get back to you as soon as possible.",
-      });
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
-      });
-    }, 1500);
+    const response = await postEnquiryData(data)
+
+    if(response.ok){
+      toast.success("We will get back to you as soon as possible")
+    }else{
+      toast.error("Something went wrong")
+    }
+    
+    setIsLoading(false);
+
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    });
+    setMarketing(false)
   };
 
   return (

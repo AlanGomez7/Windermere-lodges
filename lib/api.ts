@@ -138,7 +138,7 @@ export const checkAvailableLodges = async (
     };
   }
 
-    if (params?.dates?.from === params?.dates?.to) {
+  if (params?.dates?.from === params?.dates?.to) {
     return {
       data: [],
       included: [],
@@ -247,6 +247,21 @@ export const checkAvailableLodges = async (
       message: "Something went wrong",
       ok: false,
     };
+  }
+};
+
+export const postEnquiryData = async (data: any) => {
+  try {
+    const response = await fetch(`${baseUrl}/api/contact`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json()
+  } catch (err) {
+    throw err;
   }
 };
 

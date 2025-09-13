@@ -30,6 +30,7 @@ const CheckoutPage = ({
   const [elementReady, setElementReady] = useState(false);
 
   useEffect(() => {
+    console.log("999999")
     if (orderDetails) {
       fetch("/api/create-payment-intent", {
         method: "POST",
@@ -39,7 +40,7 @@ const CheckoutPage = ({
         .then((res) => res.json())
         .then((data) => setClientSecret(data.clientSecret));
     }
-  }, [amount]);
+  }, [amount, bookingDetails, orderDetails]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

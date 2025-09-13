@@ -52,21 +52,13 @@ export function StripePayment({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
-  const [nights, setNights] = useState<number>(0);
-  const { orderDetails } = useAppContext();
+  const { orderDetails, searchParams } = useAppContext();
 
-  useEffect(() => {
-    const nights = findDays(
-      bookingDetails?.dates?.from,
-      bookingDetails?.dates?.to
-    );
-    setNights(nights);
-  }, []);
 
   let amount = 1;
-  if (nights) {
+  if (searchParams.nights) {
     amount =
-      bookingDetails.lodge.price * nights +
+      bookingDetails.lodge.price * searchParams.nights +
       bookingDetails?.lodge.cleaning_fee +
       bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee;
   }
@@ -122,10 +114,10 @@ export function StripePayment({
             <CardContent className="p-0 pt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between text-sm">
-                  <span>{nights} Night</span>
+                  <span>{searchParams.nights} Night</span>
                   <span>
                     {" "}
-                    &pound;{nights && bookingDetails.lodge.price * nights}
+                    &pound;{searchParams.nights && bookingDetails.lodge.price * searchParams.nights}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -143,7 +135,7 @@ export function StripePayment({
                   <span>Total Payment</span>
                   <span>
                     &pound;
-                    {nights && amount}
+                    {searchParams.nights && amount}
                   </span>
                 </div>
               </div>

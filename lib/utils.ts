@@ -158,3 +158,16 @@ export function normalizeRatings(
     return { rating, count: map.get(rating) ?? 0 };
   });
 }
+
+export const formatDate = (dateStr: Date | undefined) => {
+  if (dateStr) {
+    const date = new Date(dateStr);
+
+    const formatted = new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "short",
+    }).format(date);
+
+    return formatted;
+  }
+};

@@ -2,6 +2,7 @@ import { Button } from "./button";
 import { Icons } from "../ui/icons";
 import ListingModal from "./listings-modal";
 import { useState } from "react";
+import { data } from "@/data/lodges";
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
   Wifi: "/icons/wifi.png",
@@ -20,7 +21,7 @@ const policyIconMap: Record<string, keyof typeof Icons> = {
 
 export default function KnowMore({ policy }: any) {
   const IconComponent = Icons[policyIconMap[policy.label]];
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   return (
     <>
       <div
@@ -36,18 +37,22 @@ export default function KnowMore({ policy }: any) {
           <div className="flex-1">
             <h3 className="text-base font-semibold">{policy.label}</h3>
             <p className="text-sm text-gray-600">{policy.value}</p>
-            {/* <Button
+            <Button
               variant="link"
               className="p-0 mt-2 text-emerald-700 hover:text-emerald-800"
-              onClick={()=>setShowModal(true)}
+              onClick={() => setShowModal(true)}
             >
               show more
-            </Button> */}
+            </Button>
           </div>
         </div>
       </div>
 
-      <ListingModal value={policy.data} setShowDialog={setShowModal} showDialog={showModal}/>
+      <ListingModal
+        value={policy.data}
+        setShowDialog={setShowModal}
+        showDialog={showModal}
+      />
     </>
   );
 }

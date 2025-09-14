@@ -8,7 +8,6 @@ import {
 } from "@stripe/react-stripe-js";
 import { useAppContext } from "@/app/context/context";
 import { updateOrderPayment } from "@/lib/api";
-import { useRouter } from "next/navigation";
 import PaymentError from "../ui/payment-error";
 import BookingTimer from "./timer";
 

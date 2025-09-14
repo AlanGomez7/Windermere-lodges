@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { cn, findDays, ratingsInfo } from "@/lib/utils";
+import { cn, findDays, formatDate, ratingsInfo } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
@@ -233,10 +233,10 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     }
 
     const nights = findDays(checkInDate, checkOutDate);
-    console.log(nights)
+    console.log(nights);
     setDiff(nights);
     return;
-  }, [lodge , checkInDate, checkOutDate]);
+  }, [lodge, checkInDate, checkOutDate]);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -249,7 +249,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
       guests: guests,
       lodge,
     };
-    
+
     const response = await checkAvailableLodges(params);
 
     if (!response.ok) {
@@ -562,17 +562,76 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                   {
                     label: "House rules",
                     value: "Check in after 3 pm & check out before 10 am",
-                    data: [],
+                    data: [
+                      {
+                        title: "Checking in and out",
+                        data: [
+                          "Check-in after 15:00",
+                          "Checkout before 10:00",
+                          "Self check-in with lockbox",
+                        ],
+                      },
+
+                      {
+                        title: "During your stay",
+
+                        data: [
+                          "Pets allowed",
+                          "No parties or events",
+                          "No commercial photography",
+                          "No smoking",
+                          "Before you leave",
+                          "Throw rubbish away",
+                        ],
+                      },
+                      {
+                        title: "Before you leave",
+                        data: ["Throw rubbish away"],
+                      },
+                    ],
                   },
                   {
                     label: "Cancellation Policy",
                     value: "Free cancellation for 48 hours.",
-                    data: [],
+                    data: [
+                      {
+                        title: "Within 48 hours of booking",
+
+                        data: [
+                          "Get back 100% of what you paid.Partial refund if you cancel before 3:00 pm on 11 November. Get back 50% of every night. No refund of the service fee..Before",
+                        ],
+                      },
+                      {
+                        title: `Before ${formatDate(checkInDate)} 3 pm`,
+                        data: [
+                          "Partial refund",
+                          "Get back 50% of every night. No refund of the service fee.",
+                        ],
+                      },
+
+                      {
+                        title: `After ${formatDate(checkInDate)} 3 pm`,
+
+                        data: [
+                          "No refund if you cancel after 3:00 pm on 11 November. This reservation is non-refundable..",
+                        ],
+                      },
+                    ],
                   },
                   {
                     label: "Safety & Property",
-                    value: `${lodge.guests} guests maximum`,
-                    data: [],
+                    value: `Avoid surprises by looking over these important details about your Host's property.`,
+                    data: [
+                      {
+                        title: "Safety considerations",
+                        data: ["Not suitable for infants (under 2 years)"],
+                      },
+
+                      {
+                        title: "Safety devices",
+                        data: ["Carbon monoxide alarm installed", "Smoke alarm installed"],
+                      },
+                    ],
                   },
                 ].map((policy: any, indx) => {
                   return <KnowMore policy={policy} key={indx} />;

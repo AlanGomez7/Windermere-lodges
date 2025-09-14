@@ -138,18 +138,19 @@ export const checkAvailableLodges = async (
     };
   }
 
-  if (params?.dates?.from === params?.dates?.to) {
-    return {
-      data: [],
-      included: [],
-      message: "Please select a valid date range",
-      ok: false,
-    };
-  }
-
   try {
     const checkIn = new Date(params.dates.from);
     const checkOut = new Date(params.dates.to);
+
+
+    if (checkIn.getDate() === checkOut.getDate()) {
+      return {
+        data: [],
+        included: [],
+        message: "Your stay must be atleast 3 days",
+        ok: false,
+      };
+    }
 
     if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
       return {
@@ -184,6 +185,7 @@ export const checkAvailableLodges = async (
     );
 
     if (!response.ok) {
+      console.log(response)
       return {
         data: [],
         included: [],
@@ -259,7 +261,7 @@ export const postEnquiryData = async (data: any) => {
       },
       body: JSON.stringify(data),
     });
-    return response.json()
+    return response.json();
   } catch (err) {
     throw err;
   }

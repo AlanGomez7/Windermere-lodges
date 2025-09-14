@@ -13,8 +13,11 @@ export const Testimonials = () => {
   const [err, setErr] = useState("");
   const sliderRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<gsap.core.Tween | null>(null);
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
+    if (fetchedRef.current) return;
+    fetchedRef.current = true;
     setLoading(true);
     const handleFetch = async () => {
       try {
@@ -39,17 +42,37 @@ export const Testimonials = () => {
     const slider = sliderRef.current;
 
     const setupAnimation = () => {
-      if (animationRef.current) animationRef.current.kill();
+      // Respect reduced motion
+      const prefersReduced =
+        typeof window !== "undefined" &&
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      const totalWidth = slider.scrollWidth / 2; // only need half (since we duplicate)
+      if (animationRef.current) {
+        animationRef.current.kill();
+        animationRef.current = null;
+      }
+
+      // Reset transform before measuring and re-creating
+      gsap.set(slider, { x: 0 });
+
+      if (prefersReduced) {
+        return; // leave content static
+      }
+
+      const totalWidth = slider.scrollWidth / 2; // duplicated content
+
+      // Keep speed consistent across widths
+      const pixelsPerSecond = 80; // tune speed as desired
+      const duration = Math.max(5, totalWidth / pixelsPerSecond);
 
       animationRef.current = gsap.to(slider, {
         x: `-=${totalWidth}`,
-        duration: 25,
+        duration,
         ease: "linear",
         repeat: -1,
         modifiers: {
-          x: (x) => {
+          x: (x: string) => {
             const current = parseFloat(x);
             return (current % -totalWidth) + "px";
           },
@@ -57,18 +80,41 @@ export const Testimonials = () => {
       });
     };
 
+    // Initial build
     setupAnimation();
-    window.addEventListener("resize", setupAnimation);
 
+    // Rebuild on window resize
+    const onWindowResize = () => setupAnimation();
+    window.addEventListener("resize", onWindowResize);
+
+    // Rebuild on element size/content changes
+    let resizeRaf: number | null = null;
+    const ro = typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(() => {
+          if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
+          resizeRaf = requestAnimationFrame(setupAnimation);
+        })
+      : null;
+    ro?.observe(slider);
+
+    // Pause/Resume interactions (mouse and touch)
     const pause = () => animationRef.current?.pause();
     const resume = () => animationRef.current?.resume();
     slider.addEventListener("mouseenter", pause);
     slider.addEventListener("mouseleave", resume);
+    slider.addEventListener("touchstart", pause, { passive: true });
+    slider.addEventListener("touchend", resume, { passive: true });
+    slider.addEventListener("touchcancel", resume, { passive: true });
 
     return () => {
-      window.removeEventListener("resize", setupAnimation);
+      window.removeEventListener("resize", onWindowResize);
       slider.removeEventListener("mouseenter", pause);
       slider.removeEventListener("mouseleave", resume);
+      slider.removeEventListener("touchstart", pause);
+      slider.removeEventListener("touchend", resume);
+      slider.removeEventListener("touchcancel", resume);
+      ro?.disconnect();
+      if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
       animationRef.current?.kill();
     };
   }, [comments]);
@@ -86,11 +132,14 @@ export const Testimonials = () => {
         <h2 className="text-3xl font-bold text-center mb-8">
           Guest Testimonials
         </h2>
-        <div ref={sliderRef} className="flex gap-6 w-max py-5">
+        <div
+          ref={sliderRef}
+          className="flex gap-4 sm:gap-6 w-max py-5 will-change-transform"
+        >
           {doubled.map((testimonial, idx) => (
             <Card
               key={`${testimonial.id}-${idx}`}
-              className="testimonial-card flex-shrink-0 w-[90%] sm:w-[350px] shadow-md"
+              className="testimonial-card flex-shrink-0 w-[85%] xs:w-[75%] sm:w-[340px] md:w-[360px] shadow-md"
             >
               <CardHeader className="flex flex-row items-center gap-4 p-4">
                 <Avatar className="h-12 w-12 flex bg-gray-50 rounded-full justify-center items-center">

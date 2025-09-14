@@ -49,7 +49,7 @@ export function LodgeSelector({ onChange, properties }: LodgeSelectorProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-start truncate"
+          className="w-full h-full justify-start truncate"
           name="select lodge"
         >
           <Home className="mr-2 h-4 w-4" />

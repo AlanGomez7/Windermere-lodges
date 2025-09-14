@@ -8,14 +8,19 @@ import {
 } from "@stripe/react-stripe-js";
 import { useAppContext } from "@/app/context/context";
 import { updateOrderPayment } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import PaymentError from "../ui/payment-error";
+import BookingTimer from "./timer";
 
 const CheckoutPage = ({
   amount,
   setCurrentStep,
   bookingDetails,
+  isActive,
   orderDetails,
 }: {
   amount: number;
+  isActive: boolean;
   setCurrentStep: any;
   bookingDetails: any;
   orderDetails: any;
@@ -25,12 +30,12 @@ const CheckoutPage = ({
   const elements = useElements();
 
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [errorModal, setErrorModal] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(false);
   const [elementReady, setElementReady] = useState(false);
 
   useEffect(() => {
-    console.log("999999")
     if (orderDetails) {
       fetch("/api/create-payment-intent", {
         method: "POST",
@@ -41,6 +46,10 @@ const CheckoutPage = ({
         .then((data) => setClientSecret(data.clientSecret));
     }
   }, [amount, bookingDetails, orderDetails]);
+
+
+
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -71,7 +80,7 @@ const CheckoutPage = ({
     });
 
     if (error) {
-      setErrorMessage(error.message);
+      setErrorModal(true);
     } else {
       const response = await updateOrderPayment({
         orderDetails,
@@ -80,7 +89,7 @@ const CheckoutPage = ({
         status: "SUCCESSFUL",
       });
 
-      setOrderSuccess(response)
+      setOrderSuccess(response);
       setOrderDetails({
         dates: undefined,
         guests: { adults: 2, children: 0, pets: 0, infants: 0, teens: 0 },
@@ -103,6 +112,7 @@ const CheckoutPage = ({
     }
   };
 
+
   if (!orderDetails) {
     return <>loading....</>;
   }
@@ -122,6 +132,9 @@ const CheckoutPage = ({
 
   return (
     <>
+      <BookingTimer isActive={isActive} id={bookingDetails.lodge.refNo}/>
+
+      <PaymentError setShowDialog={setErrorModal} showDialog={errorModal} />
       {/* <Button onClick={()=>setCurrentStep()}>back</Button> */}
       <form onSubmit={handleSubmit} className="bg-white p-2 rounded-md">
         <PaymentElement onReady={() => setElementReady(true)} />

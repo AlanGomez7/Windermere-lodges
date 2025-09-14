@@ -15,7 +15,6 @@ import { CheckCircle, Download, Calendar, MessageSquare } from "lucide-react";
 import { findDays } from "@/lib/utils";
 import { useAppContext } from "@/app/context/context";
 
-
 interface BookingConfirmationProps {
   bookingDetails: any;
   isActive: boolean;
@@ -25,34 +24,19 @@ export function BookingConfirmation({
   bookingDetails,
   isActive,
 }: BookingConfirmationProps) {
+  const { orderSuccess } = useAppContext();
 
-  const {orderSuccess} = useAppContext();
-  console.log(orderSuccess)
-  
   const router = useRouter();
   const [bookingNumber, setBookingNumber] = useState<string>("");
-  const nights = findDays(bookingDetails.dates.from, bookingDetails?.dates?.to)
+  const nights = findDays(bookingDetails.dates.from, bookingDetails?.dates?.to);
 
   useEffect(() => {
-    const bookingNumber = "WL" + Math.floor(100000 + Math.random() * 900000);
-    setBookingNumber(bookingNumber);
+    if (orderSuccess) {
+      setBookingNumber(orderSuccess.id);
+    } else {
+      setBookingNumber("123");
+    }
   }, []);
-
-  // const findDifference = () => {
-  //   const date1 = Number(new Date(bookingDetails.dates?.from));
-  //   const date2 = Number(new Date(bookingDetails.dates?.to));
-
-  //   // Difference in milliseconds
-  //   const diffMs = date2 - date1;
-
-  //   // Convert ms to days (1000 ms * 60 sec * 60 min * 24 hr)
-  //   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  //   console.log(diffDays);
-  //   setNights(diffDays);
-
-  //   return diffDays;
-  // };
 
   const generatePdf = () => {
     // In a real app, this would generate and download a booking confirmation PDF
@@ -119,8 +103,7 @@ export function BookingConfirmation({
                             {new Date(
                               bookingDetails.dates.to
                             ).toLocaleDateString()}
-                            ({nights}{" "}
-                            {nights === 1 ? "night" : "nights"})
+                            ({nights} {nights === 1 ? "night" : "nights"})
                           </p>
                         )}
                       <p className="text-gray-600">
@@ -134,12 +117,26 @@ export function BookingConfirmation({
                               ? "child"
                               : "children"
                           }`}
+                        {bookingDetails.guests.teens > 0 &&
+                          `, ${bookingDetails.guests.teens} ${
+                            bookingDetails.guests.teens === 1 ? "teen" : "teens"
+                          }`}
+                        {bookingDetails.guests.infants > 0 &&
+                          `, ${bookingDetails.guests.infants} ${
+                            bookingDetails.guests.infants === 1
+                              ? "infant"
+                              : "infants"
+                          }`}
+                        {bookingDetails.guests.pets > 0 &&
+                          `, ${bookingDetails.guests.pets} ${
+                            bookingDetails.guests.pets === 1 ? "pet" : "pets"
+                          }`}
                       </p>
                     </div>
                     <div className="bg-gray-100 rounded p-3">
                       <p className="text-sm">
                         Check-in:{" "}
-                        <span className="font-medium">From 4:00 PM</span>
+                        <span className="font-medium">From 3:00 PM</span>
                       </p>
                       <p className="text-sm">
                         Check-out:{" "}
@@ -190,7 +187,7 @@ export function BookingConfirmation({
                 <Separator />
 
                 <div>
-                  <h4 className="font-medium mb-2">Payment Summary</h4>
+                  <h4 className="font-medium mb-3 text-xl">Payment Summary</h4>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                       <span>Accommodation</span>
@@ -201,6 +198,18 @@ export function BookingConfirmation({
                           : 0}
                       </span>
                     </div>
+                    <hr />
+                    <div className="flex justify-between">
+                      <span>Pets</span>
+                      <span>
+                        £
+                        {bookingDetails.lodge
+                          ? bookingDetails.guests.pets *
+                            bookingDetails.lodge.pets_fee
+                          : 0}
+                      </span>
+                    </div>
+                    <hr />
 
                     {bookingDetails.extras &&
                       bookingDetails.extras.length > 0 && (

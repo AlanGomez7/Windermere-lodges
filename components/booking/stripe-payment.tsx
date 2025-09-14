@@ -54,11 +54,35 @@ export function StripePayment({
 }: GuestInformationProps) {
   const { orderDetails, searchParams } = useAppContext();
 
+  const nights = findDays(searchParams.dates.from, searchParams.dates.to);
+
+  // Timer state
+  const TIMER_DURATION = 2 * 60; // 10 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
+  // console.log(timeLeft)
+  const [expired, setExpired] = useState(false);
+
+  // useEffect(() => {
+  //   if (!isActive) return;
+  //   setTimeLeft(TIMER_DURATION);
+  //   setExpired(false);
+  //   const interval = setInterval(() => {
+  //     setTimeLeft((prev) => {
+  //       if (prev <= 1) {
+  //         clearInterval(interval);
+  //         setExpired(true);
+  //         return 0;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, [isActive]);
 
   let amount = 1;
-  if (searchParams.nights) {
+  if (nights) {
     amount =
-      bookingDetails.lodge.price * searchParams.nights +
+      bookingDetails.lodge.price * nights +
       bookingDetails?.lodge.cleaning_fee +
       bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee;
   }
@@ -114,10 +138,10 @@ export function StripePayment({
             <CardContent className="p-0 pt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between text-sm">
-                  <span>{searchParams.nights} Night</span>
+                  <span>{nights} Night</span>
                   <span>
                     {" "}
-                    &pound;{searchParams.nights && bookingDetails.lodge.price * searchParams.nights}
+                    &pound;{nights && bookingDetails.lodge.price * nights}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -135,7 +159,7 @@ export function StripePayment({
                   <span>Total Payment</span>
                   <span>
                     &pound;
-                    {searchParams.nights && amount}
+                    {amount}
                   </span>
                 </div>
               </div>
@@ -154,6 +178,7 @@ export function StripePayment({
             }}
           >
             <CheckoutPage
+              isActive={isActive}
               bookingDetails={bookingDetails}
               setCurrentStep={setCurrentStep}
               orderDetails={orderDetails}

@@ -37,7 +37,13 @@ interface BookingDetails {
   specialRequests?: string;
   lodge: any;
   dates: any;
-  guests: { adults: number; children: number; pets: number };
+  guests: {
+    adults: number;
+    children: number;
+    pets: number;
+    teens: number;
+    infants: number;
+  };
   nights: any;
 }
 
@@ -131,7 +137,7 @@ export function GuestInformation({
         isActive ? "block" : "hidden"
       }`}
     >
-      <div className="container flex gap-8 flex-col lg:flex-row">
+      <div className="container flex gap-8 flex-col lg:flex-row self-start">
         <div className="basis-3/6 ">
           <Card>
             <div className="relative h-64 w-100">
@@ -147,58 +153,22 @@ export function GuestInformation({
                   New
                 </Badge>
               )}
-              {/* <div className="absolute bottom-4 left-4 flex items-center bg-white bg-opacity-80 px-2 py-1 rounded-full">
-                <Star
-                  className="h-4 w-4 text-yellow-500 mr-1"
-                  fill="currentColor"
-                />
-                <span className="text-sm font-medium">4.1</span>
-              </div> */}
               <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
                 £{bookingDetails.lodge.price}/night
               </div>
             </div>
 
-            <CardHeader className="flex ">
+            <CardHeader className="flex">
               <div className="flex justify-between items-start w-full">
                 <CardTitle className="text-lg lg:text-xl font-bold">
                   {bookingDetails.lodge.nickname}
                 </CardTitle>
               </div>
+              
               <CardDescription className="text-start">
                 {bookingDetails.lodge.address}
               </CardDescription>
             </CardHeader>
-
-            <CardContent className="pt-6">
-              <div className="flex flex-col gap-2 shadow-md rounded-lg p-6">
-                <div className="flex justify-between font-bold text-md lg:text-lg mt-2">
-                  <span>Booking details</span>
-                </div>
-                <hr></hr>
-
-                <div className="flex justify-between text-sm">
-                  <span>Check in</span>
-                  <span>
-                    {" "}
-                    {format(
-                      new Date(bookingDetails.dates.from),
-                      "MMMM do yyyy"
-                    )}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Check out</span>
-                  <span>
-                    {format(new Date(bookingDetails.dates.to), "MMMM do yyyy")}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Nights</span>
-                  <span> {nights} Nights</span>
-                </div>
-              </div>
-            </CardContent>
 
             <CardContent className="">
               <div className="flex flex-col gap-2 shadow-md rounded-md  p-6">
@@ -240,10 +210,68 @@ export function GuestInformation({
                 </div>
               </div>
             </CardContent>
+            <CardContent className="pt-6">
+              <div className="flex flex-col gap-2 shadow-md rounded-lg p-6">
+                <div className="flex justify-between font-bold text-md lg:text-lg mt-2">
+                  <span>Booking details</span>
+                </div>
+                <hr></hr>
+
+                <div className="flex justify-between text-sm">
+                  <span>Check in</span>
+                  <span>
+                    {" "}
+                    {format(
+                      new Date(bookingDetails.dates.from),
+                      "MMMM do yyyy"
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Check out</span>
+                  <span>
+                    {format(new Date(bookingDetails.dates.to), "MMMM do yyyy")}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Nights</span>
+                  <span> {nights} Nights</span>
+                </div>
+              </div>
+            </CardContent>
+
+            <CardContent className="pt-6">
+              <div className="flex flex-col gap-2 shadow-md rounded-lg p-6">
+                <div className="flex justify-between font-bold text-md lg:text-lg mt-2">
+                  <span>Guest details</span>
+                </div>
+                <hr></hr>
+
+                <div className="flex justify-between text-sm">
+                  <span>Adults</span>
+                  <span> {bookingDetails.guests.adults}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Children</span>
+                  <span>
+                    {bookingDetails.guests.children}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Teenagers</span>
+                  <span> {bookingDetails.guests.teens}</span>
+                </div>
+
+                <div className="flex justify-between text-sm">
+                  <span>Infants</span>
+                  <span> {bookingDetails.guests.infants}</span>
+                </div>
+              </div>
+            </CardContent>
           </Card>
         </div>
 
-        <div className="shadow-md">
+        <div>
           <Card className="">
             <CardHeader>
               <CardTitle className="text-3xl font-semibold">

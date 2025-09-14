@@ -249,6 +249,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
       guests: guests,
       lodge,
     };
+    
     const response = await checkAvailableLodges(params);
 
     if (!response.ok) {

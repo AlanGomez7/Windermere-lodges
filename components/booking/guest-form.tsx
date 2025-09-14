@@ -33,7 +33,7 @@ export default function GuestInfoForm() {
 
     try {
       const result = await fetch(
-        "http://localhost:3001/api/order/confirm-order",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/order/confirm-order`,
         {
           method: "POST",
           headers: {

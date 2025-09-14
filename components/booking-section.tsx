@@ -81,14 +81,14 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
   // ?no_of_guests=${searchParams.guests}&checkIn=${fromDate}&checkOut=${toDate}
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-8">
             Find Your Perfect Lodge
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6 bg-white rounded-md shadow-md hover:shadow-2xl transition-all">
             <DateRangePicker
               onChange={(dates) => setSearchParams({ ...searchParams, dates })}
             />

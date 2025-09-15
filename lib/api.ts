@@ -11,6 +11,7 @@ import {
 import {
   getAllLodgeComments,
   getLodgeComments,
+  getLodgeGalleryImages,
   getPropertyReviews,
   getUserReviews,
 } from "@/app/queries/properties";
@@ -32,9 +33,11 @@ export const fetchProperties = async () => {
   });
 
   const res = await response.json();
+  
   if (res.ok) {
     return res.lodges;
   }
+
   return { message: res.message, ok: false };
 };
 
@@ -465,3 +468,16 @@ export const fetchAllComments = async () => {
     throw err;
   }
 };
+
+export const fetchLodgeImages = async (id:string)=>{
+  try{
+    if(!id){
+      throw new Error("Invalid lodge id");
+    }
+
+    const response = await getLodgeGalleryImages(id);
+    return response;
+  }catch(err){
+    throw err;
+  }
+}

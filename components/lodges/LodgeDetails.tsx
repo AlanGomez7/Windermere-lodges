@@ -31,6 +31,7 @@ import KnowMore from "../ui/know-more";
 
 import { Icons } from "../ui/icons";
 import ListingModal from "../ui/listings-modal";
+import { MapPin } from "lucide-react";
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
   Wifi: "/icons/wifi.png",
@@ -294,7 +295,11 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl text-gray-800">
                   {lodge.nickname}
                 </h1>
-                <p className="text-sm text-gray-600">{lodge.address}</p>
+                <p className="text-sm text-gray-600 flex pt-4">
+                  <MapPin className="mr-2 h-5 w-5 text-emerald-400 flex-shrink-0" />
+
+                  {lodge.address}
+                </p>
               </div>
             </div>
             <div className="mt-4 sm:mt-0 flex-shrink-0">
@@ -319,7 +324,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                 lodgeId={lodge.id}
               />
             </div>
-            <div className="w-full md:w-96">
+            <div className="w-full md:w-96 rounded-md shadow-md hover:shadow-lg transition-all">
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-baseline gap-2 mb-4">
@@ -629,7 +634,10 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
                       {
                         title: "Safety devices",
-                        data: ["Carbon monoxide alarm installed", "Smoke alarm installed"],
+                        data: [
+                          "Carbon monoxide alarm installed",
+                          "Smoke alarm installed",
+                        ],
                       },
                     ],
                   },

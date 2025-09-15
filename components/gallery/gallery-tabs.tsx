@@ -1,50 +1,76 @@
-"use client"
+"use client";
 
-import { useState, useEffect, Suspense } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ImageGallery } from "./image-gallery"
-import { useSearchParams } from "next/navigation"
+import { useState, useEffect } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ImageGallery } from "./image-gallery";
+import { useSearchParams } from "next/navigation";
+import { fetchLodgeImages } from "@/lib/api";
+import { ImageShimmer } from "./image-shimmer";
 
-export function GalleryTabs() {
-
+export function GalleryTabs({ lodgeIds }: { lodgeIds: any }) {
   const searchParams = useSearchParams();
   const lodgeId = searchParams.get("id");
 
+  const [loading, setLoading] = useState(false);
 
-  const [activeTab, setActiveTab] = useState("images")
-  const [isClient, setIsClient] = useState(false)
-
-  // Handle hydration mismatch with useEffect
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  if (!isClient) {
-    return null
+  async function loadImages(id:string) {
+    try {
+      setLoading(true);
+      const data = await fetchLodgeImages(id);
+      
+      if (data) {
+        setImages(data);
+      }
+    
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }
 
+  const [activeTab, setActiveTab] = useState(lodgeId ?? lodgeIds[0].id);
+  const [images, setImages] = useState<
+    {
+      id: string;
+      propertyId: string;
+      url: string;
+      tag: string;
+      uploadedAt: Date;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    loadImages(activeTab);
+  }, [activeTab]);
 
   return (
-
-    <Tabs defaultValue={lodgeId?`${lodgeId}`:"6514f268-d14a-42aa-89bb-2e6ac51b14c5"} onValueChange={setActiveTab} className="w-full">
+    <Tabs
+      defaultValue={activeTab ? activeTab : lodgeIds[0].id}
+      onValueChange={setActiveTab}
+      className="w-full"
+    >
       <div className="flex justify-center mb-8">
         <TabsList className="grid w-auto grid-cols-3">
-          <TabsTrigger value="6514f268-d14a-42aa-89bb-2e6ac51b14c5">Glenridding Lodge</TabsTrigger>
-          <TabsTrigger value="465ec739-ab41-4e72-923c-bcf7925ea899">Water's Reach</TabsTrigger>
-          <TabsTrigger value="5f2b3b3f-04e5-4a45-9c4e-2591711f23c9">Serenity</TabsTrigger>
+          {lodgeIds.map((l: any) => (
+            <TabsTrigger value={l.id} key={l.id}>
+              {l.nickname}
+            </TabsTrigger>
+          ))}
         </TabsList>
       </div>
 
-      <TabsContent value="5f2b3b3f-04e5-4a45-9c4e-2591711f23c9" className="mt-0">
-        <ImageGallery lodgeKey="5f2b3b3f-04e5-4a45-9c4e-2591711f23c9" />
-      </TabsContent>
-      <TabsContent value="6514f268-d14a-42aa-89bb-2e6ac51b14c5" className="mt-0">
-        <ImageGallery lodgeKey="6514f268-d14a-42aa-89bb-2e6ac51b14c5" />
-      </TabsContent>
-      <TabsContent value="465ec739-ab41-4e72-923c-bcf7925ea899" className="mt-0">
-        <ImageGallery lodgeKey="465ec739-ab41-4e72-923c-bcf7925ea899" />
+      <TabsContent
+        value={activeTab}
+        className="mt-0"
+      >
+        {loading ? (
+          <ImageShimmer/>
+          // <p className="text-center text-gray-500">Loading images…</p>
+        ) : (
+          <ImageGallery lodgeKey={activeTab} images={images} />
+        )}
       </TabsContent>
     </Tabs>
-  )
+  );
 }
-

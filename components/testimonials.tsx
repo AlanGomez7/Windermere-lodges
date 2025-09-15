@@ -89,12 +89,13 @@ export const Testimonials = () => {
 
     // Rebuild on element size/content changes
     let resizeRaf: number | null = null;
-    const ro = typeof ResizeObserver !== "undefined"
-      ? new ResizeObserver(() => {
-          if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
-          resizeRaf = requestAnimationFrame(setupAnimation);
-        })
-      : null;
+    const ro =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+            if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
+            resizeRaf = requestAnimationFrame(setupAnimation);
+          })
+        : null;
     ro?.observe(slider);
 
     // Pause/Resume interactions (mouse and touch)
@@ -138,8 +139,8 @@ export const Testimonials = () => {
         >
           {doubled.map((testimonial, idx) => (
             <Card
-              key={`${testimonial.id}-${idx}`}
-              className="testimonial-card flex-shrink-0 w-[85%] xs:w-[75%] sm:w-[340px] md:w-[360px] shadow-md"
+              key={idx}
+              className="testimonial-card flex-shrink-0 w-[350px]"
             >
               <CardHeader className="flex flex-row items-center gap-4 p-4">
                 <Avatar className="h-12 w-12 flex bg-gray-50 rounded-full justify-center items-center">
@@ -167,9 +168,7 @@ export const Testimonials = () => {
                     />
                   ))}
                 </div>
-                <p className="text-gray-600 line-clamp-4">
-                  {testimonial.content}
-                </p>
+                <p className="text-gray-600">{testimonial.content}</p>
               </CardContent>
             </Card>
           ))}

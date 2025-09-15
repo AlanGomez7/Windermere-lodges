@@ -5,8 +5,11 @@ import { GalleryTabs } from "@/components/gallery/gallery-tabs";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
+import { fetchProperties } from "@/lib/api";
 
 export default async function GalleryPage() {
+  const properties = await fetchProperties();
+
   return (
     <main className="min-h-screen bg-white">
       <PageHeader
@@ -18,7 +21,7 @@ export default async function GalleryPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <Suspense fallback={<Loading />}>
-            <GalleryTabs />
+            <GalleryTabs lodgeIds={properties} />
           </Suspense>
         </div>
       </section>

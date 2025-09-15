@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Users, Maximize, Bath, BedDouble } from "lucide-react";
+import { Star, Users, Maximize, Bath, BedDouble, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ratingsInfo } from "@/lib/utils";
@@ -56,7 +56,10 @@ export default function LodgeCard({ lodge, needsButton }: any) {
             <h3 className="text-xl font-bold truncate">{lodge.nickname}</h3>
             <div className="flex items-center">
               {noOfReviewStars.map((_, i) => (
-                <Star className="h-4 w-4 text-yellow-500 mr-1 fill-yellow-500" key={i}/>
+                <Star
+                  className="h-4 w-4 text-yellow-500 mr-1 fill-yellow-500"
+                  key={i}
+                />
               ))}
               <span className="text-sm font-medium"></span>
               <span className="text-xs text-gray-500 ml-1">
@@ -64,7 +67,8 @@ export default function LodgeCard({ lodge, needsButton }: any) {
               </span>
             </div>
           </div>
-          <p className="text-gray-600 text-sm mt-3 mb-2 truncate">
+          <p className="text-gray-600 text-sm mt-3 mb-2 truncate flex">
+            <MapPin className="mr-2 h-5 w-5 text-emerald-400 flex-shrink-0" />
             {lodge.address}
           </p>
           <div className="mt-8 flex flex-wrap gap-2">

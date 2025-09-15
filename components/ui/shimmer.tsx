@@ -1,8 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 export default function Shimmer() {
   return (
+
+
     <div className="overflow-hidden rounded-md group-hover:shadow-md transition-shadow animate-pulse duration-750">
-      <div className="relative bg-gray-200 w-[400px]">
+      <div className="relative bg-gray-200">
         <div className="aspect-w-16 aspect-h-9 relative h-48"></div>
         {/* <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md">
           <Heart size={20} />

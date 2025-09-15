@@ -12,20 +12,17 @@ export default function ListingModal({
   return (
     <>
       {showDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 sm:p-6">
           <div
-            className="
-      bg-white rounded-2xl shadow-2xl relative border border-gray-200
-      w-full h-full max-w-none m-0
-      sm:w-1/2 sm:max-w-2xl sm:h-auto sm:pl-14 sm:pr-8 sm:py-10
-      flex flex-col
-    "
+            className="bg-white rounded-2xl shadow-2xl relative border border-gray-200
+    w-full max-w-md h-auto max-h-[90vh] p-6
+    sm:max-w-2xl sm:p-10 flex flex-col"
             style={{ scrollbarGutter: "stable" }}
           >
             {/* Close button */}
             <button
               type="button"
-              className="absolute top-5 right-5 text-gray-400 hover:text-gray-600"
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
               onClick={() => setShowDialog(false)}
             >
               <X className="w-6 h-6" />
@@ -38,7 +35,7 @@ export default function ListingModal({
                   <p className="mb-5 text-2xl font-semibold">{v.title}</p>
                   {v.data.map((d: any, j: number) => (
                     <div key={j}>
-                      <li className="p-6">{d}</li>
+                      <li className="p-4 sm:p-6">{d}</li>
                       <hr />
                     </div>
                   ))}

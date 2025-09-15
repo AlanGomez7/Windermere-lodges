@@ -12,23 +12,25 @@ export default function AboutModal({
   return (
     <>
       {showDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4 sm:p-6">
           <div
             className="
-      bg-white rounded-2xl shadow-2xl relative overflow-y-auto border border-gray-200
-      w-full h-full max-w-none m-0
-      sm:w-1/2 sm:max-w-2xl sm:h-auto sm:pl-14 sm:pr-8 sm:py-10 sm:
+      bg-white rounded-2xl shadow-2xl relative border border-gray-200
+      w-full max-w-lg h-auto max-h-[90vh] overflow-y-auto
+      p-5 sm:p-8 md:p-10
     "
             style={{ scrollbarGutter: "stable" }}
           >
             <button
               type="button"
-              className="absolute top-5 right-5 text-gray-400 hover:text-gray-600"
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
               onClick={() => setShowDialog(false)}
             >
               <X className="w-6 h-6" />
             </button>
-            <div className="pt-5">{about}</div>
+
+            {/* Content */}
+            <div className="pt-6">{about}</div>
           </div>
         </div>
       )}

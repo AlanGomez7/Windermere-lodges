@@ -24,6 +24,7 @@ interface GuestSelectorProps {
 }
 
 export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
+  const [open, setOpen] = React.useState(false);
   // state for all guest types
   const [guests, setGuests] = React.useState({
     adults: 2,
@@ -33,10 +34,19 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
     pets: 0,
   });
 
+  React.useEffect(() => {
+    if (!open) return;
+
+    const handleScroll = () => setOpen(false);
+    window.addEventListener("scroll", handleScroll, true);
+
+    return () => window.removeEventListener("scroll", handleScroll, true);
+  }, [open]);
+
   // helper: max 6 guests (excluding pets)
   const totalGuests = guests.adults + guests.children + guests.teens;
   const maxGuests = 6;
-  const maxPets = lodge?lodge.pets:2
+  const maxPets = lodge ? lodge.pets : 2;
 
   const updateGuest = (
     type: keyof typeof guests,
@@ -57,7 +67,7 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
   };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" className="w-full justify-start">
           <Users className="mr-2 h-4 w-4" />
@@ -98,7 +108,6 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
             { label: "Pets", key: "pets", min: 0, max: maxPets },
           ].map(({ label, key, min, max }) => (
             <div key={key} className="grid grid-cols-3 items-center gap-4">
-              
               <Label htmlFor={key}>{label}</Label>
               <div className="col-span-2 flex items-center gap-2">
                 <Button

@@ -270,6 +270,19 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     router.push("/booking");
   };
 
+  const [openCalendar, setOpenCalendar] = React.useState<
+    "checkin" | "checkout" | null
+  >(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+
+    const handleScroll = () => setOpenCalendar(null);
+    window.addEventListener("scroll", handleScroll, true);
+
+    return () => window.removeEventListener("scroll", handleScroll, true);
+  }, [openCalendar]);
+
   const router = useRouter();
 
   return (
@@ -337,7 +350,12 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="flex flex-col gap-1">
                       <label className="text-sm text-gray-500">Check-In</label>
-                      <Popover>
+                      <Popover
+                        open={openCalendar === "checkin"}
+                        onOpenChange={(open) =>
+                          setOpenCalendar(open ? "checkin" : null)
+                        }
+                      >
                         <PopoverTrigger asChild>
                           <Button
                             variant={"outline"}
@@ -373,7 +391,12 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                     </div>
                     <div className="flex flex-col gap-1">
                       <label className="text-sm text-gray-500">Check-Out</label>
-                      <Popover>
+                      <Popover
+                        open={openCalendar === "checkout"}
+                        onOpenChange={(open) =>
+                          setOpenCalendar(open ? "checkout" : null)
+                        }
+                      >
                         <PopoverTrigger asChild>
                           <Button
                             variant={"outline"}
@@ -488,7 +511,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">What we offer</h2>
-              <div className="flex space-x-6 pb-4">
+              <div className="flex pb-4 md:flex-row flex-col gap-4">
                 {lodge.features
                   .slice(0, 3)
                   .map((amenity: string, i: number) => {

@@ -13,10 +13,9 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { galleryImagesByLodge, GalleryImage } from "./gallery-data";
+import { GalleryImage } from "./gallery-data";
 
 export function ImageGallery({
-  lodgeKey,
   images,
 }: {
   lodgeKey: string;

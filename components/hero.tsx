@@ -6,15 +6,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import gsap from "gsap";
 import Image from "next/image";
-import image1 from "../public/Main-banners/windermere1.jpg";
-import image2 from "../public/Main-banners/windermere2.jpg";
-import image3 from "../public/Main-banners/windermere3.jpg";
+import image1 from "../public/Main-banners/z6d3ujokleyjtmepqg0b.avif";
+import image2 from "../public/Main-banners/kpij2whz6r1sgdjzkcwg.avif";
+import image3 from "../public/Main-banners/yiovellrdwvimbizzbtx.avif";
 // import image4 from "../public/Main-banners/windermere4.jpg";
 
 const sliderImages = [image1, image2, image3];
 
 export const Hero = () => {
-
   const heroRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
@@ -65,6 +64,7 @@ export const Hero = () => {
           className={`absolute inset-0 bg-cover bg-center bg-no-repeat brightness-[0.4] transition-opacity duration-700 ${
             idx === current ? "opacity-100 z-0" : "opacity-0 z-0"
           }`}
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1600px"
         />
       ))}
 

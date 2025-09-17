@@ -25,12 +25,12 @@ export default function ReviewCard({ testimonial }: { testimonial: any }) {
       className="testimonial-card flex-shrink-0 w-[350px] shadow-md"
     >
       <CardHeader className="flex flex-row items-center gap-4 p-4">
-        <Avatar className="h-12 w-12 flex bg-gray-50 rounded-full justify-center items-center">
+        <Avatar className="h-12 w-12 flex rounded-full justify-center items-center">
           <AvatarImage
             src={testimonial.visitor.avatar}
             alt={testimonial.visitor.name}
           />
-          <AvatarFallback className="font-bold text-xl">
+          <AvatarFallback className="font-bold text-xl text-white bg-emerald-500 ">
             {testimonial.visitor.name.slice(0, 1)}
           </AvatarFallback>
         </Avatar>

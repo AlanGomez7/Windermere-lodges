@@ -6,7 +6,10 @@ import image1 from "@/public/activities/activity.png";
 import sightseeing from "@/public/activities/sightseeing.jpg";
 import kayaking from "@/public/activities/kayaking.jpg";
 import trekking from "@/public/activities/trekking.jpg";
-import discoverWCB from "@/public/discoverwcb.jpg"
+import discoverWCB from "@/public/discoverwcb.jpg";
+import { useState } from "react";
+import ActivitiesList from "./activities/activities";
+import { adventures } from "./activities/data";
 
 const activities = [
   {
@@ -25,7 +28,6 @@ const activities = [
   {
     title: "Outdoor activites",
     image: kayaking,
-
     description:
       "Discover thrilling outdoor experiences just minutes away! From peaceful kayaking and paddleboarding on Lake Windermere to adrenaline-pumping ghyll scrambling through waterfalls and ravines, there’s something for every adventurer.",
   },
@@ -36,7 +38,7 @@ const activities = [
     description:
       "From gentle lakeside strolls to thrilling climbs, the Lake District offers unforgettable family walks for all ages. Enjoy pushchair-friendly paths around Buttermere and Tarn Hows, scenic climbs like Catbells and Orrest Head, or adventurous treks up Helvellyn and Scafell Pike",
   },
-];
+]
 
 export const Activities = () => {
   return (
@@ -85,47 +87,9 @@ export const Activities = () => {
         </div>
 
         {/* <Link href={"/activities"}> */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 ">
-          {activities.map((activity, index) => (
-            <div
-              className="relative h-96 group overflow-hidden rounded-md"
-              key={index}
-            >
-              <Image
-                src={activity.image || "/placeholder.svg"}
-                alt={activity.title}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105 brightness-25"
-              />
-
-              {/* Overlay that darkens on hover */}
-              <div
-                className="
-      absolute inset-0 bg-black/40 
-      transition-colors duration-500 
-      group-hover:bg-black/90
-    "
-              />
-
-              {/* Title (initially visible) */}
-              <span className="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold transition-all duration-300 group-hover:top-6 group-hover:items-start">
-                {activity.title}
-              </span>
-
-              {/* Description (hidden until hover) */}
-              <div
-                className="
-      absolute inset-0 flex flex-col justify-center items-center
-      text-white px-4 text-center opacity-0 
-      transition-opacity duration-500 group-hover:opacity-100
-      group-hover:mt-8
-    "
-              >
-                <span className="max-w-md text-base leading-relaxed">
-                  {activity.description}
-                </span>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {adventures.map((activity, index) => (
+            <ActivitiesList activity={activity} key={index}/>
           ))}
         </div>
         {/* </Link> */}

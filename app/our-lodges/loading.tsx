@@ -1,7 +1,44 @@
-export default function Loader() {
+import Shimmer from "@/components/ui/shimmer";
+
+function SkeletonBox({ className }: { className: string }) {
+  return <div className={`bg-gray-200 animate-pulse rounded ${className}`} />;
+}
+
+function Loader() {
+
   return (
-    <div className="flex w-screen h-screen justify-center items-center">
-      <span className="loader"></span>
-    </div>
+    <>
+      <div className="relative pt-32 pb-20 flex items-center justify-center">
+        {/* Background shimmer instead of image */}
+        <div className="absolute inset-0 bg-gray-300 animate-pulse" />
+
+        <div className="container mx-auto px-4 text-center text-white z-10">
+          {/* Title shimmer */}
+          <SkeletonBox className="h-10 w-64 mx-auto mb-4" />
+          {/* Description shimmer */}
+          <SkeletonBox className="h-5 w-96 mx-auto" />
+        </div>
+      </div>
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-row">
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Available Lodges</h2>
+                <div className="text-sm text-gray-500">Showing 0 lodges</div>
+              </div>
+
+              <div className="grid h-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Shimmer />
+                <Shimmer />
+                <Shimmer />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
+
+export default Loader;

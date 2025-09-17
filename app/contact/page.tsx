@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/page-header"
 import { ContactForm } from "@/components/contact/contact-form"
 import { ContactInfo } from "@/components/contact/contact-info"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+import contactBanner from "@/public/contact.jpg"
 
 export default function ContactPage() {
   return (
@@ -11,7 +12,7 @@ export default function ContactPage() {
       <PageHeader
         title="Contact Us"
         description="We're here to help plan your perfect getaway"
-        backgroundImage="https://images.unsplash.com/photo-1486299267070-83823f5448dd?q=80&w=1920&auto=format&fit=crop"
+        backgroundImage={contactBanner}
       />
 
       <section className="py-16">

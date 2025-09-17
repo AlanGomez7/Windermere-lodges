@@ -15,9 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { getErrorMessage } from "@/lib/utils";
 import { credentialLogin } from "@/app/actions/auth";
-import toast from "react-hot-toast";
 
 const formSchema = z.object({
   email: z.string().email({

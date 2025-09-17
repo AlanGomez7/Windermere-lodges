@@ -90,7 +90,7 @@ const Footer = () => {
               <li className="flex items-start">
                 <MapPin className="mr-2 h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <span className="text-gray-300">
-                  Windermere Lodges, Bartle Houese, Oxford Court, Manchester,
+                  Windermere Lodges, Bartle House, Oxford Court, Manchester,
                   England
                 </span>
               </li>

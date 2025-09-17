@@ -31,7 +31,7 @@ import KnowMore from "../ui/know-more";
 
 import { Icons } from "../ui/icons";
 import ListingModal from "../ui/listings-modal";
-import { MapPin } from "lucide-react";
+import { Ban, Clover, Gift, MapPin } from "lucide-react";
 const amenityIconMap: Record<string, string> = {
   "Lake Access": "/icons/water.png",
   Wifi: "/icons/wifi.png",
@@ -81,7 +81,7 @@ function Gallery({
   }, [modalOpen, current]);
 
   return (
-    <div className="flex gap-0">
+    <div className="flex flex-col md:flex-row gap-0">
       {/* Main Image with overlays */}
       <div className="relative flex-1 min-w-0">
         <Image
@@ -174,7 +174,7 @@ function Gallery({
       {/* Vertical Divider */}
       <div className="w-px bg-gray-200 mx-2" />
       {/* Thumbnails: single vertical column */}
-      <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent w-40 pr-3 py-2">
+      <div className="flex md:flex-col gap-2 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent w-full md:w-40 pr-3 py-2">
         {(images.length > 0 ? images : ["/placeholder.jpg"]).map((img, idx) => (
           <button
             key={img + idx}
@@ -337,7 +337,13 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                 lodgeId={lodge.id}
               />
             </div>
-            <div className="w-full md:w-96 rounded-md shadow-md hover:shadow-lg transition-all">
+            <div className="w-full md:w-96 rounded-md transition-all">
+              {diff && availability && (
+                <div className="py-3 px-12 shadow-md mb-4 text-center rounded-lg flex gap-4">
+                  <Gift className="text-emerald-500" />
+                  This lodge is available
+                </div>
+              )}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-baseline gap-2 mb-4">
@@ -614,7 +620,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       },
                       {
                         title: "Before you leave",
-                        data: ["Throw rubbish away"],
+                        data: ["Throw rubbish away", "Turn things off", "Lock up"],
                       },
                     ],
                   },

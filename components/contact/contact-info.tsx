@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { MapPin, Phone, Mail, Clock, Facebook, Twitter, Instagram, Linkedin } from "lucide-react"
+import { MapPin, Mail, Clock, Facebook } from "lucide-react"
 import Link from "next/link"
 
 export function ContactInfo() {
@@ -19,7 +19,7 @@ export function ContactInfo() {
               <p className="text-gray-600 mt-1">
                 Windermere Lodges,
                 <br />
-                Bartle Houese,
+                Bartle House,
                 <br />
                 Oxford Court,
                 <br />
@@ -30,19 +30,6 @@ export function ContactInfo() {
               </Button>
             </div>
           </div>
-
-          {/* <div className="flex items-start">
-            <Phone className="h-5 w-5 text-teal-600 mt-1 mr-3" />
-            <div>
-              <h4 className="font-medium">Phone</h4>
-              <p className="text-gray-600 mt-1">
-                <a href="tel:+441539123456" className="hover:text-teal-600">
-                  +44 (0) 1539 123 456
-                </a>
-              </p>
-              <p className="text-sm text-gray-500 mt-1">For bookings and general inquiries</p>
-            </div>
-          </div> */}
 
           <div className="flex items-start">
             <Mail className="h-5 w-5 text-teal-600 mt-1 mr-3" />
@@ -79,22 +66,10 @@ export function ContactInfo() {
         </CardHeader>
         <CardContent>
           <div className="flex space-x-4">
-            <a href="#" className="bg-gray-100 hover:bg-teal-100 text-teal-600 p-3 rounded-full transition-colors">
+            <Link href="https://www.facebook.com/windermerelodges" target="_blank" className="bg-gray-100 hover:bg-teal-100 text-teal-600 p-3 rounded-full transition-colors">
               <Facebook className="h-5 w-5" />
               <span className="sr-only">Facebook</span>
-            </a>
-            <a href="#" className="bg-gray-100 hover:bg-teal-100 text-teal-600 p-3 rounded-full transition-colors">
-              <Twitter className="h-5 w-5" />
-              <span className="sr-only">Twitter</span>
-            </a>
-            <a href="#" className="bg-gray-100 hover:bg-teal-100 text-teal-600 p-3 rounded-full transition-colors">
-              <Instagram className="h-5 w-5" />
-              <span className="sr-only">Instagram</span>
-            </a>
-            <a href="#" className="bg-gray-100 hover:bg-teal-100 text-teal-600 p-3 rounded-full transition-colors">
-              <Linkedin className="h-5 w-5" />
-              <span className="sr-only">LinkedIn</span>
-            </a>
+            </Link>
           </div>
         </CardContent>
       </Card>

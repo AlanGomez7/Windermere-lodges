@@ -136,8 +136,9 @@ export const ratingsInfo = (comments: Record<any, string>[]) => {
     return acc;
   }, 0);
 
-  const rating = Math.ceil(sum / numberOfReviews);
-  return [rating, numberOfReviews];
+
+  const rating = sum / numberOfReviews;
+  return [rating.toFixed(1), numberOfReviews];
 };
 
 type RatingItem = { rating: number; count: number };

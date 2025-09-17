@@ -16,8 +16,8 @@ export default function ReviewList({ lodgeId }: { lodgeId: string }) {
 
   return (
     <div className="flex flex-wrap justify-center my-16 gap-4">
-      {comments.map((testimonial) => (
-        <ReviewCard testimonial={testimonial}/>
+      {comments.map((testimonial, indx) => (
+        <ReviewCard testimonial={testimonial} key={indx}/>
       ))}
     </div>
   );

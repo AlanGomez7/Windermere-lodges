@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import {  ChevronLeft, ChevronRight } from "lucide-react";
 import gsap from "gsap";
 import Image from "next/image";
 import image1 from "../public/Main-banners/z6d3ujokleyjtmepqg0b.avif";
@@ -11,7 +11,22 @@ import image2 from "../public/Main-banners/kpij2whz6r1sgdjzkcwg.avif";
 import image3 from "../public/Main-banners/yiovellrdwvimbizzbtx.avif";
 // import image4 from "../public/Main-banners/windermere4.jpg";
 
-const sliderImages = [image1, image2, image3];
+const sliderImages = [
+  {
+    image: image1,
+    description:
+      "Discover our exclusive collection of premium lodges",
+  },
+  {
+    image: image2,
+    description:
+      "Perfectly located between Ambleside and Windermere",
+  },
+  {
+    image: image3,
+    description:"On a 5 star holiday park where you can stroll down to Lake Windermere"
+  },
+];
 
 export const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -54,18 +69,44 @@ export const Hero = () => {
       className="relative min-h-[860px] flex items-center justify-center overflow-hidden"
     >
       {/* Slider Images */}
-      {sliderImages.map((img, idx) => (
-        <Image
-          src={img}
-          alt="liliaz"
-          key={idx}
-          fill
-          priority
-          className={`absolute inset-0 bg-cover bg-center bg-no-repeat brightness-[0.4] transition-opacity duration-700 ${
+      {sliderImages.map((i, idx) => (
+        <div
+        key={idx}
+          className={`absolute flex items-center inset-0 transition-opacity duration-700 ${
             idx === current ? "opacity-100 z-0" : "opacity-0 z-0"
           }`}
-          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1600px"
-        />
+        >
+          <Image
+            src={i.image}
+            alt="liliaz"
+            key={idx}
+            fill
+            className=" bg-cover bg-center bg-no-repeat brightness-[0.4]"
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1600px"
+          />
+          <div
+            className="container mx-auto px-4 relative z-10 text-left"
+            ref={textRef}
+          >
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+              Experience Luxury in the <br /> Heart of the Lake District
+            </h1>
+            <p className="text-xl md:text-2xl text-left w-[50ch] text-white mb-20">
+              {i.description}
+            </p>
+            <div className="flex flex-col sm:flex-row justify-start gap-4">
+              <Link href="/our-lodges">
+                <Button
+                  size="lg"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg"
+                >
+                  Explore Our Lodges
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
       ))}
 
       {/* Slider Controls */}
@@ -99,7 +140,7 @@ export const Hero = () => {
       </div>
 
       {/* Content */}
-      <div
+      {/* <div
         className="container mx-auto px-4 relative z-10 text-left"
         ref={textRef}
       >
@@ -119,17 +160,8 @@ export const Hero = () => {
               Explore Our Lodges
             </Button>
           </Link>
-          {/* <Link href="/booking">
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-emerald-600 hover:bg-white hover:text-emerald-800 px-8 py-6 text-lg"
-            >
-              Book Now <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link> */}
         </div>
-      </div>
+      </div> */}
 
       {/* Scroll Indicator */}
       {/* <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20">

@@ -1,9 +1,9 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 interface PageHeaderProps {
   title: string;
   description: string;
-  backgroundImage: string;
+  backgroundImage: string|StaticImageData;
 }
 
 export function PageHeader({

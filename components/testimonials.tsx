@@ -140,15 +140,15 @@ export const Testimonials = () => {
           {doubled.map((testimonial, idx) => (
             <Card
               key={idx}
-              className="testimonial-card flex-shrink-0 w-[350px]"
+              className="testimonial-card flex-shrink-0 w-[350px] shadow-sm border"
             >
-              <CardHeader className="flex flex-row items-center gap-4 p-4">
-                <Avatar className="h-12 w-12 flex bg-gray-50 rounded-full justify-center items-center">
+              <CardHeader className="flex flex-row items-center gap-4 p-4 ">
+                <Avatar className="h-12 w-12 flex  bg-emerald-400 rounded-full justify-center items-center">
                   <AvatarImage
                     src={testimonial.visitor.avatar}
                     alt={testimonial.visitor.name}
                   />
-                  <AvatarFallback className="font-bold text-xl">
+                  <AvatarFallback className="font-bold text-xl text-white">
                     {testimonial.visitor.name.slice(0, 1)}
                   </AvatarFallback>
                 </Avatar>
@@ -168,7 +168,7 @@ export const Testimonials = () => {
                     />
                   ))}
                 </div>
-                <p className="text-gray-600">{testimonial.content}</p>
+                <p className="text-gray-600">" {testimonial.content} "</p>
               </CardContent>
             </Card>
           ))}

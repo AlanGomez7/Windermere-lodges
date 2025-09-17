@@ -99,6 +99,7 @@ export const getPropertiesWithId = async (ids: string[]) => {
   try {
     const response = await prisma.property.findMany({
       where: {
+        status: 'active',
         refNo: {
           in: ids,
         },

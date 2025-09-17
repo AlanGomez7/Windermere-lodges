@@ -17,7 +17,7 @@ export default function LodgeCard({ lodge, needsButton }: any) {
     lodge.features.length > 6 ? lodge.features.length - 6 : 0;
 
   const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
-  const noOfReviewStars = new Array(avgRating).fill("");
+  const noOfReviewStars = new Array(Math.round(avgRating)).fill("");
 
   const router = useRouter();
   return (

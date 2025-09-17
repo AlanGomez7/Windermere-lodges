@@ -7,6 +7,9 @@ export const getProperties = cache(async () => {
       include: {
         comments: true,
       },
+      where:{
+        status: 'active'
+      }
     });
     return response;
   } catch (err) {
@@ -17,6 +20,7 @@ export async function getLodgeDetails(id: string) {
   try {
     const response = prisma.property.findUnique({
       where: {
+        status: 'active',
         refNo: id,
       },
       include: {

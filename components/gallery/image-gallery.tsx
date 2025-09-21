@@ -13,7 +13,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { GalleryImage } from "./gallery-data";
+// import { GalleryImage } from "./gallery-data";
 
 export function ImageGallery({
   images,
@@ -32,14 +32,14 @@ export function ImageGallery({
     { id: "surroundings", name: "Surroundings" },
   ];
 
-  const galleryImages: GalleryImage[] = images || [];
+  const galleryImages = images || [];
 
   const filteredImages =
     category === "all"
       ? galleryImages
-      : galleryImages.filter((img) => img.tag === category);
+      : galleryImages.filter((img:any) => img.tag === category);
 
-  const featuredImages = galleryImages.filter((img) => img.featured);
+  const featuredImages = galleryImages.filter((img:any) => img.featured);
   const visibleImages = filteredImages.slice(0, visibleCount);
 
   const nextImage = () => {
@@ -115,7 +115,7 @@ export function ImageGallery({
           {/* <h3 className="text-2xl font-bold mb-6 text-center">Featured Images</h3> */}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            {featuredImages.map((image, index) => (
+            {featuredImages.map((image:any, index:number) => (
               <Dialog key={index}>
                 <DialogTrigger asChild>
                   <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300">
@@ -157,7 +157,7 @@ export function ImageGallery({
 
       <div className="relative">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {visibleImages.map((image, index) => (
+          {visibleImages.map((image:any, index:number) => (
             <Card
               key={index}
               className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"

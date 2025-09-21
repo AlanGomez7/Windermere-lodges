@@ -1,4 +1,3 @@
-import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { PageHeader } from "@/components/page-header";
 import { GalleryTabs } from "@/components/gallery/gallery-tabs";

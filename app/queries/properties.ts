@@ -59,6 +59,7 @@ export async function getLodgeComments(lodgeId: any) {
       },
       include: {
         visitor: true,
+        property:true
       },
     });
   } catch (err) {
@@ -69,7 +70,7 @@ export async function getLodgeComments(lodgeId: any) {
 export async function getUserReviews(userId: string) {
   try {
     if (!userId) {
-      throw new Error("Invalide user id");
+      throw new Error("Invalid user id");
     }
 
     const response = await prisma.comment.findMany({
@@ -77,7 +78,17 @@ export async function getUserReviews(userId: string) {
         visitorId: userId,
       },
       include: {
-        visitor: true,
+        visitor: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            address:true
+            //  DO NOT include password
+            // add other visitor fields you actually need
+          },
+        },
+        property:true
       },
     });
 

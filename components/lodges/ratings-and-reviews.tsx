@@ -1,12 +1,10 @@
 "use client";
 
-import { Star, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import ReviewModal from "../ui/review-modal";
 import { isLodgeBeenBooked } from "@/lib/api";
 import { useSession } from "next-auth/react";
-import { ratingsInfo } from "@/lib/utils";
 import ReviewBreakDown from "./reviews/review-breakdown";
 
 export default function RatingsAndReviews({
@@ -17,6 +15,8 @@ export default function RatingsAndReviews({
   lodge: any;
 }) {
   const [isOrdered, setIsOrdered] = useState(false);
+  const [refresh, setRefresh] = useState(0)
+
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
@@ -31,7 +31,7 @@ export default function RatingsAndReviews({
     if (userId) {
       handleFetchData(userId);
     }
-  }, [lodge, userId]);
+  }, [lodge, userId, refresh]);
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
@@ -62,6 +62,7 @@ export default function RatingsAndReviews({
         setShowDialog={setShowDialog}
         id={lodge.id}
         lodgeName={lodge.nickname}
+        setRefresh={(prev:number)=>setRefresh(prev+1)}
       />
     </>
   );

@@ -8,11 +8,13 @@ export default function ReviewModal({
   showDialog,
   setShowDialog,
   lodgeName,
+  setRefresh,
   id,
 }: {
   showDialog: boolean;
   setShowDialog: (value: boolean) => void;
   lodgeName: string;
+  setRefresh:(val:number)=>void;
   id: string;
 }) {
   const [rating, setRating] = useState<number>(0);
@@ -36,6 +38,7 @@ export default function ReviewModal({
     // const result = addReviewsAndRating()
 
     await submitReview({ rating, review, lodgeId: id });
+    setRefresh(1)
     setShowDialog(false);
   };
 

@@ -13,15 +13,14 @@ export function GalleryTabs({ lodgeIds }: { lodgeIds: any }) {
 
   const [loading, setLoading] = useState(false);
 
-  async function loadImages(id:string) {
+  async function loadImages(id: string) {
     try {
       setLoading(true);
       const data = await fetchLodgeImages(id);
-      
+
       if (data) {
         setImages(data);
       }
-    
     } catch (err) {
       console.error(err);
     } finally {
@@ -46,31 +45,31 @@ export function GalleryTabs({ lodgeIds }: { lodgeIds: any }) {
 
   return (
     <Tabs
-      defaultValue={activeTab ? activeTab : lodgeIds[0].id}
+      defaultValue={activeTab ?? lodgeIds[0]?.id}
       onValueChange={setActiveTab}
       className="w-full"
     >
-      <div className="flex justify-center mb-8">
-        <TabsList className="grid w-auto grid-cols-3">
-          {lodgeIds.map((l: any) => (
-            <TabsTrigger value={l.id} key={l.id}>
-              {l.nickname}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      <div className="mb-6 sm:mb-8">
+        <div className="w-full overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none]">
+          <TabsList className="flex w-max gap-2 sm:w-auto sm:grid sm:grid-cols-3 sm:gap-0 sm:mx-auto">
+            {lodgeIds.map((l: any) => (
+              <TabsTrigger value={l.id} key={l.id} className="shrink-0">
+                {l.nickname}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
       </div>
 
-      <TabsContent
-        value={activeTab}
-        className="mt-0"
-      >
+      <TabsContent value={activeTab} className="mt-0">
         {loading ? (
-          <ImageShimmer/>
-          // <p className="text-center text-gray-500">Loading images…</p>
+          <ImageShimmer />
         ) : (
           <ImageGallery lodgeKey={activeTab} images={images} />
         )}
       </TabsContent>
     </Tabs>
+
+    // make this responsive
   );
 }

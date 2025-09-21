@@ -6,12 +6,12 @@ import UserNotFound from "@/components/no-user-found";
 
 export default async function YourReviews() {
   const session = await auth();
-
   let reviews: any[] = [];
 
   if (session?.user?.id) {
     reviews = await fetchReviews(session?.user?.id);
   }
+
 
   return (
     <main className="min-h-screen bg-white">
@@ -20,7 +20,6 @@ export default async function YourReviews() {
         description="Update or see your reviews and ratings"
         backgroundImage="https://images.unsplash.com/photo-1506260408121-e353d10b87c7?q=80&w=1920&auto=format&fit=crop"
       />
-      {/* <div className="text-7xl font-bold">Your Reviews</div> */}
 
       {!session && <UserNotFound />}
 

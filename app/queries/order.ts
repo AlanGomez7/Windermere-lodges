@@ -175,6 +175,7 @@ export const getRatingInfo = async (lodgeId: string) => {
       by: ["rating"],
       where: {
         propertyId: lodgeId,
+        status: 'APPROVED'
       },
       _count: {
         rating: true,

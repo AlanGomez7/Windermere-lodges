@@ -54,13 +54,13 @@ export default function ReviewBreakDown({ lodgeId }: { lodgeId: string }) {
         {/* Summary Card */}
         <div className="flex items-center min-w-[220px]">
           <span className="flex-col text-black font-bold rounded-sm px-5 py-2 text-xl flex items-center gap-2">
-            <div>{Math.ceil(average)}</div>
+            <div>{average.toFixed(1)}</div>
             <div className="flex">
               {Array.from({ length: 5 }).map((_, index) => (
                 <Star
                   key={index}
                   className={`inline-block w-3 h-4 ml-1 ${
-                    index < Math.round(average)
+                    index < Math.ceil(average)
                       ? "fill-emerald-600 text-emerald-600"
                       : "text-gray-300"
                   }`}

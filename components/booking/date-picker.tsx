@@ -27,7 +27,6 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   const [date, setDate] = React.useState<DateRange | undefined>();
   const [open, setOpen] = React.useState<boolean>(false);
-  const lastScrollTop = React.useRef(0);
   const popoverRef = React.useRef<HTMLDivElement>(null);
 
   const handleSelect = (newDate: DateRange | undefined) => {
@@ -37,13 +36,13 @@ export function DateRangePicker({
     onChange?.(newDate);
   };
 
-  // Close on scroll up
-  React.useEffect(() => {
-    const handleScroll = () => setOpen(false);
+  // // Close on scroll up
+  // React.useEffect(() => {
+  //   const handleScroll = () => setOpen(false);
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   // Close on clicking outside
   React.useEffect(() => {

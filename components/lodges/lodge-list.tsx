@@ -9,7 +9,6 @@ import { useAppContext } from "@/app/context/context";
 
 export function LodgeList({ properties }: { properties: any }) {
   const lodges: any = use(properties);
-
   const [favorites, setFavorites] = useState<number[]>([]);
 
   const toggleFavorite = (id: number) => {

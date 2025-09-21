@@ -33,7 +33,7 @@ export const fetchProperties = async () => {
   });
 
   const res = await response.json();
-  
+
   if (res.ok) {
     return res.lodges;
   }
@@ -145,7 +145,6 @@ export const checkAvailableLodges = async (
     const checkIn = new Date(params.dates.from);
     const checkOut = new Date(params.dates.to);
 
-
     if (checkIn.getDate() === checkOut.getDate()) {
       return {
         data: [],
@@ -188,7 +187,7 @@ export const checkAvailableLodges = async (
     );
 
     if (!response.ok) {
-      console.log(response)
+      console.log(response);
       return {
         data: [],
         included: [],
@@ -197,7 +196,17 @@ export const checkAvailableLodges = async (
       };
     }
 
+    if (response.status === 429) {
+      return {
+        data: [],
+        included: [],
+        message: "Too many requests. Please try again in a few seconds.",
+        ok: false,
+      };;
+    }
+
     const result = (await response.json()) as AvailabilityResponse;
+    console.log(result);
     const { data, included } = result;
 
     if (!Array.isArray(data) || data.length === 0) {
@@ -469,15 +478,15 @@ export const fetchAllComments = async () => {
   }
 };
 
-export const fetchLodgeImages = async (id:string)=>{
-  try{
-    if(!id){
+export const fetchLodgeImages = async (id: string) => {
+  try {
+    if (!id) {
       throw new Error("Invalid lodge id");
     }
 
     const response = await getLodgeGalleryImages(id);
     return response;
-  }catch(err){
+  } catch (err) {
     throw err;
   }
-}
+};

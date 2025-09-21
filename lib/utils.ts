@@ -1,5 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { amenityIcons } from "./icons";
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -172,3 +174,8 @@ export const formatDate = (dateStr: Date | undefined) => {
     return formatted;
   }
 };
+
+export function getAmenityIcon(name: string) {
+  const key = name.toLowerCase();// normalize string
+  return amenityIcons[key] || amenityIcons["info"]; // fallback to default if missing
+}

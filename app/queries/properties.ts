@@ -55,6 +55,7 @@ export async function getLodgeComments(lodgeId: any) {
     return prisma.comment.findMany({
       where: {
         propertyId: lodgeId,
+        status: 'APPROVED'
       },
       include: {
         visitor: true,

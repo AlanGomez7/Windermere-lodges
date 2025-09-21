@@ -60,14 +60,14 @@ export function DateRangePicker({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0 m-5" align="start">
           <Calendar
             mode="range"
             defaultMonth={date?.from}
             selected={date}
             onSelect={handleSelect}
             numberOfMonths={2}
-            disabled={{ before: new Date() }}
+            disabled={{ before: new Date()}}
           />
         </PopoverContent>
       </Popover>

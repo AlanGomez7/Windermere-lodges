@@ -25,14 +25,14 @@ function Calendar({
       className={cn("p-3", className)}
       defaultMonth={checkIn}
       
-      disabled={
-        checkIn
-          ? [
-              { before: checkIn },
-              { from: checkIn, to: addDays(checkIn, 2) }, // disable check-in + next 3 days
-            ]
-          : undefined
-      }
+      // disabled={
+      //   checkIn
+      //     ? [
+      //         { before: checkIn },
+      //         { from: checkIn, to: addDays(checkIn, 2) }, // disable check-in + next 3 days
+      //       ]
+      //     : undefined
+      // }
       classNames={{
         months:
           "flex flex-col relative sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",

@@ -14,8 +14,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { cn, findDays, formatDate, ratingsInfo } from "@/lib/utils";
+import { addDays, format } from "date-fns";
+import {
+  cn,
+  findDays,
+  formatDate,
+  getAmenityIcon,
+  ratingsInfo,
+} from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
@@ -31,22 +37,9 @@ import KnowMore from "../ui/know-more";
 
 import { Icons } from "../ui/icons";
 import ListingModal from "../ui/listings-modal";
-import { Ban, Clover, Gift, MapPin } from "lucide-react";
-const amenityIconMap: Record<string, string> = {
-  "Lake Access": "/icons/water.png",
-  Wifi: "/icons/wifi.png",
-  "Shared Pool": "/icons/swim.png",
-  "Washing Machine": "/icons/w_machine.png",
-  "Hair Dryer": "/icons/dryer.png",
-  Kitchen: "/icons/cook.png",
-  TV: "/icons/tv.png",
-};
+import { Gift, MapPin } from "lucide-react";
+import { amenityIcons } from "@/lib/icons";
 
-const policyIconMap: Record<string, keyof typeof Icons> = {
-  "House rules": "calendarClock",
-  "Cancellation Policy": "ban",
-  "Safety & Property": "wrench",
-};
 
 function Gallery({
   images,
@@ -221,7 +214,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(() => {
     const today = new Date();
-    today.setDate(today.getDate() + 5); // add 5 days
+    today.setDate(today.getDate() + 3); // add 5 days
     return today;
   });
 
@@ -238,6 +231,32 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     setDiff(nights);
     return;
   }, [lodge, checkInDate, checkOutDate]);
+
+  useEffect(() => {
+    if (!checkInDate) return;
+
+    const minCheckout = addDays(checkInDate, 3);
+
+    // Run only if checkout is missing or invalid
+    if (!checkOutDate || checkOutDate < minCheckout) {
+      setCheckOutDate(minCheckout);
+
+      setSearchParams((prev: any) => {
+        // prevent redundant updates
+        if (
+          prev.dates?.from?.getTime?.() === checkInDate.getTime() &&
+          prev.dates?.to?.getTime?.() === minCheckout.getTime()
+        ) {
+          return prev; // ✅ no update if already correct
+        }
+
+        return {
+          ...prev,
+          dates: { from: checkInDate, to: minCheckout },
+        };
+      });
+    }
+  }, [checkInDate]);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -338,17 +357,17 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
               />
             </div>
             <div className="w-full md:w-96 rounded-md transition-all">
-              {diff && availability && (
+              {diff && availability ? (
                 <div className="py-3 px-12 shadow-md mb-4 text-center rounded-lg flex gap-4">
                   <Gift className="text-emerald-500" />
                   This lodge is available
                 </div>
-              )}
+              ):<></>}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-baseline gap-2 mb-4">
                     <span className="text-3xl font-bold">
-                      &pound;{lodge.price}.00
+                      &pound;{lodge.price}
                     </span>
                     <span className="text-sm text-gray-500">/per night</span>
                   </div>
@@ -364,31 +383,36 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       >
                         <PopoverTrigger asChild>
                           <Button
-                            variant={"outline"}
+                            variant="outline"
                             className={cn(
                               "w-full justify-start text-left font-normal",
                               !checkInDate && "text-muted-foreground"
                             )}
                           >
-                            {checkInDate ? (
-                              format(checkInDate, "LLL dd, yyyy")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
+                            {checkInDate
+                              ? format(checkInDate, "LLL dd, yyyy")
+                              : "Pick a date"}
                           </Button>
                         </PopoverTrigger>
+
                         <PopoverContent className="w-auto p-0">
                           <Calendar
                             mode="single"
                             selected={checkInDate}
+                            defaultMonth={checkInDate}
+                            disabled={{ before: new Date() }}
                             onSelect={(date) => {
+                              if (!date) return;
                               setCheckInDate(date);
 
-                              if (date) {
-                                const checkout = new Date(date);
-                                checkout.setDate(checkout.getDate() + 3); // 👈 add 3 days
-                                setCheckOutDate(checkout);
-                              }
+                              setSearchParams((prev: any) => ({
+                                ...prev,
+                                dates: {
+                                  ...prev.dates,
+                                  from: date,
+                                  to: prev.dates?.to,
+                                }, //  keep `to`
+                              }));
                             }}
                             initialFocus
                           />
@@ -418,12 +442,39 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                             )}
                           </Button>
                         </PopoverTrigger>
+
                         <PopoverContent className="w-auto p-0">
                           <Calendar
-                            checkIn={checkInDate}
                             mode="single"
+                            checkIn={checkInDate}
                             selected={checkOutDate}
-                            onSelect={setCheckOutDate}
+                            defaultMonth={checkOutDate || checkInDate}
+                            // disabled={{ before: new Date()}}
+                            disabled={
+                              checkInDate
+                                ? [
+                                    { before: new Date() },
+                                    {
+                                      from: checkInDate,
+                                      to: addDays(checkInDate, 2),
+                                    },
+                                  ]
+                                : undefined
+                            }
+                            onSelect={(date) => {
+                              if (!date) return;
+                              setCheckOutDate(date);
+
+                              setSearchParams((prev: any) => ({
+                                ...prev,
+                                dates: {
+                                  ...prev.dates,
+                                  from: prev.dates?.from,
+                                  to: date,
+                                }, // ✅ keep `from`
+                              }));
+                            }}
+                            initialFocus
                           />
                         </PopoverContent>
                       </Popover>
@@ -442,7 +493,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
                   <div className="border-t my-4" />
 
-                  {diff && (
+                  {diff && diff > 0 ? (
                     <div className="flex flex-col gap-2">
                       <div className="flex justify-between text-sm">
                         <span>{diff} Night</span>
@@ -468,6 +519,8 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                         </span>
                       </div>
                     </div>
+                  ) : (
+                    <></>
                   )}
 
                   {diff && !availability ? (
@@ -515,50 +568,39 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
               about={lodge.description}
             />
 
-            <div className="mb-8">
+            <div className="my-16">
               <h2 className="text-2xl font-bold mb-4">What we offer</h2>
               <div className="flex pb-4 md:flex-row flex-col gap-4">
                 {lodge.features
-                  .slice(0, 3)
+                  .slice(0, 4)
                   .map((amenity: string, i: number) => {
-                    const iconKey = Object.keys(amenityIconMap).find((key) =>
-                      amenity.toLowerCase().includes(key.toLowerCase())
-                    );
-                    // const iconSrc = iconKey ? amenityIconMap[iconKey] : null;
+                    // Find matching amenity key
+                    const iconKey = amenity.toLocaleLowerCase();
+                    const amenityIconKey = getAmenityIcon(iconKey);
 
-                    // if (amenity.startsWith("+")) {
-                    //   return (
-                    //     <div
-                    //       key={i}
-                    //       className="flex items-center space-x-2 flex-shrink-0"
-                    //     >
-                    //       <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                    //         <span className="text-sm font-semibold">
-                    //           {amenity.split(" ")[0]}
-                    //         </span>
-                    //       </div>
-                    //       <span className="text-gray-700">
-                    //         {amenity.split(" ").slice(1).join(" ")}
-                    //       </span>
-                    //     </div>
-                    //   );
-                    // }
                     return (
                       <div
                         key={i}
-                        className="flex items-center space-x-2 flex-shrink-0"
+                        className="flex items-center space-x-2 flex-shrink-0 px-5"
                       >
+                        <Image
+                          src={amenityIconKey}
+                          alt={""}
+                          width={22}
+                          height={22}
+                        />
                         <span className="text-gray-700">{amenity}</span>
                       </div>
                     );
                   })}
-                <Button
-                  variant={"secondary"}
-                  onClick={() => setShowAmenities(true)}
-                >
-                  Show all {lodge.features.length} amenities
-                </Button>
               </div>
+              <Button
+                variant={"secondary"}
+                onClick={() => setShowAmenities(true)}
+                className="mt-5"
+              >
+                Show all {lodge.features.length} amenities
+              </Button>
             </div>
 
             <ListingModal
@@ -607,8 +649,8 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       {
                         title: "Checking in and out",
                         data: [
-                          "Check-in after 15:00",
-                          "Checkout before 10:00",
+                          "Check in after 15:00",
+                          "Check out before 10:00",
                           "Self check-in with lockbox",
                         ],
                       },
@@ -621,8 +663,8 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                           "No parties or events",
                           "No commercial photography",
                           "No smoking",
-                          "Before you leave",
-                          "Throw rubbish away",
+                          // "Before you leave",
+                          // "Throw rubbish away",
                         ],
                       },
                       {
@@ -675,8 +717,8 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                       {
                         title: "Safety devices",
                         data: [
-                          "Carbon monoxide alarm installed",
-                          "Smoke alarm installed",
+                          "Carbon monoxide alarm",
+                          "Smoke alarm",
                         ],
                       },
                     ],

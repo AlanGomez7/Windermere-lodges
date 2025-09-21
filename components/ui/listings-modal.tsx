@@ -1,4 +1,6 @@
+import { getAmenityIcon } from "@/lib/utils";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 export default function ListingModal({
   setShowDialog,
@@ -33,12 +35,22 @@ export default function ListingModal({
               {value.map((v: any, i: number) => (
                 <div className="pt-5" key={i}>
                   <p className="mb-5 text-2xl font-semibold">{v.title}</p>
-                  {v.data.map((d: any, j: number) => (
-                    <div key={j}>
-                      <li className="p-4 sm:p-6">{d}</li>
-                      <hr />
-                    </div>
-                  ))}
+                  {v.data.map((d: any, j: number) => {
+                    const iconKey = d.toLocaleLowerCase();
+                    const amenityIconKey = getAmenityIcon(iconKey);
+                    return (
+                      <div key={j} className="flex">
+                        <Image
+                          src={amenityIconKey}
+                          alt={""}
+                          width={22}
+                          height={22}
+                        />
+                        <li className="p-4 sm:p-6 list-none">{d}</li>
+                        <hr />
+                      </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>

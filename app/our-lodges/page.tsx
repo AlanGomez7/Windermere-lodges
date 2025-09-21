@@ -11,8 +11,6 @@ export default async function OurLodgesPage({
 }: {
   searchParams: Promise<{ ids?: string }>;
 }) {
-
-
   const ids: string[] = (await searchParams).ids?.split(",") ?? [];
   let lodges: Promise<any>;
 
@@ -21,6 +19,9 @@ export default async function OurLodgesPage({
   } else {
     lodges = fetchProperties();
   }
+
+  const res = await lodges;
+  console.log(res)
 
   return (
     <main className="min-h-screen bg-white">

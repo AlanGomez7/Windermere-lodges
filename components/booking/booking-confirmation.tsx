@@ -31,6 +31,7 @@ export function BookingConfirmation({
   const nights = findDays(bookingDetails.dates.from, bookingDetails?.dates?.to);
 
   useEffect(() => {
+    console.log(orderSuccess)
     if (orderSuccess) {
       setBookingNumber(orderSuccess.id);
     } else {

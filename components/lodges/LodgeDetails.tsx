@@ -40,7 +40,6 @@ import ListingModal from "../ui/listings-modal";
 import { Gift, MapPin } from "lucide-react";
 import { amenityIcons } from "@/lib/icons";
 
-
 function Gallery({
   images,
   lodgeName,
@@ -362,7 +361,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                   <Gift className="text-emerald-500" />
                   This lodge is available
                 </div>
-              ):<></>}
+              ) : (
+                <></>
+              )}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-baseline gap-2 mb-4">
@@ -413,6 +414,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                                   to: prev.dates?.to,
                                 }, //  keep `to`
                               }));
+                              setOpenCalendar(null);
                             }}
                             initialFocus
                           />
@@ -453,11 +455,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                             disabled={
                               checkInDate
                                 ? [
-                                    { before: new Date() },
-                                    {
-                                      from: checkInDate,
-                                      to: addDays(checkInDate, 2),
-                                    },
+                                    { before: addDays(checkInDate, 3) }, // ❌ cannot pick before min stay
+                                    { after: addDays(checkInDate, 13) }, // ❌ cannot pick after max stay
+                                    { before: new Date() }, // ❌ also prevent past dates
                                   ]
                                 : undefined
                             }
@@ -473,6 +473,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                                   to: date,
                                 }, // ✅ keep `from`
                               }));
+                              setOpenCalendar(null);
                             }}
                             initialFocus
                           />
@@ -481,7 +482,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                     </div>
                   </div>
                   <p className="text-xs mb-3">
-                    Minimum booking is for 3 nights
+                    Minimum booking is for 3 nights & maximum 14 nights
                   </p>
 
                   <GuestSelector
@@ -716,10 +717,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
                       {
                         title: "Safety devices",
-                        data: [
-                          "Carbon monoxide alarm",
-                          "Smoke alarm",
-                        ],
+                        data: ["Carbon monoxide alarm", "Smoke alarm"],
                       },
                     ],
                   },

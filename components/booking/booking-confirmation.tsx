@@ -33,7 +33,7 @@ export function BookingConfirmation({
   useEffect(() => {
     console.log(orderSuccess)
     if (orderSuccess) {
-      setBookingNumber(orderSuccess.id);
+      setBookingNumber(orderSuccess.enquiryId);
     } else {
       setBookingNumber("123");
     }
@@ -83,7 +83,7 @@ export function BookingConfirmation({
           <Card>
             <CardHeader>
               <CardTitle>Booking Details</CardTitle>
-              <CardDescription>Reference: {bookingNumber}</CardDescription>
+              <CardDescription>Reference: {orderSuccess ? orderSuccess?.enquiryId:""}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

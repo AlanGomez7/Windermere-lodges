@@ -24,15 +24,6 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       defaultMonth={checkIn}
-      
-      // disabled={
-      //   checkIn
-      //     ? [
-      //         { before: checkIn },
-      //         { from: checkIn, to: addDays(checkIn, 2) }, // disable check-in + next 3 days
-      //       ]
-      //     : undefined
-      // }
       classNames={{
         months:
           "flex flex-col relative sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
@@ -60,7 +51,7 @@ function Calendar({
         ),
         range_end: "day-range-end",
         selected:
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary focus:bg-primary focus:text-primary-foreground",
         today: "bg-accent text-accent-foreground",
         outside:
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",

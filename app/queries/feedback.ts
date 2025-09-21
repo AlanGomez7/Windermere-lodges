@@ -29,33 +29,58 @@ export const createReview = async ({
   }
 };
 
-
-export const createEnquiryData = async (data: { name:string, phone:string, email:string, subscribe:boolean, message:string, subject:string }) => {
+export const createEnquiryData = async (data: {
+  name: string;
+  phone: string;
+  email: string;
+  subscribe: boolean;
+  message: string;
+  subject: string;
+}) => {
   try {
-
     const { name, phone, email, subscribe, message, subject } = data;
-    
+
     if (!name || !phone || !email || !message || !subject) {
       throw new Error("invalid inputs");
     }
 
     const response = await prisma.enquiry.create({
-      data:{
-        name:name,
+      data: {
+        name: name,
         mobile: phone,
         email,
         subject,
         subscribe,
         message,
-        status: 'PENDING'
-      }
-    })
+        status: "PENDING",
+      },
+    });
 
     return response;
-
   } catch (err) {
     throw err;
   }
 };
 
+export const deleteUserComment = async (id: string, userId:string) => {
+  try {
+    if (!id) {
+      throw new Error("Invalid id");
+    }
 
+    // Optional: Verify ownership
+    const existingComment = await prisma.comment.findUnique({ where: { id } });
+    if (existingComment?.visitorId !== userId) {
+      throw new Error("You can only delete your own comments");
+    }
+
+    const response = await prisma.comment.delete({
+      where: {
+        id: id,
+      },
+    });
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};

@@ -1,5 +1,6 @@
 "use server";
 
+import { deleteUserComment } from "@/app/queries/feedback";
 import {
   cancelBooking,
   createBooking,
@@ -61,7 +62,6 @@ export const updateUserDetails = async (data: {
 }) => {
   const session = await auth();
 
-  console.log(session);
   const response = await fetch(
     `${baseUrl}/api/auth/update-user-details/${session?.user?.email}`,
     {
@@ -136,7 +136,7 @@ export const checkAvailableLodges = async (
     return {
       data: [],
       included: [],
-      message: "Please select a valid date range",
+      message: "Please select both check-in and check-out dates.",
       ok: false,
     };
   }
@@ -145,11 +145,25 @@ export const checkAvailableLodges = async (
     const checkIn = new Date(params.dates.from);
     const checkOut = new Date(params.dates.to);
 
-    if (checkIn.getDate() === checkOut.getDate()) {
+    const diffTime = checkOut.getTime() - checkIn.getTime(); // milliseconds
+    const diffDays = diffTime / (1000 * 60 * 60 * 24); // convert ms → days
+
+    if (diffDays < 3) {
       return {
         data: [],
         included: [],
-        message: "Your stay must be atleast 3 days",
+        message:
+          "Your stay must be at least 3 nights. Please choose a longer stay.",
+        ok: false,
+      };
+    }
+
+    if (diffDays > 14) {
+      return {
+        data: [],
+        included: [],
+        message:
+          "Your stay cannot be longer than 14 nights. Please choose a shorter stay.",
         ok: false,
       };
     }
@@ -158,7 +172,7 @@ export const checkAvailableLodges = async (
       return {
         data: [],
         included: [],
-        message: "Invalid date format",
+        message: "Oops! The selected dates are invalid. Please try again.",
         ok: false,
       };
     }
@@ -170,11 +184,10 @@ export const checkAvailableLodges = async (
       return {
         data: [],
         included: [],
-        message: "Some thing went wrong",
+        message: "Something went wrong. Please try again later.",
         ok: false,
       };
     }
-
     const response = await fetch(
       `${baseUplistingUrl}/availability?check_in=${checkInStr}&check_out=${checkOutStr}`,
       {
@@ -187,7 +200,6 @@ export const checkAvailableLodges = async (
     );
 
     if (!response.ok) {
-      console.log(response);
       return {
         data: [],
         included: [],
@@ -202,11 +214,10 @@ export const checkAvailableLodges = async (
         included: [],
         message: "Too many requests. Please try again in a few seconds.",
         ok: false,
-      };;
+      };
     }
 
     const result = (await response.json()) as AvailabilityResponse;
-    console.log(result);
     const { data, included } = result;
 
     if (!Array.isArray(data) || data.length === 0) {
@@ -233,7 +244,6 @@ export const checkAvailableLodges = async (
         };
       }
 
-      // console.log(selectedLodge)
 
       return {
         data: [selectedLodge.id],
@@ -299,6 +309,28 @@ export const fetchRatingData = async (lodgeId: string) => {
     }
 
     const response = await getRatingInfo(lodgeId);
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const deleteComment = async (id: string) => {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      throw new Error("No user found");
+    }
+
+    if (!id) {
+      throw new Error("Invalid id");
+    }
+
+    if (!session.user.id) {
+      throw new Error("No user found");
+    }
+
+    const response = await deleteUserComment(id, session?.user?.id);
     return response;
   } catch (err) {
     throw err;
@@ -400,7 +432,6 @@ export const confirmBooking = async ({
 
 export const submitReview = async (reviews: any) => {
   try {
-    console.log(reviews);
     const session = await auth();
     reviews.userId = session?.user?.id;
     await fetch(`${baseUrl}/api/create-review`, {
@@ -429,7 +460,6 @@ export const fetchReviews = async (userId: string) => {
 };
 
 export const fetchPropertyReviews = async (lodgeId: string) => {
-  console.log(lodgeId);
   try {
     if (!lodgeId) {
       throw new Error("Invalid lodge id");
@@ -450,7 +480,6 @@ export const orderedLodge = async (lodgeId: string) => {
     }
 
     const response = await fetchOrderedLodge(session.user.id, lodgeId);
-    console.log(response);
     return response;
   } catch (err) {
     throw err;

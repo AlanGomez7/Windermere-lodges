@@ -30,7 +30,7 @@ export default function LodgeDetailsSkeleton() {
               <SkeletonBox className="h-4 w-60" />
             </div>
           </div>
-          <SkeletonBox className="h-12 w-32 rounded-lg" />
+          <SkeletonBox className="h-12 w-32 rounded-lg mt-9" />
         </div>
 
         {/* Main Gallery + Sidebar */}

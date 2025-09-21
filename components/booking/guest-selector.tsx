@@ -104,7 +104,7 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
             },
             { label: "Children", key: "children", min: 0, max: maxGuests },
             { label: "Teens", key: "teens", min: 0, max: maxGuests },
-            { label: "Infants", key: "infants", min: 0, max: 1 },
+            { label: "Infants", key: "infants", min: 0, max: 3 },
             { label: "Pets", key: "pets", min: 0, max: maxPets },
           ].map(({ label, key, min, max }) => (
             <div key={key} className="grid grid-cols-3 items-center gap-4">

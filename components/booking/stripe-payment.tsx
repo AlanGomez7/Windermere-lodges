@@ -56,28 +56,6 @@ export function StripePayment({
 
   const nights = findDays(searchParams.dates.from, searchParams.dates.to);
 
-  // Timer state
-  const TIMER_DURATION = 2 * 60; // 10 minutes in seconds
-  const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
-  // console.log(timeLeft)
-  const [expired, setExpired] = useState(false);
-
-  // useEffect(() => {
-  //   if (!isActive) return;
-  //   setTimeLeft(TIMER_DURATION);
-  //   setExpired(false);
-  //   const interval = setInterval(() => {
-  //     setTimeLeft((prev) => {
-  //       if (prev <= 1) {
-  //         clearInterval(interval);
-  //         setExpired(true);
-  //         return 0;
-  //       }
-  //       return prev - 1;
-  //     });
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, [isActive]);
 
   let amount = 1;
   if (nights) {

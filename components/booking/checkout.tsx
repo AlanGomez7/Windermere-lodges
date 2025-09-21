@@ -88,7 +88,9 @@ const CheckoutPage = ({
         status: "SUCCESSFUL",
       });
 
+      console.log(response)
       setOrderSuccess(response);
+
       setOrderDetails({
         dates: undefined,
         guests: { adults: 2, children: 0, pets: 0, infants: 0, teens: 0 },

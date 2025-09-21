@@ -57,7 +57,6 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
     }
 
     if (response.ok && response.message) {
-      console.log(response.data);
       toast.success(response?.message);
     }
 
@@ -76,8 +75,6 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
 
     setLoading(false);
   };
-
-  // ?no_of_guests=${searchParams.guests}&checkIn=${fromDate}&checkOut=${toDate}
 
   return (
     <section className="py-16 bg-gray-50">
@@ -112,14 +109,6 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
               {loading ? "Checking avalability" : "Search Availability"}
             </Button>
           </div>
-
-          {/* <div className="mt-8 text-center">
-            <Link href="/our-lodges">
-              <Button variant="link" className="text-emerald-600 hover:text-emerald-700">
-                View all our luxury lodges →
-              </Button>
-            </Link>
-          </div> */}
         </div>
       </div>
     </section>

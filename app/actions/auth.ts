@@ -12,18 +12,22 @@ export async function doLogout() {
   await signOut({ redirectTo: "/" });
 }
 
-export async function credentialLogin(credentials: any) {
+export async function credentialLogin(credentials: {email:string, password:string}) {
   try {
     const response = await signIn("credentials", {
       email: credentials.email,
       password: credentials.password,
       redirect: false,
-    },);
+    });
+
     return response
+
   } catch (err) {
+
     if(err instanceof AuthError){
-      return {error: "Invalid credentials"}
+      return {error: "Unable to log in. Wrong info or blocked account."}
     }
+    
     return {error: "something went wrong"}
   }
 }

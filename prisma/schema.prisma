@@ -21,6 +21,7 @@ model User {
   address   String?
   mobile    String?
   slug      String    @unique @default(uuid())
+  isBlocked Boolean   @default(false)
   comments  Comment[]
 }
 

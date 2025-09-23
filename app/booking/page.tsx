@@ -11,27 +11,44 @@ import { StripePayment } from "@/components/booking/stripe-payment";
 import { useRouter } from "next/navigation";
 
 export default function BookingPage() {
-  
   const { searchParams } = useAppContext();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
   const [orderDetails, setOrderDetails] = useState<any>();
   const [loading, setLoading] = useState(false);
 
+  function formatLocalDate(date: Date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   useEffect(() => {
     setLoading(true);
-    if (searchParams.dates) {
-      try {
-        const details = localStorage.getItem("order");
-        setOrderDetails(JSON.parse(details ?? ""));
-        setLoading(false);
-      } catch (err) {
-        console.error("Error parsing order from localStorage", err);
-      }
+
+    if (!searchParams.dates) {
+      router.back();
       return;
     }
 
-    router.back();
+    try {
+      const detailsStr = localStorage.getItem("order");
+      let details: any = detailsStr ? JSON.parse(detailsStr) : {};
+
+      // Format dates as local YYYY-MM-DD to prevent timezone shifts
+      const fromLocal = formatLocalDate(new Date(searchParams.dates.from));
+      const toLocal = formatLocalDate(new Date(searchParams.dates.to));
+
+      details = { ...details, dates: { from: fromLocal, to: toLocal } };
+      localStorage.setItem("order", JSON.stringify(details));
+
+      setOrderDetails(details);
+    } catch (err) {
+      console.error("Error parsing/saving order in localStorage", err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   if (loading) {

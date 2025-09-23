@@ -61,7 +61,7 @@ export function LoginForm() {
     <Form {...form}>
       {error && (
         <div className="flex justify-center">
-          <p className="text-red-600">{error}</p>
+          <p className="text-red-600 text-sm mb-5">{error}</p>
         </div>
       )}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

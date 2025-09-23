@@ -15,9 +15,9 @@ body {
 *{
     -ms-overflow-style: none;
 }
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     display: none;
-} 
+}  */
 
 /* @keyframes shimmer {
   0% { background-position: -200% 0; }

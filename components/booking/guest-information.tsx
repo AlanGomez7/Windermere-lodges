@@ -61,6 +61,7 @@ export function GuestInformation({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
+  console.log(bookingDetails, "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
   const [nights, setNights] = useState<number | undefined>(0);
 
   const findDifference = () => {

@@ -32,6 +32,7 @@ export function DateRangePicker({
   const handleSelect = (newDate: DateRange | undefined) => {
     if (!newDate) return;
 
+    console.log(newDate,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     setDate(newDate);
     onChange?.(newDate);
   };

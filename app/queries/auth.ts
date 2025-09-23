@@ -68,6 +68,10 @@ export async function checkUser(userDetails: any) {
       return null;
     }
 
+    if(dbUser.isBlocked){
+      return null
+    }
+
     return dbUser;
   } catch (err) {
     throw err;
@@ -86,9 +90,13 @@ export const credentialCheck = async (credentials: {
       },
     });
 
+
+
     if (!dbUser || dbUser.googleId) {
       return null;
     }
+
+    if(dbUser.isBlocked) return null;
 
     const status = await bcrypt.compare(password, dbUser.password);
 
@@ -98,15 +106,12 @@ export const credentialCheck = async (credentials: {
         name: dbUser.name,
         email: dbUser.email,
         method:"credentials",
-        // address:dbUser.address,
-        // phone:dbUser.mobile,
         image: dbUser.avatar ?? null, // if you store it
       };
     } else {
       return null;
     }
   } catch (err) {
-    console.log(err, "****************")
     throw err;
   }
 };
@@ -120,6 +125,7 @@ export const checkGoogleUser = async(id:any)=>{
     })
 
     return response;
+
   }catch(err){
     throw err;
   }
@@ -146,7 +152,6 @@ export const updatePassword = async({
     
     return response;
   } catch (err) {
-    console.log(err, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
     throw err;
   }
 };

@@ -32,6 +32,7 @@ type AvailabilityResponse = {
 export const BookingSection = ({ lodges }: { lodges: any }) => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [lodgeId, setLodgeId] = useState<string>("");
 
   const {
     searchParams,
@@ -47,7 +48,7 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
 
   const handleSearch = async () => {
     setLoading(true);
-    const response = await checkAvailableLodges(searchParams);
+    const response = await checkAvailableLodges(searchParams, lodgeId);
 
     if (!response.ok) {
       setIsLodgeAvailable(false);
@@ -65,7 +66,7 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
 
       setSearchParams({
         ...searchParams,
-        lodge:undefined
+        lodge: undefined,
       });
       return;
     }
@@ -86,7 +87,9 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6 bg-white rounded-md shadow-md hover:shadow-2xl transition-all">
             <DateRangePicker
-              onChange={(dates) => setSearchParams({ ...searchParams, dates })}
+              onChange={(dates) => {
+                setSearchParams({ ...searchParams, dates });
+              }}
             />
 
             <GuestSelector
@@ -97,7 +100,10 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
 
             <LodgeSelector
               properties={properties}
-              onChange={(lodge) => setSearchParams({ ...searchParams, lodge })}
+              onChange={(lodge) => {
+                if (lodge) setLodgeId(lodge.refNo);
+                setSearchParams({ ...searchParams, lodge });
+              }}
             />
 
             <Button

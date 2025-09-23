@@ -21,6 +21,7 @@ import {
 interface Lodge {
   id: string;
   name: string;
+  refNo:string;
   description: string;
   maxGuests: number;
   pricePerNight: number;

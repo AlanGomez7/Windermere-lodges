@@ -130,7 +130,8 @@ export const fetchPropertyDetails = async (id: string) => {
 };
 
 export const checkAvailableLodges = async (
-  params: any
+  params: any,
+  id:string
 ): Promise<AvailabilityResponse> => {
   if (!params?.dates?.from || !params?.dates?.to) {
     return {
@@ -230,9 +231,9 @@ export const checkAvailableLodges = async (
     }
 
     // Filter for selected lodge if provided
-    if (params.lodge?.id) {
+    if (id) {
       const selectedLodge = data.find((d: any) => {
-        if (d.id === params.lodge.refNo) return d.id;
+        if (d.id === id) return d.id;
       });
 
       if (!selectedLodge) {
@@ -360,9 +361,12 @@ export const updateOrderPayment = async ({
     const fromDate = bookingDetails?.dates.from;
     const toDate = bookingDetails?.dates.to;
 
-    const checkIn = new Date(fromDate)?.toISOString().split("T")[0];
-    const checkOut = new Date(toDate)?.toISOString().split("T")[0];
+    console.log(fromDate, toDate, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
 
+    const checkIn = new Date(fromDate)?.toISOString().slice(0,10);
+    const checkOut = new Date(toDate)?.toISOString().slice(0,10);
+
+    console.log(checkIn, checkOut, "---------------------------------------------------=================================>>>>>>>>>>>>>>")
     const reqBody = {
       data: {
         type: "bookings",

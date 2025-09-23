@@ -23,6 +23,7 @@ import toast from "react-hot-toast";
 export default function MyAccount({ user }: any) {
   const [emailErr, setEmailErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
@@ -86,7 +87,7 @@ export default function MyAccount({ user }: any) {
 
   const handleChangePassword = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setPasswordErr("New passwords do not match");
+      setPasswordErr("Make sure both passwords are same.");
       return;
     }
 
@@ -104,7 +105,7 @@ export default function MyAccount({ user }: any) {
       if (response.ok) {
         toast.success("Password updated successfully");
       } else {
-        toast.error("Password update failed");
+        toast.error("Invalid password");
       }
     } catch (error) {
       toast.error(
@@ -154,13 +155,13 @@ export default function MyAccount({ user }: any) {
                     {getInitials(user?.name || "User")}
                   </AvatarFallback>
                 </Avatar>
-                <Button
+                {/* <Button
                   size="icon"
                   variant="outline"
                   className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full"
                 >
                   <Camera className="w-4 h-4" />
-                </Button>
+                </Button> */}
               </div>
               <h2 className="text-xl font-semibold text-gray-900">
                 {(formData && formData?.userName) || "User"}
@@ -296,17 +297,33 @@ export default function MyAccount({ user }: any) {
                 Change Password
               </CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="current-password">Current Password</Label>
-                <Input
-                  id="current-password"
-                  type="password"
-                  value={passwordData.currentPassword}
-                  onChange={(e) =>
-                    handlePasswordChange("currentPassword", e.target.value)
-                  }
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) =>
+                      handlePasswordChange("currentPassword", e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+                
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -319,9 +336,13 @@ export default function MyAccount({ user }: any) {
                       handlePasswordChange("newPassword", e.target.value)
                     }
                   />
+                  {passwordErr && (
+                    <p className="text-red-500 text-sm">{passwordErr}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirm-password">Confirm New Password</Label>
+
                   <Input
                     id="confirm-password"
                     type="password"
@@ -330,6 +351,9 @@ export default function MyAccount({ user }: any) {
                       handlePasswordChange("confirmPassword", e.target.value)
                     }
                   />
+                  {passwordErr && (
+                    <p className="text-red-500 text-sm">{passwordErr}</p>
+                  )}
                 </div>
               </div>
               <Button
@@ -353,4 +377,3 @@ export default function MyAccount({ user }: any) {
     </main>
   );
 }
-

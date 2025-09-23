@@ -52,6 +52,7 @@ export function StripePayment({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
+  console.log(bookingDetails, "****************************************************************")
   const { orderDetails, searchParams } = useAppContext();
 
   const nights = findDays(searchParams.dates.from, searchParams.dates.to);

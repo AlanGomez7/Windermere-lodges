@@ -269,7 +269,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
       lodge,
     };
 
-    const response = await checkAvailableLodges(params);
+    const response = await checkAvailableLodges(searchParams, lodge.refNo);
 
     if (!response.ok) {
       toast.error(response?.message ?? "Something went wrong");

@@ -1,12 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialProvider from "next-auth/providers/credentials";
-import {
-  checkGoogleUser,
-  checkUser,
-  createUser,
-  credentialCheck,
-} from "./app/queries/auth";
+import { checkUser, createUser, credentialCheck } from "./app/queries/auth";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
@@ -60,38 +55,53 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         session.user.id = token.sub;
         (session.user as any).method = token.method;
       }
+
       return session;
     },
 
-    async signIn({user, profile, account }) {
+    async signIn({ user, profile, account }) {
       try {
+        // ✅ Let credentials provider handle separately
         if (account?.provider === "credentials") {
           return true;
         }
 
+        // ✅ Check if user already exists in DB
         const dbUser = await checkUser(profile);
 
-        (user as any).id = dbUser?.id
+        if (dbUser) {
+          if (dbUser.isBlocked) {
+            // ❌ Deny login for blocked users
+            throw new Error("BlockedUser");
+          }
 
-        if (user) {
+          // attach db ID for session callback
+          (user as any).id = dbUser.id;
           return true;
         }
 
-        const result=await createUser({
+        // ✅ Create new user if not found
+        const result = await createUser({
           avatar: profile?.picture,
           email: profile?.email,
-          password: "" + profile?.updated_at,
+          password: "" + profile?.updated_at, // consider null instead
           name: profile?.name,
           sub: profile?.sub,
           role: "user",
         });
 
         (user as any).id = result?.id;
-        (user as any).method = "google"
+        (user as any).method = "google";
 
         return true;
-      } catch (err) {
-        console.log(err);
+      } catch (err: any) {
+        console.error("Sign-in error:", err);
+
+        // Forward specific error to error page
+        if (err.message === "BlockedUser") {
+          return "/auth/error?error=BlockedUser";
+        }
+
         return false;
       }
     },

@@ -6,5 +6,6 @@ export default async function MyAccountPage() {
   const session = await auth();
 
   const user = await checkUser({email:session?.user?.email});
+  
   return <MyAccount user={user} />;
 }

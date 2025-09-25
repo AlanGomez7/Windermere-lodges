@@ -38,7 +38,6 @@ import KnowMore from "../ui/know-more";
 import { Icons } from "../ui/icons";
 import ListingModal from "../ui/listings-modal";
 import { Gift, MapPin } from "lucide-react";
-import { amenityIcons } from "@/lib/icons";
 
 function Gallery({
   images,
@@ -619,15 +618,8 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
             {/* Location */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Location</h2>
-              {/* <iframe
-                src="https://www.google.com/maps/embed?..."
-                width="100%"
-                height="350"
-                className="rounded-xl border"
-                loading="lazy"
-              ></iframe> */}
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17236.00798529335!2d-2.927321941697609!3d54.37542494673224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487c934574be0139%3A0xd17f1c1611bb5b79!2sWindermere%2C%20UK!5e1!3m2!1sen!2sin!4v1758143766112!5m2!1sen!2sin"
+                src={`https://www.google.com/maps?q=${lodge.latitude},${lodge.longitude}&hl=en&z=14&output=embed`}
                 width="100%"
                 height="350"
                 loading="lazy"

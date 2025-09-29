@@ -18,7 +18,7 @@ export const ChatbotButton = () => {
     <>
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 rounded-full w-14 h-14 p-0 shadow-lg bg-emerald-600 hover:bg-emerald-700 z-50"
+        className="fixed bottom-6 right-6 rounded-full w-14 h-14 p-0 shadow-lg bg-emerald-600 hover:bg-emerald-700 z-20 md:z-50"
         aria-label="Open chat assistant"
       >
         <MessageSquare className="h-6 w-6" />

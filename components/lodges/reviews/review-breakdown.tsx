@@ -49,13 +49,13 @@ export default function ReviewBreakDown({ lodgeId }: { lodgeId: string }) {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Rating & Reviews</h2>
-      <div className="flex flex-col md:flex-row md:items-center gap-8">
+      <h2 className="text-2xl font-bold mb-4 ">Rating & Reviews</h2>
+      <div className="flex flex-col md:flex-row gap-10">
         {/* Summary Card */}
-        <div className="flex items-center min-w-[220px]">
-          <span className="flex-col text-black font-bold rounded-sm px-5 py-2 text-xl flex items-center gap-2">
+        <div className="flex items-center">
+          <span className="flex-col text-black font-bold rounded-sm py-2 text-xl flex items-center gap-2">
             <div>{average.toFixed(1)}</div>
-            <div className="flex">
+            {/* <div className="flex">
               {Array.from({ length: 5 }).map((_, index) => (
                 <Star
                   key={index}
@@ -66,10 +66,10 @@ export default function ReviewBreakDown({ lodgeId }: { lodgeId: string }) {
                   }`}
                 />
               ))}
-            </div>
+            </div> */}
           </span>
           <div className="flex flex-col justify-center ml-4">
-            <span className="font-bold text-gray-800 text-md leading-tight">
+            <span className="font-bold text-gray-800 text-sm leading-tight">
               {average >= 4.5
                 ? "Excellent"
                 : average >= 4
@@ -88,7 +88,7 @@ export default function ReviewBreakDown({ lodgeId }: { lodgeId: string }) {
 
         {/* Breakdown Bars */}
         <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-4">
-          {ratingInfo.map((b, i) => (
+          {[...ratingInfo].reverse().map((b, i) => (
             <div key={b.rating} className="flex flex-col items-center w-full">
               <div className="flex items-center gap-1 mb-1">
                 <span className="font-bold text-gray-700">{b.rating}</span>
@@ -113,7 +113,7 @@ export default function ReviewBreakDown({ lodgeId }: { lodgeId: string }) {
               </div>
               <div className="w-full h-1 rounded bg-gray-200 flex items-center">
                 <div
-                  className="bg-amber-400 h-1 rounded"
+                  className="bg-emerald-600 h-1 rounded"
                   style={{
                     width: `${maxCount ? (b.count / maxCount) * 100 : 0}%`,
                   }}

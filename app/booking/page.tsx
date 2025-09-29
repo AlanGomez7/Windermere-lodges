@@ -9,6 +9,9 @@ import { useAppContext } from "../context/context";
 import { BookingConfirmation } from "@/components/booking/booking-confirmation";
 import { StripePayment } from "@/components/booking/stripe-payment";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/ui/icons";
+import { MapPin } from "lucide-react";
 
 export default function BookingPage() {
   const { searchParams } = useAppContext();
@@ -70,6 +73,42 @@ export default function BookingPage() {
         description="Secure your perfect Lake District getaway"
         backgroundImage={orderDetails?.lodge?.images[2] || "/placeholder.jpg"}
       />
+      <div className="p-2 lg:px-28 mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between my-8">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-10 w-10 bg-white"
+              onClick={() => router.push("/our-lodges")}
+            >
+              <Icons.chevronLeft className="h-6 w-6" />
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl text-gray-800">
+                {orderDetails?.lodge.nickname}
+              </h1>
+              <p className="text-sm text-gray-600 flex pt-4">
+                <MapPin className="mr-2 h-5 w-5 text-emerald-400 flex-shrink-0" />
+
+                {orderDetails?.lodge.address}
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 sm:mt-0 flex-shrink-0">
+            <div className="flex items-center gap-2 rounded-lg bg-green-100 p-2 text-green-800">
+              <div className="flex items-center gap-1">
+                {/* <span className="font-bold text-lg">{lodge.rating}</span> */}
+                {/* <span className="text-lg">{avgRating}★</span> */}
+              </div>
+              <div className="text-xs">
+                <p className="font-semibold">Very Good</p>
+                {/* <p>{totalNoOfReviews} ratings</p> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* <BookingSteps currentStep={currentStep} /> */}
 

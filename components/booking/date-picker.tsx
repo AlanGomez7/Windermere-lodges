@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import CalendarModal from "../ui/calendar-modal";
 
 interface DateRangePickerProps {
   className?: string;
@@ -21,29 +22,27 @@ interface DateRangePickerProps {
 }
 
 export function DateRangePicker({
-  className,
   onChange,
   disabled = false,
 }: DateRangePickerProps) {
   const [date, setDate] = React.useState<DateRange | undefined>();
   const [open, setOpen] = React.useState<boolean>(false);
+  const [showDialog, setShowDialog] = React.useState<boolean>(false);
   const popoverRef = React.useRef<HTMLDivElement>(null);
 
   const handleSelect = (newDate: DateRange | undefined) => {
     if (!newDate) return;
-
-    console.log(newDate,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     setDate(newDate);
     onChange?.(newDate);
   };
 
-  // // Close on scroll up
-  // React.useEffect(() => {
-  //   const handleScroll = () => setOpen(false);
+  // Close on scroll up
+  React.useEffect(() => {
+    const handleScroll = () => setOpen(false);
 
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Close on clicking outside
   React.useEffect(() => {
@@ -86,51 +85,99 @@ export function DateRangePicker({
   }, [open]);
 
   return (
-    <div className={cn("grid gap-2", className)}>
-      <Popover open={open}>
+    <>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            className={cn(
-              "w-full justify-start text-left font-normal",
-              !date && "text-muted-foreground"
-            )}
-            disabled={disabled}
-            onClick={() => setOpen(!open)}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
-                <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
-                </>
-              ) : (
+          <div className="hidden md:flex w-full gap-6">
+            <Button
+              id="date"
+              variant={"outline"}
+              className={cn(
+                "w-full justify-start text-left font-normal flex-1",
+                !date && "text-muted-foreground"
+              )}
+              disabled={disabled}
+              onClick={() => setOpen(!open)}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date?.from ? (
                 format(date.from, "LLL dd, y")
-              )
-            ) : (
-              <span>Pick your days</span>
-            )}
-          </Button>
+              ) : (
+                <span>Check in</span>
+              )}
+            </Button>
+
+            <Button
+              id="date"
+              variant={"outline"}
+              className={cn(
+                "w-full justify-start text-left font-normal flex-1",
+                !date && "text-muted-foreground"
+              )}
+              disabled={disabled}
+              onClick={() => setOpen(!open)}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date?.to ? format(date.to, "LLL dd, y") : <span>Check out</span>}
+            </Button>
+          </div>
         </PopoverTrigger>
+
         <PopoverContent
           ref={popoverRef}
           className="w-auto p-0 m-5"
-          align="start"
           side="bottom"
+          align="start"
         >
-          <Calendar
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={handleSelect}
-            numberOfMonths={2}
-            disabled={{ before: new Date() }}
-          />
+          <div className="py-12 px-6">
+            <Calendar
+              mode="range"
+              defaultMonth={date?.from}
+              selected={date}
+              onSelect={handleSelect}
+              numberOfMonths={2}
+              classNames={{
+                months:
+                  "flex flex-col relative sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+              }}
+              disabled={{ before: new Date() }}
+            />
+          </div>
         </PopoverContent>
       </Popover>
-    </div>
+
+      <div className="flex flex-col gap-6 w-full md:hidden">
+        <Button
+          id="date"
+          variant={"outline"}
+          className={cn(
+            "w-full justify-start text-left font-normal flex-1",
+            !date && "text-muted-foreground"
+          )}
+          disabled={disabled}
+          onClick={() => setShowDialog(!showDialog)}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {date?.from ? format(date.from, "LLL dd, y") : <span>Check in</span>}
+        </Button>
+
+        <Button
+          id="date"
+          variant={"outline"}
+          className={cn(
+            "w-full justify-start text-left font-normal flex-1",
+            !date && "text-muted-foreground"
+          )}
+          disabled={disabled}
+          onClick={() => setShowDialog(!showDialog)}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {date?.to ? format(date.to, "LLL dd, y") : <span>Check out</span>}
+        </Button>
+      </div>
+
+      <CalendarModal setShowDialog={setShowDialog} showDialog={showDialog} onSelect={handleSelect}/> 
+    </>
   );
 }
 

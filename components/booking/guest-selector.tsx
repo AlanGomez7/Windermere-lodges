@@ -69,7 +69,7 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="w-full justify-start">
+        <Button variant="outline" className="w-full justify-start truncate">
           <Users className="mr-2 h-4 w-4" />
           {guests.adults} {guests.adults === 1 ? "Adult" : "Adults"}
           {guests.children > 0 &&

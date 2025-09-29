@@ -4,17 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Footer from "../footer";
 import { PageHeader } from "../page-header";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { addDays, format } from "date-fns";
 import {
   cn,
   findDays,
@@ -28,8 +18,6 @@ import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import RatingsAndReviews from "./ratings-and-reviews";
 
 import { useAppContext } from "@/app/context/context";
-import { checkAvailableLodges } from "@/lib/api";
-import { GuestSelector } from "../booking/guest-selector";
 import AboutModal from "../ui/about-modal";
 import ReviewList from "../review-wrapper";
 import Link from "next/link";
@@ -37,7 +25,11 @@ import KnowMore from "../ui/know-more";
 
 import { Icons } from "../ui/icons";
 import ListingModal from "../ui/listings-modal";
-import { Gift, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { DateRange } from "react-day-picker";
+import PirceDetails from "./price-details";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { VisuallyHidden } from "../ui/visually-hidden";
 
 function Gallery({
   images,
@@ -72,7 +64,7 @@ function Gallery({
   }, [modalOpen, current]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-0">
+    <div className="flex flex-col gap-0">
       {/* Main Image with overlays */}
       <div className="relative flex-1 min-w-0">
         <Image
@@ -161,11 +153,107 @@ function Gallery({
           </Button>
         </Link>
         {/* Modal/Lightbox */}
+        <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+          <DialogContent className="max-w-5xl p-0 bg-black/95 border-none flex flex-col items-center justify-center">
+            <VisuallyHidden asChild>
+              <DialogTitle>Gallery images for {lodgeName}</DialogTitle>
+            </VisuallyHidden>
+            {/* Add DialogTitle for accessibility, hidden visually */}
+            <h2 id="gallery-dialog-title" className="sr-only">
+              Gallery images for {lodgeName}
+            </h2>
+            <div
+              className="relative w-full flex items-center justify-center"
+              style={{ minHeight: 500 }}
+            >
+              {/* Left Arrow */}
+              {total > 1 && (
+                <button
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 z-20"
+                  onClick={handlePrev}
+                  aria-label="Previous image"
+                >
+                  <svg
+                    width="32"
+                    height="32"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+              )}
+              {/* Main Zoomed Image */}
+              <Image
+                src={images[current]}
+                alt={lodgeName + "zoomed"}
+                width={1200}
+                height={800}
+                className="object-contain max-h-[80vh] w-auto mx-auto rounded"
+                draggable={false}
+              />
+              {/* Right Arrow */}
+              {total > 1 && (
+                <button
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 z-20"
+                  onClick={handleNext}
+                  aria-label="Next image"
+                >
+                  <svg
+                    width="32"
+                    height="32"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M9 6l6 6-6 6" />
+                  </svg>
+                </button>
+              )}
+              {/* Image Count */}
+              <div className="absolute right-4 bottom-4 bg-black/80 text-white rounded px-3 py-1 text-sm z-20">
+                {current + 1} / {total}
+              </div>
+            </div>
+            {/* Thumbnails in Modal */}
+            <div className="flex gap-2 mt-4 max-w-full overflow-x-auto pb-2">
+              {images.map((img, idx) => (
+                <button
+                  key={img + idx}
+                  className={`relative rounded overflow-hidden border-2 ${
+                    idx === current
+                      ? "border-emerald-600"
+                      : "border-transparent"
+                  }`}
+                  onClick={() => handleThumbClick(idx)}
+                  tabIndex={0}
+                  aria-label={`Show image ${idx + 1}`}
+                >
+                  <Image
+                    src={img}
+                    alt={lodgeName + " thumbnail"}
+                    width={80}
+                    height={60}
+                    className={`object-cover w-20 h-14 ${
+                      idx === current ? "" : "opacity-80"
+                    }`}
+                  />
+                  {idx === current && (
+                    <span className="absolute inset-0 ring-2 ring-emerald-600 rounded pointer-events-none"></span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
       {/* Vertical Divider */}
       <div className="w-px bg-gray-200 mx-2" />
       {/* Thumbnails: single vertical column */}
-      <div className="flex md:flex-col gap-2 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent w-full md:w-40 pr-3 py-2">
+      <div className="flex gap-2 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent w-full pr-3 py-2">
         {(images.length > 0 ? images : ["/placeholder.jpg"]).map((img, idx) => (
           <button
             key={img + idx}
@@ -199,15 +287,18 @@ function Gallery({
 }
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
-  const { searchParams, setSearchParams } = useAppContext();
+  const { searchParams } = useAppContext();
   const [showAmenities, setShowAmenities] = useState(false);
 
-  const { dates, guests } = searchParams;
+  const { dates } = searchParams;
 
   const [diff, setDiff] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [checkInDate, setCheckInDate] = useState<Date | undefined>(new Date());
-  const [availability, setAvailability] = useState(false);
+
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: undefined,
+    to: undefined,
+  });
+
   const [aboutDialog, setAboutDialog] = useState(false);
 
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(() => {
@@ -220,72 +311,14 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
   useEffect(() => {
     if (dates) {
-      setCheckInDate(dates.from);
+      setDate(dates.from);
       setCheckOutDate(dates.to);
     }
 
-    const nights = findDays(checkInDate, checkOutDate);
-    console.log(nights);
+    const nights = findDays(date?.from, date?.to);
     setDiff(nights);
     return;
-  }, [lodge, checkInDate, checkOutDate]);
-
-  useEffect(() => {
-    if (!checkInDate) return;
-
-    const minCheckout = addDays(checkInDate, 3);
-
-    // Run only if checkout is missing or invalid
-    if (!checkOutDate || checkOutDate < minCheckout) {
-      setCheckOutDate(minCheckout);
-
-      setSearchParams((prev: any) => {
-        // prevent redundant updates
-        if (
-          prev.dates?.from?.getTime?.() === checkInDate.getTime() &&
-          prev.dates?.to?.getTime?.() === minCheckout.getTime()
-        ) {
-          return prev; // ✅ no update if already correct
-        }
-
-        return {
-          ...prev,
-          dates: { from: checkInDate, to: minCheckout },
-        };
-      });
-    }
-  }, [checkInDate]);
-
-  const handleSearch = async () => {
-    setLoading(true);
-
-    const params = {
-      dates: {
-        from: checkInDate,
-        to: checkOutDate,
-      },
-      guests: guests,
-      lodge,
-    };
-
-    const response = await checkAvailableLodges(searchParams, lodge.refNo);
-
-    if (!response.ok) {
-      toast.error(response?.message ?? "Something went wrong");
-      setLoading(false);
-      return;
-    }
-
-    setAvailability(true);
-    setSearchParams(params);
-    toast.success("Lodge available");
-    setLoading(false);
-  };
-
-  const handleBooking = () => {
-    localStorage.setItem("order", JSON.stringify(searchParams));
-    router.push("/booking");
-  };
+  }, [lodge, date, checkOutDate]);
 
   const [openCalendar, setOpenCalendar] = React.useState<
     "checkin" | "checkout" | null
@@ -304,425 +337,264 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
   return (
     <>
-      <>
-        <PageHeader
-          title={lodge.name}
-          description={lodge.address}
-          backgroundImage={lodge.images[0]}
-        />
-        <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 mt-18">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-10 w-10 bg-white"
-                onClick={() => router.push("/our-lodges")}
-              >
-                <Icons.chevronLeft className="h-6 w-6" />
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl text-gray-800">
-                  {lodge.nickname}
-                </h1>
-                <p className="text-sm text-gray-600 flex pt-4">
-                  <MapPin className="mr-2 h-5 w-5 text-emerald-400 flex-shrink-0" />
+      <PageHeader
+        title={lodge.name}
+        description={lodge.address}
+        backgroundImage={lodge.images[0]}
+      />
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 mt-18 relative">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-10 w-10 bg-white"
+              onClick={() => router.push("/our-lodges")}
+            >
+              <Icons.chevronLeft className="h-6 w-6" />
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl text-gray-800">
+                {lodge.nickname}
+              </h1>
+              <p className="text-sm text-gray-600 flex pt-4">
+                <MapPin className="mr-2 h-5 w-5 text-emerald-400 flex-shrink-0" />
 
-                  {lodge.address}
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 sm:mt-0 flex-shrink-0">
-              <div className="flex items-center gap-2 rounded-lg bg-green-100 p-2 text-green-800">
-                <div className="flex items-center gap-1">
-                  <span className="font-bold text-lg">{lodge.rating}</span>
-                  <span className="text-lg">{avgRating}★</span>
-                </div>
-                <div className="text-xs">
-                  <p className="font-semibold">Very Good</p>
-                  <p>{totalNoOfReviews} ratings</p>
-                </div>
-              </div>
+                {lodge.address}
+              </p>
             </div>
           </div>
-
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="flex-1">
-              <Gallery
-                images={lodge.images}
-                lodgeName={lodge.name}
-                lodgeId={lodge.id}
-              />
-            </div>
-            <div className="w-full md:w-96 rounded-md transition-all">
-              {diff && availability ? (
-                <div className="py-3 px-12 shadow-md mb-4 text-center rounded-lg flex gap-4">
-                  <Gift className="text-emerald-500" />
-                  This lodge is available
-                </div>
-              ) : (
-                <></>
-              )}
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-3xl font-bold">
-                      &pound;{lodge.price}
-                    </span>
-                    <span className="text-sm text-gray-500">/per night</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm text-gray-500">Check-In</label>
-                      <Popover
-                        open={openCalendar === "checkin"}
-                        onOpenChange={(open) =>
-                          setOpenCalendar(open ? "checkin" : null)
-                        }
-                      >
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !checkInDate && "text-muted-foreground"
-                            )}
-                          >
-                            {checkInDate
-                              ? format(checkInDate, "LLL dd, yyyy")
-                              : "Pick a date"}
-                          </Button>
-                        </PopoverTrigger>
-
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={checkInDate}
-                            defaultMonth={checkInDate}
-                            disabled={{ before: new Date() }}
-                            onSelect={(date) => {
-                              if (!date) return;
-                              setCheckInDate(date);
-
-                              setSearchParams((prev: any) => ({
-                                ...prev,
-                                dates: {
-                                  ...prev.dates,
-                                  from: date,
-                                  to: prev.dates?.to,
-                                }, //  keep `to`
-                              }));
-                              setOpenCalendar(null);
-                            }}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm text-gray-500">Check-Out</label>
-                      <Popover
-                        open={openCalendar === "checkout"}
-                        onOpenChange={(open) =>
-                          setOpenCalendar(open ? "checkout" : null)
-                        }
-                      >
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !checkOutDate && "text-muted-foreground"
-                            )}
-                          >
-                            {checkOutDate ? (
-                              format(checkOutDate, "LLL dd, yyyy")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            checkIn={checkInDate}
-                            selected={checkOutDate}
-                            defaultMonth={checkOutDate || checkInDate}
-                            // disabled={{ before: new Date()}}
-                            disabled={
-                              checkInDate
-                                ? [
-                                    { before: addDays(checkInDate, 3) }, // ❌ cannot pick before min stay
-                                    { after: addDays(checkInDate, 13) }, // ❌ cannot pick after max stay
-                                    { before: new Date() }, // ❌ also prevent past dates
-                                  ]
-                                : undefined
-                            }
-                            onSelect={(date) => {
-                              if (!date) return;
-                              setCheckOutDate(date);
-
-                              setSearchParams((prev: any) => ({
-                                ...prev,
-                                dates: {
-                                  ...prev.dates,
-                                  from: prev.dates?.from,
-                                  to: date,
-                                }, // ✅ keep `from`
-                              }));
-                              setOpenCalendar(null);
-                            }}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                  <p className="text-xs mb-3">
-                    Minimum booking is for 3 nights & maximum 14 nights
-                  </p>
-
-                  <GuestSelector
-                    lodge={lodge}
-                    onChange={(guests) =>
-                      setSearchParams({ ...searchParams, guests })
-                    }
-                  />
-
-                  <div className="border-t my-4" />
-
-                  {diff && diff > 0 ? (
-                    <div className="flex flex-col gap-2">
-                      <div className="flex justify-between text-sm">
-                        <span>{diff} Night</span>
-                        <span>&pound;{diff * lodge.price}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>Cleaning fee</span>
-                        <span>&pound;{lodge.cleaning_fee}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>Pets fee</span>
-                        <span>
-                          &pound;{searchParams.guests.pets * lodge.pets_fee}
-                        </span>
-                      </div>
-                      <div className="flex justify-between font-bold text-lg mt-2">
-                        <span>Total Payment</span>
-                        <span>
-                          &pound;
-                          {lodge.price * diff +
-                            lodge.cleaning_fee +
-                            searchParams.guests.pets * lodge.pets_fee}
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-
-                  {diff && !availability ? (
-                    <>
-                      <Button
-                        onClick={() => handleSearch()}
-                        className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base"
-                        disabled={loading || diff < 3}
-                      >
-                        Check Availability
-                      </Button>
-                    </>
-                  ) : (
-                    <Button
-                      className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 text-base"
-                      onClick={handleBooking}
-                    >
-                      Book Now
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-          {/* All sections always visible except FAQ */}
-          <div className="mt-8">
-            {/* Amenities */}
-
-            {/* About */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">About {lodge.name}</h2>
-              <p className="text-gray-700 line-clamp-3">{lodge.description}</p>
-              <Button
-                variant={"secondary"}
-                className="mt-6 p-6 text-lg hover:bg-gray-200 rounded-lg"
-                onClick={() => setAboutDialog(true)}
-              >
-                Show more
-              </Button>
-            </div>
-
-            <AboutModal
-              showDialog={aboutDialog}
-              setShowDialog={setAboutDialog}
-              about={lodge.description}
-            />
-
-            <div className="my-16">
-              <h2 className="text-2xl font-bold mb-4">What we offer</h2>
-              <div className="flex pb-4 md:flex-row flex-col gap-4">
-                {lodge.features
-                  .slice(0, 4)
-                  .map((amenity: string, i: number) => {
-                    // Find matching amenity key
-                    const iconKey = amenity.toLocaleLowerCase();
-                    const amenityIconKey = getAmenityIcon(iconKey);
-
-                    return (
-                      <div
-                        key={i}
-                        className="flex items-center space-x-2 flex-shrink-0 px-5"
-                      >
-                        <Image
-                          src={amenityIconKey}
-                          alt={""}
-                          width={22}
-                          height={22}
-                        />
-                        <span className="text-gray-700">{amenity}</span>
-                      </div>
-                    );
-                  })}
+          <div className="mt-4 sm:mt-0 flex-shrink-0">
+            <div className="flex items-center gap-2 rounded-lg bg-green-100 p-2 text-green-800">
+              <div className="flex items-center gap-1">
+                <span className="font-bold text-lg">{lodge.rating}</span>
+                <span className="text-lg">{avgRating}★</span>
               </div>
-              <Button
-                variant={"secondary"}
-                onClick={() => setShowAmenities(true)}
-                className="mt-5"
-              >
-                Show all {lodge.features.length} amenities
-              </Button>
-            </div>
-
-            <ListingModal
-              showDialog={showAmenities}
-              setShowDialog={setShowAmenities}
-              value={[{ title: "Amenities", data: lodge.features }]}
-            />
-
-            {/* Rating & Review */}
-
-            <RatingsAndReviews lodge={lodge} user={session} />
-
-            <ReviewList lodgeId={lodge && lodge?.id} />
-
-            {/* Location */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Location</h2>
-              <iframe
-                src={`https://www.google.com/maps?q=${lodge.latitude},${lodge.longitude}&hl=en&z=14&output=embed`}
-                width="100%"
-                height="350"
-                loading="lazy"
-                className="rounded-xl border"
-              ></iframe>
-            </div>
-
-            {/* Rules and Policies */}
-            <div className="mb-8 mt-16">
-              <h2 className="text-2xl md:text-3xl font-bold mb-6">
-                Rules & Policies
-              </h2>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  {
-                    label: "House rules",
-                    value: "Check in after 3 pm & check out before 10 am",
-                    data: [
-                      {
-                        title: "Checking in and out",
-                        data: [
-                          "Check in after 15:00",
-                          "Check out before 10:00",
-                          "Self check-in with lockbox",
-                        ],
-                      },
-
-                      {
-                        title: "During your stay",
-
-                        data: [
-                          "Pets allowed",
-                          "No parties or events",
-                          "No commercial photography",
-                          "No smoking",
-                          // "Before you leave",
-                          // "Throw rubbish away",
-                        ],
-                      },
-                      {
-                        title: "Before you leave",
-                        data: [
-                          "Throw rubbish away",
-                          "Turn things off",
-                          "Lock up",
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    label: "Cancellation Policy",
-                    value: "Free cancellation for 48 hours.",
-                    data: [
-                      {
-                        title: "Within 48 hours of booking",
-
-                        data: [
-                          "Get back 100% of what you paid.Partial refund if you cancel before 3:00 pm on 11 November. Get back 50% of every night. No refund of the service fee..Before",
-                        ],
-                      },
-                      {
-                        title: `Before ${formatDate(checkInDate)} 3 pm`,
-                        data: [
-                          "Partial refund",
-                          "Get back 50% of every night. No refund of the service fee.",
-                        ],
-                      },
-
-                      {
-                        title: `After ${formatDate(checkInDate)} 3 pm`,
-
-                        data: [
-                          "No refund if you cancel after 3:00 pm on 11 November. This reservation is non-refundable..",
-                        ],
-                      },
-                    ],
-                  },
-                  {
-                    label: "Safety & Property",
-                    value: `Avoid surprises by looking over these important details about your Host's property.`,
-                    data: [
-                      {
-                        title: "Safety considerations",
-                        data: ["Not suitable for infants (under 2 years)"],
-                      },
-
-                      {
-                        title: "Safety devices",
-                        data: ["Carbon monoxide alarm", "Smoke alarm"],
-                      },
-                    ],
-                  },
-                ].map((policy: any, indx) => {
-                  return <KnowMore policy={policy} key={indx} />;
-                })}
-                {/* <ListingModal /> */}
+              <div className="text-xs">
+                <p className="font-semibold">Very Good</p>
+                <p>{totalNoOfReviews} ratings</p>
               </div>
             </div>
-            {/* FAQ (accordion) */}
           </div>
         </div>
-      </>
+
+        <div className="flex flex-col md:flex-row gap-3  md:gap-6">
+          <div className="flex-1">
+            <Gallery
+              images={lodge.images}
+              lodgeName={lodge.name}
+              lodgeId={lodge.id}
+            />
+
+            <div className="md:hidden">
+              <PirceDetails
+                diff={diff}
+                lodge={lodge}
+                searchParams={searchParams}
+              />
+            </div>
+
+            <div className="mt-8">
+              {/* Amenities */}
+              <div className="my-16">
+                <h2 className="text-2xl font-bold mb-4">What we offer</h2>
+                <div className="flex pb-4 md:flex-row flex-col gap-4">
+                  {lodge.features
+                    .slice(0, 4)
+                    .map((amenity: string, i: number) => {
+                      // Find matching amenity key
+                      const iconKey = amenity.toLocaleLowerCase();
+                      const amenityIconKey = getAmenityIcon(iconKey);
+
+                      return (
+                        <div
+                          key={i}
+                          className="flex items-center space-x-2 flex-shrink-0 px-5 py-3"
+                        >
+                          <Image
+                            src={amenityIconKey}
+                            alt={""}
+                            width={22}
+                            height={22}
+                          />
+                          <span className="text-gray-700">{amenity}</span>
+                        </div>
+                      );
+                    })}
+                </div>
+                <Button
+                  variant={"secondary"}
+                  onClick={() => setShowAmenities(true)}
+                  className="mt-5 w-full md:w-52 font-semibold"
+                >
+                  Show all {lodge.features.length} amenities
+                </Button>
+              </div>
+
+              {/* About */}
+
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">About {lodge.name}</h2>
+                <p className="text-gray-700 line-clamp-6 leading-relaxed">
+                  {lodge.description}
+                </p>
+                <Button
+                  variant={"secondary"}
+                  className="mt-6 p-6 text- mdhover:bg-gray-200 rounded-lg w-full md:w-28 font-semibold"
+                  onClick={() => setAboutDialog(true)}
+                >
+                  Show more
+                </Button>
+              </div>
+
+              <AboutModal
+                showDialog={aboutDialog}
+                setShowDialog={setAboutDialog}
+                about={lodge.description}
+              />
+
+              <ListingModal
+                showDialog={showAmenities}
+                setShowDialog={setShowAmenities}
+                value={[{ title: "Amenities", data: lodge.features }]}
+              />
+
+              {/* Rating & Review */}
+
+              <div className="my-12">
+                <RatingsAndReviews lodge={lodge} user={session} />
+              </div>
+
+              <div className="flex md:flex-wrap overflow-x-auto my-16 gap-4">
+                <ReviewList lodgeId={lodge && lodge?.id} />
+              </div>
+
+              {/* Location */}
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">Location</h2>
+                <iframe
+                  src={`https://www.google.com/maps?q=${lodge.latitude},${lodge.longitude}&hl=en&z=14&output=embed`}
+                  width="100%"
+                  height="350"
+                  loading="lazy"
+                  className="rounded-xl border"
+                ></iframe>
+              </div>
+
+              {/* Rules and Policies */}
+              <div className="mb-8 mt-16">
+                <h2 className="text-2xl md:text-3xl font-bold mb-6">
+                  Rules & Policies
+                </h2>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[
+                    {
+                      label: "House rules",
+                      value: "Check in after 3 pm & check out before 10 am",
+                      showDetails: true,
+
+                      data: [
+                        {
+                          title: "Checking in and out",
+                          data: [
+                            "Check in after 15:00",
+                            "Check out before 10:00",
+                            "Self check-in with lockbox",
+                          ],
+                        },
+
+                        {
+                          title: "During your stay",
+
+                          data: [
+                            "Pets allowed",
+                            "No parties or events",
+                            "No commercial photography",
+                            "No smoking",
+                            // "Before you leave",
+                            // "Throw rubbish away",
+                          ],
+                        },
+                        {
+                          title: "Before you leave",
+                          data: [
+                            "Throw rubbish away",
+                            "Turn things off",
+                            "Lock up",
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      label: "Safety & Property",
+                      value: `Avoid surprises by looking over these important details about your Host's property.`,
+                      showDetails: true,
+
+                      data: [
+                        {
+                          title: "Safety considerations",
+                          data: ["Not suitable for infants (under 2 years)"],
+                        },
+
+                        {
+                          title: "Safety devices",
+                          data: ["Carbon monoxide alarm", "Smoke alarm"],
+                        },
+                      ],
+                    },
+                    {
+                      label: "Cancellation Policy",
+                      value: "Free cancellation for 48 hours.",
+                      showDetails: Boolean(searchParams.dates?.to) ?? false,
+                      data: [
+                        {
+                          title: "Within 48 hours of booking",
+
+                          data: [
+                            "Get back 100% of what you paid.Partial refund if you cancel before 3:00 pm on 11 November. Get back 50% of every night. No refund of the service fee..Before",
+                          ],
+                        },
+                        {
+                          title: `Before ${formatDate(
+                            searchParams.dates?.from
+                          )} 3 pm`,
+                          data: [
+                            "Partial refund",
+                            "Get back 50% of every night. No refund of the service fee.",
+                          ],
+                        },
+
+                        {
+                          title: `After ${formatDate(
+                            searchParams.dates?.from
+                          )} 3 pm`,
+
+                          data: [
+                            "No refund if you cancel after 3:00 pm on 11 November. This reservation is non-refundable..",
+                          ],
+                        },
+                      ],
+                    }
+                  ].map((policy: any, indx) => {
+                    return <KnowMore policy={policy} key={indx} />;
+                  })}
+                  {/* <ListingModal /> */}
+                </div>
+              </div>
+              {/* FAQ (accordion) */}
+            </div>
+          </div>
+          {/* desktop view details */}
+          <div className="hidden md:block">
+            <PirceDetails
+              diff={diff}
+              lodge={lodge}
+              searchParams={searchParams}
+            />
+          </div>
+        </div>
+      </div>
       <Footer />
       <ChatbotButton />
     </>

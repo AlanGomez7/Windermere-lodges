@@ -10,17 +10,17 @@ import { fetchProperties } from "@/lib/api";
 
 export default async function Home() {
   const lodges = await fetchProperties();
-  
+
   return (
-    <main className="min-h-screen bg-white">
+    <>
       <Hero />
-      <BookingSection lodges={lodges}/>
-      <FeaturedLodges lodges={lodges}/>
-      <Amenities/>
-      <Activities/>
-      <Testimonials/>
-      <Footer/>
-      <ChatbotButton/>
-    </main>
+      <BookingSection lodges={lodges} />
+      <FeaturedLodges lodges={lodges} />
+      <Amenities />
+      <Activities />
+      <Testimonials />
+      <Footer />
+      <ChatbotButton />
+    </>
   );
 }

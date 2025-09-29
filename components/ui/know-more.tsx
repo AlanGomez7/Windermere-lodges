@@ -2,16 +2,6 @@ import { Button } from "./button";
 import { Icons } from "../ui/icons";
 import ListingModal from "./listings-modal";
 import { useState } from "react";
-import { data } from "@/data/lodges";
-const amenityIconMap: Record<string, string> = {
-  "Lake Access": "/icons/water.png",
-  Wifi: "/icons/wifi.png",
-  "Shared Pool": "/icons/swim.png",
-  "Washing Machine": "/icons/w_machine.png",
-  "Hair Dryer": "/icons/dryer.png",
-  Kitchen: "/icons/cook.png",
-  TV: "/icons/tv.png",
-};
 
 const policyIconMap: Record<string, keyof typeof Icons> = {
   "House rules": "calendarClock",
@@ -26,26 +16,36 @@ export default function KnowMore({ policy }: any) {
     <>
       <div
         key={policy.label}
-        className="rounded-xl border bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
+        className="rounded-lg border bg-white p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col"
       >
-        <div className="flex items-start gap-3">
-          <div className="h-10 w-10 rounded-full bg-emerald-50 text-emerald-600 grid place-items-center">
+        <div className="flex items-start gap-2">
+          <div className="h-8 w-8 rounded-full bg-emerald-50 text-emerald-600 grid place-items-center">
             {IconComponent && (
-              <IconComponent className="h-6 w-6" aria-hidden="true" />
+              <IconComponent className="h-5 w-5" aria-hidden="true" />
             )}
           </div>
           <div className="flex-1">
-            <h3 className="text-base font-semibold">{policy.label}</h3>
-            <p className="text-sm text-gray-600">{policy.value}</p>
-            <Button
-              variant="link"
-              className="p-0 mt-2 text-emerald-700 hover:text-emerald-800"
-              onClick={() => setShowModal(true)}
-            >
-              show more
-            </Button>
+            <h3 className="text-sm font-semibold">{policy.label}</h3>
+            {policy.showDetails ? (
+              <p className="text-xs text-gray-600 my-3">{policy.value}</p>
+            ) : (
+              <p className="text-xs text-gray-600 my-3">
+                Add your trip days for more details
+              </p>
+            )}
           </div>
         </div>
+        {policy.showDetails && (
+          <Button
+            variant="link"
+            className={`ml-6 text-emerald-700 hover:text-emerald-800 text-xs mt-auto self-start ${
+              policy.showDetails ? "block" : "hidden"
+            }`}
+            onClick={() => setShowModal(true)}
+          >
+            View details
+          </Button>
+        )}
       </div>
 
       <ListingModal

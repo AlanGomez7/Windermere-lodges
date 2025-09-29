@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { fetchLodgeComments } from "@/lib/api";
 import ReviewCard from "./cards/review-card";
 
-
 export default function ReviewList({ lodgeId }: { lodgeId: string }) {
   const [comments, setComments] = useState<any[]>([]);
 
@@ -15,10 +14,10 @@ export default function ReviewList({ lodgeId }: { lodgeId: string }) {
   if (comments.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap justify-center my-16 gap-4">
-      {comments.map((testimonial, indx) => (
-        <ReviewCard testimonial={testimonial} key={indx} isUser={false}/>
+    <>
+      {comments.slice(0,3).map((testimonial, indx) => (
+        <ReviewCard testimonial={testimonial} key={indx} isUser={false} />
       ))}
-    </div>
+    </>
   );
 }

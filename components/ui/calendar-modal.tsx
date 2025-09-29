@@ -1,22 +1,30 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { getAmenityIcon } from "@/lib/utils";
 import { X } from "lucide-react";
-import Image from "next/image";
+import { Calendar } from "./calendar";
+import { DateRange } from "react-day-picker";
+import { Button } from "./button";
 
-export default function ListingModal({
+export default function CalendarModal({
   setShowDialog,
-  value,
+  onSelect,
   showDialog,
 }: {
   setShowDialog: (value: boolean) => void;
-  value: any;
+  onSelect: (value: DateRange | undefined) => void;
   showDialog: boolean;
 }) {
+  const [date, setDate] = React.useState<DateRange | undefined>();
   const sheetRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
+
+  const handleSelect = (newDate: DateRange | undefined) => {
+    if (!newDate) return;
+    setDate(newDate)
+    onSelect(newDate);
+  };
 
   useEffect(() => {
     if (showDialog) {
@@ -63,13 +71,14 @@ export default function ListingModal({
         className="
           fixed bottom-0 left-0 right-0 z-50
           bg-white rounded-t-2xl shadow-2xl border border-gray-200
-          w-full max-h-[90vh] sm:max-h-fit p-6
+          w-full max-h-[90vh] sm:max-h-fit
           sm:inset-0 sm:m-auto sm:max-w-2xl sm:rounded-2xl sm:p-10
           flex flex-col
         "
         style={{ scrollbarGutter: "stable", transform: "translateY(100%)" }}
       >
         {/* Close button */}
+
         <button
           type="button"
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -77,24 +86,43 @@ export default function ListingModal({
         >
           <X className="w-6 h-6" />
         </button>
-
+        <div className="p-5 border border-b-1 rounded-t-xl">
+          <p className="text-2xl ">Select check in date</p>
+          <p className="">Minimum stay: 3 nights</p>
+        </div>
         {/* Scrollable content area */}
-        <div className="overflow-y-auto max-h-[70vh] pr-2">
-          {value.map((v: any, i: number) => (
-            <div className="pt-5" key={i}>
-              <p className="mb-5 text-2xl font-semibold">{v.title}</p>
-              {v.data.map((d: any, j: number) => {
-                const iconKey = d.toLocaleLowerCase();
-                const amenityIconKey = getAmenityIcon(iconKey);
-                return (
-                  <div key={j} className="flex items-center gap-3 py-2">
-                    <Image src={amenityIconKey} alt="" width={22} height={22} />
-                    <span>{d}</span>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+        <div className="overflow-y-auto max-h-[70vh]">
+          <div className="py-12 px-6">
+            <Calendar
+              mode="range"
+              defaultMonth={date?.from}
+              selected={date}
+              onSelect={handleSelect}
+              numberOfMonths={2}
+              classNames={{
+                months:
+                  "flex flex-col relative sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+              }}
+              disabled={{ before: new Date() }}
+            />
+          </div>
+        </div>
+        <div className="flex justify-between items-center p-6">
+          <div className="text-white">
+            {/* just for spacing dummy data */}
+            <div className="text-xl">&pound;99</div>
+            <div>for 5 nights</div>
+          </div>
+          <Button
+            variant={"link"}
+            onClick={() => {
+              setDate(undefined);
+              setShowDialog(!showDialog);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button className="bg-emerald-600" onClick={()=>setShowDialog(!showDialog)}>Save</Button>
         </div>
       </div>
     </>

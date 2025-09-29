@@ -39,7 +39,6 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
     setSearchParams,
     setIsLodgeAvailable,
     setProperties,
-    properties,
   } = useAppContext();
 
   useEffect(() => {
@@ -84,31 +83,35 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
           <h2 className="text-3xl font-bold text-center mb-8">
             Find Your Perfect Lodge
           </h2>
+          {/* grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 */}
+          <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-md shadow-md hover:shadow-2xl transition-all">
+            <div className={"flex flex-col md:flex-row basis-2/4 gap-6"}>
+              <DateRangePicker
+                onChange={(dates) => {
+                  setSearchParams({ ...searchParams, dates });
+                }}
+              />
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6 bg-white rounded-md shadow-md hover:shadow-2xl transition-all">
-            <DateRangePicker
-              onChange={(dates) => {
-                setSearchParams({ ...searchParams, dates });
-              }}
-            />
+            <div className="basis-1/4">
+              <GuestSelector
+                onChange={(guests) =>
+                  setSearchParams({ ...searchParams, guests })
+                }
+              />
+            </div>
 
-            <GuestSelector
-              onChange={(guests) =>
-                setSearchParams({ ...searchParams, guests })
-              }
-            />
-
-            <LodgeSelector
+            {/* <LodgeSelector
               properties={properties}
               onChange={(lodge) => {
                 if (lodge) setLodgeId(lodge.refNo);
                 setSearchParams({ ...searchParams, lodge });
               }}
-            />
+            /> */}
 
             <Button
               onClick={handleSearch}
-              className="h-full bg-emerald-600 hover:bg-emerald-700"
+              className="h-full bg-emerald-600 hover:bg-emerald-700 basis-1/4"
               disabled={loading}
               name="check availability"
             >

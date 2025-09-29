@@ -21,13 +21,15 @@ export default function DropDown({
   user: any;
   isMobile: boolean;
 }) {
-  
   const getInitials = (name: string) => {
-    return name
+    const initials = name
       .split(" ")
       .map((n) => n[0])
       .join("")
       .toUpperCase();
+
+    console.log(initials);
+    return initials;
   };
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -43,6 +45,7 @@ export default function DropDown({
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  console.log(user.avatar);
 
   return (
     <DropdownMenu>
@@ -50,14 +53,17 @@ export default function DropDown({
         {isMobile ? (
           <Button variant={"ghost"}>
             <Avatar className="w-10 h-10 hover:shadow-md transition-all duration-150 shadow-md">
-              <AvatarImage
-                src={user?.avatar || "/placeholder.svg?height=40&width=40"}
-              />
-              <AvatarFallback
-                className={`bg-gradient-to-br from-teal-100 to-teal-200 text-teal-700 font-semibold`}
-              >
-                {user ? getInitials(user.name || "User") : "U"}
-              </AvatarFallback>
+              {typeof user.avatar !== "undefined" ? (
+                <AvatarImage
+                  src={user?.avatar || "/placeholder.svg?height=40&width=40"}
+                />
+              ) : (
+                <AvatarFallback
+                  className={`bg-gradient-to-r from-teal-100 to-teal-200 text-teal-700 font-semibold`}
+                >
+                  {user ? getInitials(user.name || "User") : "U"}
+                </AvatarFallback>
+              )}
             </Avatar>
             {user.name}
           </Button>
@@ -65,21 +71,20 @@ export default function DropDown({
           <Button
             variant="ghost"
             //   className="relative h-auto px-3 rounded-full flex items-center gap-3 hover:bg-gray-100 transition-all duration-150"
-            className={`relative h-auto px-3 rounded-full flex items-center gap-3 hover:bg-gray-100 transition-all duration-150 ${cn(
-              isScrolled
-                ? "text-gray-700 hover:text-emerald-600"
-                : "text-white hover:text-emerald-300"
-            )}`}
+            className={`relative h-auto px-3 rounded-full flex items-center gap-3 hover:bg-emerald-600 transition-all duration-150 ${cn(isScrolled ? "text-black" : "text-white")} hover:text-white`}
           >
             <Avatar className="w-10 h-10 hover:shadow-md transition-all duration-150 shadow-md">
-              <AvatarImage
-                src={user?.image || "/placeholder.svg?height=40&width=40"}
-              />
-              <AvatarFallback
-                className={`bg-gradient-to-br from-teal-100 to-teal-200 text-teal-700 font-semibold`}
-              >
-                {user ? getInitials(user.name || "User") : "U"}
-              </AvatarFallback>
+              {typeof user.avatar !== "undefined" ? (
+                <AvatarImage
+                  src={user?.avatar || "/placeholder.svg?height=40&width=40"}
+                />
+              ) : (
+                <AvatarFallback
+                  className={`bg-gradient-to-r from-teal-100 to-teal-200 text-teal-700 font-semibold`}
+                >
+                  {user ? getInitials(user.name || "User") : "U"}
+                </AvatarFallback>
+              )}
             </Avatar>
             <div className="hidden md:block text-left">
               <p>{user?.name || "User"}</p>
@@ -97,13 +102,13 @@ export default function DropDown({
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/account">
-            <UserRound className="mr-4 my-2"/>
+            <UserRound className="mr-4 my-2" />
             Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/my-bookings">
-            <BookCheck className="mr-4 my-2"/>
+            <BookCheck className="mr-4 my-2" />
             Bookings
           </Link>
         </DropdownMenuItem>
@@ -115,11 +120,11 @@ export default function DropDown({
         </DropdownMenuItem>*/}
         <DropdownMenuItem asChild>
           <Link href="/reviews-and-ratings">
-            <Star className="mr-4 my-2"/>
+            <Star className="mr-4 my-2" />
             Reviews & Ratings
           </Link>
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <div className="w-full">

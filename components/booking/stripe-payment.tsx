@@ -52,7 +52,6 @@ export function StripePayment({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
-  console.log(bookingDetails, "****************************************************************")
   const { orderDetails, searchParams } = useAppContext();
 
   const nights = findDays(searchParams.dates.from, searchParams.dates.to);
@@ -86,7 +85,7 @@ export function StripePayment({
             Payment secured with stripe
         </div> */}
         <div className="w-[500px] hidden lg:block">
-          <Card className="flex-col gap-8 ">
+          <Card className="flex-col gap-8 bg-[#EDF6F4]">
             <div className="relative h-64 w-100 p-0">
               <Image
                 src={bookingDetails.lodge.images[0] || "/placeholder.svg"}
@@ -134,9 +133,9 @@ export function StripePayment({
                   <span>Cleaning fee</span>
                   <span> &pound;{bookingDetails?.lodge.cleaning_fee}</span>
                 </div>
-                <div className="flex justify-between font-bold text-md lg:text-lg mt-2">
+                <div className="flex justify-between text-md lg:text-lg mt-2">
                   <span>Total Payment</span>
-                  <span>
+                  <span className="font-bold">
                     &pound;
                     {amount}
                   </span>

@@ -21,7 +21,6 @@ type booking = {
 export async function POST(req: Request) {
   try {
     const { bookingDetails, orderDetails } = await req.json();
-    console.log(orderDetails,"{{}{}}{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}")
     const { guests, lodge, dates } = bookingDetails;
 
     if (!guests || !lodge || !dates) {

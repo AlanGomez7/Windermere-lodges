@@ -37,7 +37,7 @@ export default function RatingsAndReviews({
 
   return (
     <>
-      <div className="border border-b-2 p-8 rounded-xl">
+      <div>
         <ReviewBreakDown lodgeId={lodge.id}/>
       </div>
 

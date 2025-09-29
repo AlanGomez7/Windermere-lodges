@@ -92,9 +92,10 @@ export const Hero = () => {
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
               Experience Luxury in the <br /> Heart of the Lake District
             </h1>
-            <p className="text-xl md:text-2xl text-left w-[50ch] text-white mb-20">
+            <p className="text-lg md:text-2xl text-left w-[50ch] text-white mb-20">
               {i.description}
             </p>
+            
             <div className="flex flex-col sm:flex-row justify-start gap-4">
               <Link href="/our-lodges">
                 <Button

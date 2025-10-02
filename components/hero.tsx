@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {  ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import gsap from "gsap";
 import Image from "next/image";
 import image1 from "../public/Main-banners/z6d3ujokleyjtmepqg0b.avif";
@@ -14,17 +14,16 @@ import image3 from "../public/Main-banners/yiovellrdwvimbizzbtx.avif";
 const sliderImages = [
   {
     image: image1,
-    description:
-      "Discover our exclusive collection of premium lodges",
+    description: "Discover our exclusive collection of premium lodges",
   },
   {
     image: image2,
-    description:
-      "Perfectly located between Ambleside and Windermere",
+    description: "Perfectly located between Ambleside and Windermere",
   },
   {
     image: image3,
-    description:"On a 5 star holiday park where you can stroll down to Lake Windermere"
+    description:
+      "On a 5 star holiday park where you can stroll down to Lake Windermere",
   },
 ];
 
@@ -71,7 +70,7 @@ export const Hero = () => {
       {/* Slider Images */}
       {sliderImages.map((i, idx) => (
         <div
-        key={idx}
+          key={idx}
           className={`absolute flex items-center inset-0 transition-opacity duration-700 ${
             idx === current ? "opacity-100 z-0" : "opacity-0 z-0"
           }`}
@@ -81,7 +80,7 @@ export const Hero = () => {
             alt="liliaz"
             key={idx}
             fill
-            className=" bg-cover bg-center bg-no-repeat brightness-[0.4]"
+            className=" object-cover object-center bg-no-repeat brightness-[0.4]"
             priority
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1600px"
           />
@@ -89,18 +88,20 @@ export const Hero = () => {
             className="container mx-auto px-4 relative z-10 text-left"
             ref={textRef}
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              Experience Luxury in the <br /> Heart of the Lake District
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+              Experience Luxury in the <br className="hidden sm:block" /> Heart
+              of the Lake District
             </h1>
-            <p className="text-lg md:text-2xl text-left w-[50ch] text-white mb-20">
+
+            <p className="text-base sm:text-lg md:text-2xl text-left max-w-[90%] sm:max-w-[65ch] text-white mb-10 sm:mb-16 md:mb-20">
               {i.description}
             </p>
-            
-            <div className="flex flex-col sm:flex-row justify-start gap-4">
+
+            <div className="flex flex-col sm:flex-row justify-start gap-3 sm:gap-4">
               <Link href="/our-lodges">
                 <Button
                   size="lg"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg"
                 >
                   Explore Our Lodges
                 </Button>
@@ -139,37 +140,6 @@ export const Hero = () => {
           />
         ))}
       </div>
-
-      {/* Content */}
-      {/* <div
-        className="container mx-auto px-4 relative z-10 text-left"
-        ref={textRef}
-      >
-        <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-          Experience Luxury in the <br /> Heart of the Lake District
-        </h1>
-        <p className="text-xl md:text-2xl text-white mb-20 mx-auto">
-          Discover our exclusive collection of premium lodges <br /> with
-          breathtaking views and exceptional amenities
-        </p>
-        <div className="flex flex-col sm:flex-row justify-start gap-4">
-          <Link href="/our-lodges">
-            <Button
-              size="lg"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg"
-            >
-              Explore Our Lodges
-            </Button>
-          </Link>
-        </div>
-      </div> */}
-
-      {/* Scroll Indicator */}
-      {/* <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20">
-        <div className="w-8 h-12 rounded-full border-2 border-white flex items-start justify-center">
-          <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-        </div>
-      </div> */}
     </div>
   );
 };

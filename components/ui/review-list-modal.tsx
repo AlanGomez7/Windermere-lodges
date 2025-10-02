@@ -4,16 +4,16 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { getAmenityIcon } from "@/lib/utils";
 import { X } from "lucide-react";
-import Image from "next/image";
 
-export default function ListingModal({
+export default function ReviewListModal({
   setShowDialog,
-  value,
+  
   showDialog,
+  reviews,
 }: {
   setShowDialog: (value: boolean) => void;
-  value: any;
   showDialog: boolean;
+  reviews:any[],
 }) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
@@ -80,21 +80,7 @@ export default function ListingModal({
 
         {/* Scrollable content area */}
         <div className="overflow-y-auto max-h-[70vh] pr-2">
-          {value.map((v: any, i: number) => (
-            <div className="pt-5" key={i}>
-              <p className="mb-5 text-2xl font-semibold">{v.title}</p>
-              {v.data.map((d: any, j: number) => {
-                const iconKey = d.toLocaleLowerCase();
-                const amenityIconKey = getAmenityIcon(iconKey);
-                return (
-                  <div key={j} className="flex items-center gap-3 py-4">
-                    <Image src={amenityIconKey} alt="" width={22} height={22} />
-                    <span>{d}</span>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+    
         </div>
       </div>
     </>

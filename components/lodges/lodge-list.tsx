@@ -1,11 +1,7 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
-import LodgeCard from "../cards/lodge-card";
-import { useSearchParams } from "next/navigation";
-import { useAppContext } from "@/app/context/context";
-
-// Sample lodge data
+import { use, useState } from "react";
+import LandscapeLodgeCard from "../cards/landscape-lodge-card";
 
 export function LodgeList({ properties }: { properties: any }) {
   const lodges: any = use(properties);
@@ -24,17 +20,17 @@ export function LodgeList({ properties }: { properties: any }) {
   }
 
   return (
-    <div>
+    <div className="w-svw">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Available Lodges</h2>
         <div className="text-sm text-gray-500">
           Showing {lodges.length} lodges
         </div>
       </div>
-
-      <div className="grid h-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* grid h-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 */}
+      <div className="flex flex-col justify-center items-center w-full pt-8 gap-4">
         {lodges.map((lodge: any) => (
-          <LodgeCard lodge={lodge} key={lodge.id} needsButton={true} />
+          <LandscapeLodgeCard lodge={lodge} key={lodge.id} needsButton={true} />
         ))}
       </div>
     </div>

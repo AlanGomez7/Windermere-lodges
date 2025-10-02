@@ -331,13 +331,13 @@ export function GuestInformation({
                 <span>Check In</span>
                 <span className="font-bold">
                   {" "}
-                  {format(new Date(bookingDetails.dates.from), "MMMM do yyyy")}
+                  {format(new Date(bookingDetails.dates.from), "dd MMM yyyy")}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Check Out</span>
                 <span className="font-bold">
-                  {format(new Date(bookingDetails.dates.to), "MMMM do yyyy")}
+                  {format(new Date(bookingDetails.dates.to), "dd MMM yyyy")}
                 </span>
               </div>
               <div className="flex justify-between text-sm">

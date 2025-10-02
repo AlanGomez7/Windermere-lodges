@@ -48,7 +48,7 @@ export const Activities = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-8">
             Discover White Cross Bay
           </h2>
-          <p className="text-lg text-gray-600 max-w-5xl mx-auto text-left">
+          <p className="text-lg text-gray-600 max-w-5xl mx-auto text-center sm:text-start">
             Located on the eastern shore of Windermere, White Cross Bay provides
             an ideal setting for families and couples alike. With direct access
             to the lake, you'll be surrounded by the serene beauty of the

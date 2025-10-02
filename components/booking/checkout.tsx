@@ -88,7 +88,7 @@ const CheckoutPage = ({
         status: "SUCCESSFUL",
       });
 
-      console.log(response)
+      // console.log(response)
       setOrderSuccess(response);
 
       setOrderDetails({
@@ -146,7 +146,7 @@ const CheckoutPage = ({
 
         <button
           disabled={!stripe || loading || !elementReady}
-          className="text-white w-full p-5 bg-black mt-2 rounded-md font-bold disabled:opacity-50 disabled:animate-pulse"
+          className="text-white w-full p-5 bg-button mt-2 rounded-md font-bold disabled:opacity-50 disabled:animate-pulse"
         >
           {!loading ? `Pay £${amount}` : "Processing..."}
         </button>

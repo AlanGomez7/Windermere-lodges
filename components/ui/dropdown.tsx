@@ -118,12 +118,12 @@ export default function DropDown({
             Favorites
           </Link>
         </DropdownMenuItem>*/}
-        <DropdownMenuItem asChild>
+        {/* <DropdownMenuItem asChild>
           <Link href="/reviews-and-ratings">
             <Star className="mr-4 my-2" />
             Reviews & Ratings
           </Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         <DropdownMenuSeparator />
         <DropdownMenuItem>

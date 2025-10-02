@@ -361,12 +361,10 @@ export const updateOrderPayment = async ({
     const fromDate = bookingDetails?.dates.from;
     const toDate = bookingDetails?.dates.to;
 
-    console.log(fromDate, toDate, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
 
     const checkIn = new Date(fromDate)?.toISOString().slice(0,10);
     const checkOut = new Date(toDate)?.toISOString().slice(0,10);
 
-    console.log(checkIn, checkOut, "---------------------------------------------------=================================>>>>>>>>>>>>>>")
     const reqBody = {
       data: {
         type: "bookings",
@@ -376,7 +374,7 @@ export const updateOrderPayment = async ({
           guest_name: `${orderDetails.firstName} ${orderDetails.lastName}`,
           guest_email: `${orderDetails.email}`,
           guest_phone: `${orderDetails.phone}`,
-          number_of_guests: 3,
+          number_of_guests: 3, //need dynamic guests count
         },
         relationships: {
           property: {

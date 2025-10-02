@@ -1,12 +1,12 @@
 import Link from "next/link";
 
-export default function EmptyList() {
+export default function EmptyList({type}:{type: string}) {
   return (
     <main className="grid place-items-center py-24 sm:py-32 lg:px-8">
       <div className="text-center">
         {/* <p className="text-base font-semibold text-emerald-400">404</p> */}
         <h1 className="mt-4 text-2xl font-semibold tracking-tight text-balance text-black sm:text-4xl">
-          Hey! you have no orders yet
+          Hey! you have no {type.toLocaleLowerCase()} yet
         </h1>
 
         <div className="mt-10 flex items-center justify-center gap-x-6">

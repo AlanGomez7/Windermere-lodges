@@ -51,8 +51,8 @@ export default function ActivitiesList({ activity }: { activity: any }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 sm:p-6">
           <div
             className="bg-white rounded-2xl shadow-2xl relative border border-gray-200
-    w-full max-w-md h-auto max-h-[90vh] p-6
-    sm:max-w-2xl sm:p-10 flex flex-col"
+            w-full max-w-md h-auto max-h-[90vh] p-6
+            sm:max-w-2xl sm:p-10 flex flex-col"
             style={{ scrollbarGutter: "stable" }}
           >
             {/* Close button */}

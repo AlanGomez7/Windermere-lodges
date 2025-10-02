@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
 import ReviewCard from "../cards/review-card";
+import EmptyList from "../empty-ui";
 
 export default function ReviewList({ reviews }: { reviews: any }) {
   const [initialReviews, setInitialReviews] = useState(reviews);
@@ -17,7 +18,7 @@ export default function ReviewList({ reviews }: { reviews: any }) {
             <ReviewCard testimonial={testimonial} key={id} isUser={true} onDelete={handleDelete}/>
           ))
         ) : (
-          <>No review yet</>
+          <EmptyList type="Reviews"/>
         )}
       </div>
     </div>

@@ -92,6 +92,7 @@ export default function MyAccount({ user }: any) {
     }
 
     setIsPasswordLoading(true);
+
     try {
       setPasswordData({
         currentPassword: "",
@@ -101,7 +102,6 @@ export default function MyAccount({ user }: any) {
 
       const response = await changePassword({ passwordData, id: user?.email });
 
-      console.log(response);
       if (response.ok) {
         toast.success("Password updated successfully");
       } else {
@@ -148,10 +148,10 @@ export default function MyAccount({ user }: any) {
             <CardContent className="p-6 flex flex-col items-center text-center">
               <div className="relative mb-4">
                 <Avatar className="w-24 h-24 animate-float">
-                  <AvatarImage
+                  {/* <AvatarImage
                     src={user?.avatar || "/placeholder.svg?height=96&width=96"}
-                  />
-                  <AvatarFallback className="bg-gradient-to-br from-teal-100 to-teal-200 text-teal-700 text-3xl">
+                  /> */}
+                  <AvatarFallback className="bg-gradient-to-br from-emerald-100 to-emerald-200 text-teal-700 text-3xl">
                     {getInitials(user?.name || "User")}
                   </AvatarFallback>
                 </Avatar>
@@ -205,7 +205,7 @@ export default function MyAccount({ user }: any) {
                     id="first-name"
                     value={formData.userName}
                     onChange={(e) =>
-                      handleInputChange("firstName", e.target.value)
+                      handleInputChange("userName", e.target.value)
                     }
                   />
                 </div>
@@ -246,7 +246,7 @@ export default function MyAccount({ user }: any) {
                 />
               </div>
               <Button
-                className="bg-teal-600 hover:bg-teal-700 animate-button"
+                className="bg-button hover:bg-button animate-button"
                 onClick={handleUpdateProfile}
                 disabled={isLoading}
               >
@@ -357,7 +357,7 @@ export default function MyAccount({ user }: any) {
                 </div>
               </div>
               <Button
-                className="bg-teal-600 hover:bg-teal-700 animate-button"
+                className="bg-button animate-button"
                 onClick={handleChangePassword}
                 disabled={isPasswordLoading}
               >

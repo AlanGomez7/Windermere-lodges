@@ -56,7 +56,6 @@ export function StripePayment({
 
   const nights = findDays(searchParams.dates.from, searchParams.dates.to);
 
-
   let amount = 1;
   if (nights) {
     amount =
@@ -76,7 +75,7 @@ export function StripePayment({
 
   return (
     <section
-      className={`p-16 mb-5 min-h-screen flex justify-center ${
+      className={`p-3 lg:p-16 mb-5 min-h-screen flex justify-center ${
         isActive ? "block" : "hidden"
       }`}
     >
@@ -85,7 +84,7 @@ export function StripePayment({
             Payment secured with stripe
         </div> */}
         <div className="w-[500px] hidden lg:block">
-          <Card className="flex-col gap-8 bg-[#EDF6F4]">
+          <Card className="flex-col gap-8 bg-[#EDF6F4] p-3">
             <div className="relative h-64 w-100 p-0">
               <Image
                 src={bookingDetails.lodge.images[0] || "/placeholder.svg"}
@@ -104,14 +103,14 @@ export function StripePayment({
               </div>
             </div>
 
-            <CardHeader className="flex p-0 pt-8">
-              <div className="flex justify-between items-start w-full">
-                <CardTitle className="text-lg lg:text-xl font-bold">
-                  {bookingDetails.lodge.nickname}
-                </CardTitle>
-              </div>
-              <CardDescription>{bookingDetails.lodge.address}</CardDescription>
-            </CardHeader>
+            <div className="flex flex-col w-full items-start gap-3 mt-3">
+              <CardTitle className="text-lg lg:text-xl font-bold">
+                {bookingDetails.lodge.nickname}
+              </CardTitle>
+              <CardDescription className="">
+                {bookingDetails.lodge.address}
+              </CardDescription>
+            </div>
 
             <CardContent className="p-0 pt-6">
               <div className="flex flex-col gap-2">

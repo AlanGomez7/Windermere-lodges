@@ -6,6 +6,8 @@ import { X } from "lucide-react";
 import { Calendar } from "./calendar";
 import { DateRange } from "react-day-picker";
 import { Button } from "./button";
+import { findDays } from "@/lib/utils";
+import { format } from "date-fns";
 
 export default function CalendarModal({
   setShowDialog,
@@ -22,9 +24,12 @@ export default function CalendarModal({
 
   const handleSelect = (newDate: DateRange | undefined) => {
     if (!newDate) return;
-    setDate(newDate)
+    console.log(newDate)
+    setDate(newDate);
     onSelect(newDate);
   };
+
+  const nights = findDays(date?.from, date?.to);
 
   useEffect(() => {
     if (showDialog) {
@@ -87,8 +92,15 @@ export default function CalendarModal({
           <X className="w-6 h-6" />
         </button>
         <div className="p-5 border border-b-1 rounded-t-xl">
-          <p className="text-2xl ">Select check in date</p>
-          <p className="">Minimum stay: 3 nights</p>
+          {nights === 0 ? (
+            <p className="text-2xl ">
+              {!date?.from ? "Select check in date" : "Select check out date"}
+            </p>
+          ) : (
+            <p className="text-2xl">{nights} Nights</p>
+          )}
+          <p className="">{nights === 0  && "Minimum stay: 3 nights"}</p>
+          <p className="text-gray-400">{date?.from && date?.to && nights > 0 && `${format(date?.from, "d MMM yyyy")} - ${format(date?.to, "d MMM yyyy")}`}</p>
         </div>
         {/* Scrollable content area */}
         <div className="overflow-y-auto max-h-[70vh]">
@@ -98,6 +110,7 @@ export default function CalendarModal({
               defaultMonth={date?.from}
               selected={date}
               onSelect={handleSelect}
+              showOutsideDays={false}
               numberOfMonths={2}
               classNames={{
                 months:
@@ -122,7 +135,12 @@ export default function CalendarModal({
           >
             Cancel
           </Button>
-          <Button className="bg-emerald-600" onClick={()=>setShowDialog(!showDialog)}>Save</Button>
+          <Button
+            className="bg-emerald-600"
+            onClick={() => setShowDialog(!showDialog)}
+          >
+            Save
+          </Button>
         </div>
       </div>
     </>

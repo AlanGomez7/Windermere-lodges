@@ -70,11 +70,11 @@ export default function ReviewCard({
           >
             {testimonial.content}
           </p>
-          {isClamped && (
+          {/* {isClamped && (
             <Button variant="link" onClick={() => setIsHidden(!isHidden)} className="p-0">
               {isHidden ? "Show more" : "Show less"}
             </Button>
-          )}
+          )} */}
         </CardContent>
 
         {isUser && (

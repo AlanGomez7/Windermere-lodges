@@ -19,10 +19,10 @@ export default async function MyBookings() {
 
       {!session?.user?.id && (<UserNotFound/>)}
       {bookings?.length === 0 ? (
-        <EmptyList />
+        <EmptyList type="Bookings"/>
       ) : (
-        <section className="py-20 bg-white px-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section className="py-20 bg-white px-6">
+          <div className="flex flex-col items-center gap-8">
             
             {bookings &&
               bookings.map((r, i: number) => (

@@ -5,7 +5,6 @@ function SkeletonBox({ className }: { className: string }) {
 }
 
 function Loader() {
-
   return (
     <>
       <div className="relative pt-32 pb-20 flex items-center justify-center">
@@ -22,13 +21,13 @@ function Loader() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-row">
-            <div>
+            <div className="w-svw">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Available Lodges</h2>
                 <div className="text-sm text-gray-500">Showing 0 lodges</div>
               </div>
 
-              <div className="grid h-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="flex flex-col justify-center items-center w-full gap-4">
                 <Shimmer />
                 <Shimmer />
                 <Shimmer />

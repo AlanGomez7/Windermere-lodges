@@ -1,43 +1,50 @@
-import { Badge } from "@/components/ui/badge";
+"use client";
+
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+
 export default function Shimmer() {
   return (
+    <Card className="overflow-hidden w-full max-w-3xl flex flex-col sm:flex-row border shadow-md border-emerald-200 animate-pulse">
+      {/* Image placeholder */}
+      <CardHeader className="relative w-full sm:w-[280px] h-[220px] sm:h-auto shrink-0">
+        <div className="w-full h-full bg-gray-200 rounded-md" />
+      </CardHeader>
 
+      {/* Content placeholder */}
+      <CardContent className="p-4 flex flex-col justify-between w-full">
+        <div className="flex flex-col gap-3">
+          {/* Title */}
+          <div className="h-6 w-2/3 bg-gray-200 rounded" />
 
-    <div className="overflow-hidden rounded-md group-hover:shadow-md transition-shadow animate-pulse duration-750 lg:w-[400px]">
-      <div className="relative bg-gray-200">
-        <div className="aspect-w-16 aspect-h-9 relative h-48"></div>
-        {/* <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md">
-          <Heart size={20} />
-        </button> */}
+          {/* Address */}
+          <div className="h-4 w-1/2 bg-gray-200 rounded" />
 
-        {/* <Badge className="absolute top-3 left-3 bg-emerald-600">Featured</Badge> */}
-      </div>
+          {/* Details (icons + text) */}
+          <div className="flex flex-wrap gap-4 mt-2">
+            <div className="h-4 w-20 bg-gray-200 rounded" />
+            <div className="h-4 w-24 bg-gray-200 rounded" />
+            <div className="h-4 w-28 bg-gray-200 rounded" />
+          </div>
 
-      <div className="p-5 bg-gray-100">
-        <div className="flex justify-between items-start mb-2">
-          <div className="text-xl font-bold bg-gray-300 py-4 px-16 rounded-sm"></div>
-          <div className="text-xl font-bold bg-gray-300 py-3 px-5 rounded-sm"></div>
+          {/* Features */}
+          <div className="flex flex-wrap gap-2 mt-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-5 w-16 bg-gray-200 rounded-full" />
+            ))}
+          </div>
+
+          {/* Price + Button */}
+          <div className="pt-3 gap-2 flex md:flex-col items-start">
+            <div className="h-6 w-24 bg-gray-200 rounded" />
+            <div className="h-9 w-32 bg-gray-200 rounded mt-2" />
+          </div>
         </div>
+      </CardContent>
 
-        <div className="bg-gray-300 text-sm py-2 px-25 my-3 rounded-sm"></div>
-        <div className="bg-gray-300 text-sm py-2 px-25 my-3 rounded-sm"></div>
-        <div className="bg-gray-300 text-sm py-2 px-25 my-3 rounded-sm"></div>
-
-        <div className="flex pt-8 gap-5 text-xs">
-          <Badge variant="outline" className="bg-gray-300  py-2 px-8"></Badge>
-          <Badge variant="outline" className="bg-gray-300  py-2 px-8"></Badge>
-          <Badge variant="outline" className="bg-gray-300  py-2 px-8"></Badge>
-          <Badge variant="outline" className="bg-gray-300  py-2 px-8"></Badge>
-          {/* <Badge variant="outline" className="bg-gray-300  py-2 px-8"></Badge> */}
-        </div>
-      </div>
-      <div className="p-5 flex justify-between items-center bg-gray-100">
-        <div>
-          <div className="bg-gray-300  py-5 px-10 rounded-lg"></div>
-          {/* <Badge variant="outline" className="bg-gray-300  py-2 px-8"></Badge> */}
-        </div>
-        <div className="bg-gray-300  py-5 px-12 rounded-lg"></div>
-      </div>
-    </div>
+      {/* Rating */}
+      <CardFooter className="relative hidden sm:block">
+        <div className="absolute top-3 right-3 h-6 w-14 bg-gray-200 rounded-full" />
+      </CardFooter>
+    </Card>
   );
 }

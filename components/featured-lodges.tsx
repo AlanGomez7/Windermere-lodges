@@ -1,4 +1,5 @@
 
+import LandscapeLodgeCard from "./cards/landscape-lodge-card";
 import LodgeCard from "./cards/lodge-card";
 
 export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
@@ -16,9 +17,9 @@ export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex flex-col items-center gap-8">
           {lodges.slice(0, 3).map((lodge: any) => (
-            <LodgeCard lodge={lodge} key={lodge.id} needsButton={false}/>
+            <LandscapeLodgeCard lodge={lodge} key={lodge.id} needsButton={false}/>
           ))}
         </div>
       </div>

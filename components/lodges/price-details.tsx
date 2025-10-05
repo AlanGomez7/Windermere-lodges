@@ -9,7 +9,7 @@ import { GuestSelector } from "../booking/guest-selector";
 import { useAppContext } from "@/app/context/context";
 import { checkAvailableLodges } from "@/lib/api";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function PirceDetails({
   lodge,
@@ -75,6 +75,14 @@ export default function PirceDetails({
       }
     });
 
+  const params = useSearchParams();
+  const value = params.get("available");
+  const isAvailable = value === "true";
+
+  useEffect(() => {
+    setAvailability(isAvailable);
+  }, [isAvailable]);
+
   return (
     <Card className="w-full md:w-96 rounded-md transition-all sticky top-20 self-start">
       <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
@@ -103,13 +111,14 @@ export default function PirceDetails({
                   ]
                 : []),
             ]}
+
             onSelect={(dates) => {
               if (!dates?.from || !dates?.to) return;
 
               // Collect all unavailable dates as yyyy-MM-dd strings
               const unavailableDates = lodge.calendar
-                .filter((d:any) => !d.available)
-                .map((d:any) => d.date);
+                .filter((d: any) => !d.available)
+                .map((d: any) => d.date);
 
               // Helper to iterate date range
               function* daysBetween(start: Date, end: Date) {
@@ -124,11 +133,12 @@ export default function PirceDetails({
               for (let d of daysBetween(dates.from, dates.to)) {
                 if (unavailableDates.includes(d)) {
                   toast.error("Selected range includes unavailable dates.");
-                  setDate(undefined)
+                  setDate(undefined);
                   return; // Reject selection
                 }
               }
 
+              setAvailability(true)
               setDate(dates);
               setSearchParams({ ...searchParams, dates });
             }}
@@ -212,19 +222,17 @@ export default function PirceDetails({
         </div>
 
         {/* Sticky action button */}
-        {searchParams?.dates?.from !== searchParams?.dates?.to &&
-          !checkDates.includes(searchParams.dates.from) &&
-          !checkDates.includes(searchParams.dates.to) && (
-            <div className="mt-3">
-              <Button
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
-                disabled={loading}
-                onClick={handleBooking}
-              >
-                Reserve
-              </Button>
-            </div>
-          )}
+        {availability && date?.from !== date?.to && (
+          <div className="mt-3">
+            <Button
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
+              disabled={loading}
+              onClick={handleBooking}
+            >
+              Reserve
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

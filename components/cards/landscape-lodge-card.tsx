@@ -27,7 +27,14 @@ export default function LandscapeLodgeCard({
 
   const router = useRouter();
   return (
-    <Link href={`/our-lodges/${lodge.refNo}`} key={lodge.id} prefetch>
+    <Link
+      href={{
+        pathname: `/our-lodges/${lodge.refNo}`,
+        query: { available: available, isSearched: showBadge },
+      }}
+      key={lodge.id}
+      prefetch
+    >
       <Card
         key={lodge.id}
         className={`overflow-hidden w-full max-w-3xl flex flex-col sm:flex-row border shadow-lg transition-all duration-300 hover:shadow-xl ${

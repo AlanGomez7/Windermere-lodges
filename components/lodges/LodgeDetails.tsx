@@ -2,24 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Footer from "../footer";
 import { PageHeader } from "../page-header";
 import { Button } from "@/components/ui/button";
 import { findDays, formatDate, getAmenityIcon, ratingsInfo } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import RatingsAndReviews from "./ratings-and-reviews";
 
 import { useAppContext } from "@/app/context/context";
 import AboutModal from "../ui/about-modal";
 import ReviewList from "../review-wrapper";
-import Link from "next/link";
 import KnowMore from "../ui/know-more";
 
 import { Icons } from "../ui/icons";
 import ListingModal from "../ui/listings-modal";
-import { FileWarning, Info, MapPin } from "lucide-react";
+import { Info, MapPin } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import PirceDetails from "./price-details";
 import Gallery from "../gallery/lodge-gallery";
@@ -71,6 +68,12 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     return () => window.removeEventListener("scroll", handleScroll, true);
   }, [openCalendar]);
 
+  const params = useSearchParams();
+  const value1 = params.get("available");
+  const value2 = params.get("isSearched")
+  const isAvailable = value1 === 'true'
+  const isFromSearch = value2 === 'true'
+
   const router = useRouter();
 
   return (
@@ -97,7 +100,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
               </h1>
               <p className="text-sm text-gray-600 flex pt-4">
                 <MapPin className="mr-2 h-5 w-5 text-emerald-400 flex-shrink-0" />
-
                 {lodge.address}
               </p>
             </div>
@@ -116,13 +118,16 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
           </div>
         </div>
 
-        {date?.from && <div className="p-3 flex rounded-xl mb-4 bg-[#FFD3D3]">
-          <Info />
-          <p  className="pl-5">
-            Unfortunately, this lodge isn’t available on your chosen date.
-            Please select an alternative date to continue your booking.
-          </p>
-        </div>}
+        {!isAvailable && isFromSearch && (
+          <div className="p-3 flex rounded-xl mb-4 bg-[#FFD3D3]">
+            <Info />
+            <p className="pl-5">
+              Unfortunately, this lodge isn’t available on your chosen date.
+              Please select an alternative date to continue your booking.
+            </p>
+          </div>
+        )}
+
         <div className="flex flex-col md:flex-row gap-3  md:gap-6">
           <div className="flex-1">
             <Gallery

@@ -38,6 +38,7 @@ const CheckoutPage = ({
 
   useEffect(() => {
     if (orderDetails) {
+      console.log("rendered")
       fetch("/api/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,31 +89,12 @@ const CheckoutPage = ({
         status: "SUCCESSFUL",
       });
 
+      console.log(response);
+
       if(!response?.ok){
         toast("Something went wrong")
-        return
+        return null
       }
-
-      // console.log(response)
-      setOrderSuccess(response);
-
-      setOrderDetails({
-        dates: undefined,
-        guests: { adults: 2, children: 0, pets: 0, infants: 0, teens: 0 },
-        lodge: undefined,
-        nights: undefined,
-        contactInfo: {
-          firstName: "",
-          lastName: "",
-          email: "",
-          phone: "",
-          address: "",
-          city: "",
-          postalCode: "",
-          country: "",
-          specialRequests: "",
-        },
-      });
 
        
       setCurrentStep();

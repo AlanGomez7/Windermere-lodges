@@ -365,11 +365,12 @@ export const updateOrderPayment = async ({
       body: JSON.stringify(reqBody),
     });
 
-    if (response.status !== 200) {
+
+    console.log(response)
+    if (!response.ok) {
       return { ok: false, message: "failed to create payment" };
     }
 
-    console.log(response);
     const result = await response.json();
 
     await updateAvailability(

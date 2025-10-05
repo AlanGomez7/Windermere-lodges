@@ -12,6 +12,7 @@ export const createBooking = async (
   amount:number) => {
   try {
     const session = await auth();
+    
     const checkIn = new Date(bookingDetails?.dates?.from)
       .toISOString()
       .split("T")[0];
@@ -45,6 +46,8 @@ export const createBooking = async (
       data: userData as Prisma.EnquiryBookingUncheckedCreateInput,
     });
 
+
+    console.log(response, ":**:**:*:*:*:*:*:*:*:*:*:")
     // const response = {}
 
     return response;

@@ -13,7 +13,12 @@ import { Star, Users, Bath, BedDouble } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ratingsInfo } from "@/lib/utils";
 
-export default function LandscapeLodgeCard({ lodge, needsButton }: any) {
+export default function LandscapeLodgeCard({
+  lodge,
+  needsButton,
+  available,
+  showBadge,
+}: any) {
   const visibleItems = lodge.features.slice(0, 6);
   const remainingCount =
     lodge.features.length > 6 ? lodge.features.length - 6 : 0;
@@ -25,7 +30,9 @@ export default function LandscapeLodgeCard({ lodge, needsButton }: any) {
     <Link href={`/our-lodges/${lodge.refNo}`} key={lodge.id} prefetch>
       <Card
         key={lodge.id}
-        className="overflow-hidden w-full max-w-3xl flex flex-col sm:flex-row border shadow-lg transition-all duration-300 hover:shadow-xl border-emerald-600"
+        className={`overflow-hidden w-full max-w-3xl flex flex-col sm:flex-row border shadow-lg transition-all duration-300 hover:shadow-xl ${
+          available && "border-emerald-600"
+        }`}
       >
         {/* Image */}
         <CardHeader className="relative w-full sm:w-[280px] h-[220px] sm:h-auto shrink-0">
@@ -36,6 +43,20 @@ export default function LandscapeLodgeCard({ lodge, needsButton }: any) {
             className="object-cover rounded-md p-3"
             priority
           />
+
+          {showBadge && (
+            <Badge
+              key={lodge?.id}
+              variant="default"
+              className={`${
+                available ? "bg-emerald-600" : "bg-red-600"
+              } absolute rounded-l-xl top-0 left-0 font-light`}
+            >
+              <p className="px-10  text-base text-white">
+                {available ? "Available" : "Unavailable"}
+              </p>
+            </Badge>
+          )}
         </CardHeader>
 
         {/* Content */}
@@ -47,6 +68,7 @@ export default function LandscapeLodgeCard({ lodge, needsButton }: any) {
             <p className="text-gray-600 text-sm sm:text-base line-clamp-2">
               {lodge.address}
             </p>
+            <>{available ? "available" : ""}</>
 
             {/* Details */}
             <div className="flex flex-wrap gap-4 text-xs sm:text-sm">
@@ -65,6 +87,7 @@ export default function LandscapeLodgeCard({ lodge, needsButton }: any) {
             </div>
 
             {/* Features */}
+
             <div className="flex flex-wrap gap-2">
               {visibleItems.map((feature: string, index: number) => (
                 <Badge
@@ -88,7 +111,10 @@ export default function LandscapeLodgeCard({ lodge, needsButton }: any) {
                 <span className="text-xl sm:text-2xl font-bold text-emerald-600">
                   £{lodge.price}
                 </span>
-                <span className="text-gray-500 text-sm sm:text-lg"> / night</span>
+                <span className="text-gray-500 text-sm sm:text-lg">
+                  {" "}
+                  / night
+                </span>
               </div>
               {needsButton && (
                 <Button

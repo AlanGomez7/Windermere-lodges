@@ -82,6 +82,7 @@ model Property {
   pets            Int
   pets_fee        Int
   bookings        Booking[]
+  calendar        Calendar[]
   comments        Comment[]
   enquiryBookings EnquiryBooking[]
   galleryImages   PropertyGalleryImage[]
@@ -171,7 +172,22 @@ model EnquiryBooking {
   updatedAt     DateTime             @updatedAt
   infant        Int?                 @default(0)
   teens         Int?                 @default(0)
+  channel       String?
   property      Property             @relation(fields: [propertyId], references: [id])
+}
+
+model Calendar {
+  id                       String   @id @default(uuid())
+  available                Boolean
+  refNo                    String
+  available_count          Int
+  date                     String
+  day_rate                 Int
+  minimum_length_of_stay   Int
+  maximum_available_nights Int
+  closed_for_arrival       Boolean
+  closed_for_departure     Boolean
+  calendar                 Property @relation(fields: [refNo], references: [refNo])
 }
 
 enum EnquiryStatus {

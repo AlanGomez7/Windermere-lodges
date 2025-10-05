@@ -1,4 +1,12 @@
 import prisma from "@/lib/prisma";
+import {
+  differenceInDays,
+  eachDayOfInterval,
+  format,
+  parse,
+  parseISO,
+  subDays,
+} from "date-fns";
 import { cache } from "react";
 
 export const getProperties = cache(async () => {
@@ -7,9 +15,9 @@ export const getProperties = cache(async () => {
       include: {
         comments: true,
       },
-      where:{
-        status: 'active'
-      }
+      where: {
+        status: "active",
+      },
     });
     return response;
   } catch (err) {
@@ -20,11 +28,17 @@ export async function getLodgeDetails(id: string) {
   try {
     const response = prisma.property.findUnique({
       where: {
-        status: 'active',
+        status: "active",
         refNo: id,
       },
       include: {
         comments: true,
+        calendar: {
+          select: {
+            date: true,
+            available: true,
+          },
+        },
       },
     });
     return response;
@@ -55,11 +69,11 @@ export async function getLodgeComments(lodgeId: any) {
     return prisma.comment.findMany({
       where: {
         propertyId: lodgeId,
-        status: 'APPROVED'
+        status: "APPROVED",
       },
       include: {
         visitor: true,
-        property:true
+        property: true,
       },
     });
   } catch (err) {
@@ -83,12 +97,12 @@ export async function getUserReviews(userId: string) {
             id: true,
             name: true,
             email: true,
-            address:true
+            address: true,
             //  DO NOT include password
             // add other visitor fields you actually need
           },
         },
-        property:true
+        property: true,
       },
     });
 
@@ -126,6 +140,63 @@ export const getLodgeGalleryImages = async (id: string) => {
 
     console.log(response);
     return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const checkAvailability = async (
+  checkIn: string,
+  checkOut: string,
+  minStay: number,
+  maxStay: number,
+  guestsNo: number
+) => {
+  try {
+    const start = parse(checkIn, "yyyy-MM-dd", new Date());
+    const end = parse(checkOut, "yyyy-MM-dd", new Date());
+
+    const daysToCheck = eachDayOfInterval({
+      start,
+      end,
+    });
+
+    const dateStrings = daysToCheck.map((d) => format(d, "yyyy-MM-dd"));
+
+    const rows = await prisma.calendar.findMany({
+      where: {
+        date: { in: dateStrings },
+        available: true,
+      },
+      select: { refNo: true, date: true },
+    });
+
+    const refCount: Record<string, number> = {};
+    for (const row of rows) {
+      refCount[row.refNo] = (refCount[row.refNo] || 0) + 1;
+    }
+
+    const fullyAvailableRefs = Object.keys(refCount).filter(
+      (ref) => refCount[ref] === dateStrings.length
+    );
+
+    const lodgesRefs = await prisma.property.findMany({
+      where: {
+        refNo: {
+          in: fullyAvailableRefs,
+        },
+        guests: {
+          gte: guestsNo,
+        },
+      },
+      select: {
+        refNo: true, // return only the refNo
+      },
+    });
+
+    const data = lodgesRefs.map((l)=>l.refNo)
+    
+    return { data, included: [], message: "", ok: true };
   } catch (err) {
     throw err;
   }

@@ -7,6 +7,8 @@ export async function POST(request: Request) {
     const { name, phone, email, subscribe, message, subject } =
       await request.json();
 
+      console.log({ name, phone, email, subscribe, message, subject }, "kKKKK")
+
     if (!name || !phone || !email || !message || !subject) {
       throw new Error("invalid inputs");
     }
@@ -26,6 +28,7 @@ export async function POST(request: Request) {
     }, {status: 200});
 
   } catch (e: any) {
+    console.log(e)
     const message = getErrorMessage(e);
     return NextResponse.json({ message, ok: false }, { status: 409 });
   }

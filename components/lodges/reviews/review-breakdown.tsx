@@ -50,7 +50,7 @@ export default function ReviewBreakDown({ lodgeId }: { lodgeId: string }) {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4 ">Rating & Reviews</h2>
-      <div className="flex flex-col md:flex-row gap-10">
+      <div className="flex flex-col md:flex-row flex-wrap gap-10">
         {/* Summary Card */}
         <div className="flex items-center">
           <span className="flex-col text-black font-bold rounded-sm py-2 text-xl flex items-center gap-2">
@@ -87,6 +87,7 @@ export default function ReviewBreakDown({ lodgeId }: { lodgeId: string }) {
         </div>
 
         {/* Breakdown Bars */}
+        {/* flex-1 grid grid-cols-1 md:grid-cols-5 gap-4 */}
         <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-4">
           {[...ratingInfo].reverse().map((b, i) => (
             <div key={b.rating} className="flex flex-col items-center w-full">

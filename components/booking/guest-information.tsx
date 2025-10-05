@@ -19,6 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useAppContext } from "@/app/context/context";
 import Image from "next/image";
 import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 
 interface ContactInfo {
   firstName: string;
@@ -61,6 +62,10 @@ export function GuestInformation({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
+  console.log(bookingDetails)
+  const session = useSession();
+  const { data } = session;
+
   const [nights, setNights] = useState<number | undefined>(0);
 
   const findDifference = () => {
@@ -82,14 +87,14 @@ export function GuestInformation({
   const { setOrderDetails } = useAppContext();
 
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    firstName: bookingDetails.contactInfo?.firstName ?? "",
-    lastName: bookingDetails.contactInfo?.lastName ?? "",
-    email: bookingDetails.contactInfo?.email ?? "",
+    firstName: data?.user?.name && data?.user?.name.split(" ")[0] || "",
+    lastName: data?.user?.name && data?.user?.name.split(" ")[1] || "",
+    email: data?.user?.email ?? "",
     phone: bookingDetails.contactInfo?.phone ?? "",
     address: bookingDetails.contactInfo?.address ?? "",
     city: bookingDetails.contactInfo?.city ?? "",
     postalCode: bookingDetails.contactInfo?.postalCode ?? "",
-    country: bookingDetails.contactInfo?.country ?? "United Kingdom",
+    country: bookingDetails.contactInfo?.country ?? "",
     specialRequests: bookingDetails.specialRequests ?? "",
   });
 
@@ -255,7 +260,7 @@ export function GuestInformation({
                 />
               </div>
 
-              <div className="flex items-center space-x-2">
+              {/* <div className="flex items-center space-x-2">
                 <Checkbox
                   id="marketing"
                   checked={marketing}
@@ -270,7 +275,7 @@ export function GuestInformation({
                   I would like to receive special offers and updates from
                   Windermere Lodges
                 </Label>
-              </div>
+              </div> */}
             </CardContent>
           </Card>
           <CardFooter>
@@ -319,11 +324,9 @@ export function GuestInformation({
                   {bookingDetails.lodge.nickname}
                 </CardTitle>
                 <CardDescription className="">
-                {bookingDetails.lodge.address}
-              </CardDescription>
+                  {bookingDetails.lodge.address}
+                </CardDescription>
               </div>
-
-              
             </CardHeader>
 
             <CardContent className="p-0 flex flex-col gap-3">

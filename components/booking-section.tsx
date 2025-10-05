@@ -12,6 +12,8 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/app/context/context";
 import { data } from "@/data/lodges";
+import { date } from "zod";
+import { format } from "date-fns";
 
 interface SearchParams {
   dates: DateRange | undefined;
@@ -32,14 +34,9 @@ type AvailabilityResponse = {
 export const BookingSection = ({ lodges }: { lodges: any }) => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [lodgeId, setLodgeId] = useState<string>("");
 
-  const {
-    searchParams,
-    setSearchParams,
-    setIsLodgeAvailable,
-    setProperties,
-  } = useAppContext();
+  const { searchParams, setSearchParams, setIsLodgeAvailable, setProperties } =
+    useAppContext();
 
   useEffect(() => {
     setProperties(lodges);
@@ -47,7 +44,7 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
 
   const handleSearch = async () => {
     setLoading(true);
-    const response = await checkAvailableLodges(searchParams, lodgeId);
+    const response = await checkAvailableLodges(searchParams, 3, 14);
 
     if (!response.ok) {
       setIsLodgeAvailable(false);
@@ -60,17 +57,19 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
       toast.success(response?.message);
     }
 
-    if (response.data.length === 1) {
-      router.push(`/our-lodges/${response.data[0]}`);
 
-      setSearchParams({
-        ...searchParams,
-        lodge: undefined,
-      });
-      return;
-    }
+    // if (response.data.length === 1) {
+    //   router.push(`/our-lodges/${response.data[0]}`);
+
+    //   setSearchParams({
+    //     ...searchParams,
+    //     lodge: undefined,
+    //   });
+    //   return;
+    // }
 
     const query = new URLSearchParams({ ids: response.data.join(",") });
+    console.log(query);
     router.push(`/our-lodges?${query.toString()}`);
 
     setLoading(false);
@@ -84,16 +83,21 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
             Find Your Perfect Lodge
           </h2>
           {/* grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 */}
-          <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-md shadow-md hover:shadow-2xl transition-all">
+          <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all">
             <div className={"flex flex-col md:flex-row basis-2/4 gap-6"}>
               <DateRangePicker
                 onChange={(dates) => {
-                  setSearchParams({ ...searchParams, dates });
+                  if (dates?.from && dates?.to) {
+                    const from = format(dates?.from, "yyyy-MM-dd");
+                    const to = format(dates?.to, "yyyy-MM-dd");
+                    setSearchParams({ ...searchParams, dates: {from, to} });
+                  }
+
                 }}
               />
             </div>
 
-            <div className="basis-1/4">
+            <div className="basis-1/4 flex-grow-0">
               <GuestSelector
                 onChange={(guests) =>
                   setSearchParams({ ...searchParams, guests })

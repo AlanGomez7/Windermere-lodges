@@ -15,6 +15,7 @@ import { MapPin } from "lucide-react";
 
 export default function BookingPage() {
   const { searchParams } = useAppContext();
+  console.log(searchParams)
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
   const [orderDetails, setOrderDetails] = useState<any>();
@@ -26,6 +27,8 @@ export default function BookingPage() {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
+
+  
 
   useEffect(() => {
     setLoading(true);
@@ -95,18 +98,7 @@ export default function BookingPage() {
               </p>
             </div>
           </div>
-          <div className="mt-4 sm:mt-0 flex-shrink-0">
-            <div className="flex items-center gap-2 rounded-lg bg-green-100 p-2 text-green-800">
-              <div className="flex items-center gap-1">
-                {/* <span className="font-bold text-lg">{lodge.rating}</span> */}
-                {/* <span className="text-lg">{avgRating}★</span> */}
-              </div>
-              <div className="text-xs">
-                <p className="font-semibold">Very Good</p>
-                {/* <p>{totalNoOfReviews} ratings</p> */}
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
 
@@ -121,7 +113,6 @@ export default function BookingPage() {
         />
       )}
 
-      {/* instead of extras here, it should be payment */}
 
       {orderDetails && (
         <StripePayment
@@ -136,8 +127,8 @@ export default function BookingPage() {
         bookingDetails={searchParams}
         isActive={currentStep === 4}
       />
-      <Footer />
-      <ChatbotButton />
+      {/* <Footer />
+      <ChatbotButton /> */}
     </main>
   );
 }

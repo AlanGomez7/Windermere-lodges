@@ -120,6 +120,7 @@ export function DateRangePicker({
               <CalendarIcon className="mr-2 h-4 w-4" />
               {date?.to ? format(date.to, "LLL dd, y") : <span>Check out</span>}
             </Button>
+            
           </div>
         </PopoverTrigger>
 
@@ -134,6 +135,8 @@ export function DateRangePicker({
               mode="range"
               defaultMonth={date?.from}
               selected={date}
+              showOutsideDays={false}
+              fixedWeeks
               onSelect={handleSelect}
               numberOfMonths={2}
               classNames={{
@@ -176,7 +179,11 @@ export function DateRangePicker({
         </Button>
       </div>
 
-      <CalendarModal setShowDialog={setShowDialog} showDialog={showDialog} onSelect={handleSelect}/> 
+      <CalendarModal
+        setShowDialog={setShowDialog}
+        showDialog={showDialog}
+        onSelect={handleSelect}
+      />
     </>
   );
 }

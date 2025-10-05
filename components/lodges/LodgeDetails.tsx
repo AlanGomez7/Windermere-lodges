@@ -5,12 +5,7 @@ import Image from "next/image";
 import Footer from "../footer";
 import { PageHeader } from "../page-header";
 import { Button } from "@/components/ui/button";
-import {
-  findDays,
-  formatDate,
-  getAmenityIcon,
-  ratingsInfo,
-} from "@/lib/utils";
+import { findDays, formatDate, getAmenityIcon, ratingsInfo } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
@@ -24,13 +19,10 @@ import KnowMore from "../ui/know-more";
 
 import { Icons } from "../ui/icons";
 import ListingModal from "../ui/listings-modal";
-import { MapPin } from "lucide-react";
+import { FileWarning, Info, MapPin } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import PirceDetails from "./price-details";
 import Gallery from "../gallery/lodge-gallery";
-
-
-
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const { searchParams } = useAppContext();
@@ -124,6 +116,13 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
           </div>
         </div>
 
+        {date?.from && <div className="p-3 flex rounded-xl mb-4 bg-[#FFD3D3]">
+          <Info />
+          <p  className="pl-5">
+            Unfortunately, this lodge isn’t available on your chosen date.
+            Please select an alternative date to continue your booking.
+          </p>
+        </div>}
         <div className="flex flex-col md:flex-row gap-3  md:gap-6">
           <div className="flex-1">
             <Gallery
@@ -133,11 +132,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
             />
 
             <div className="md:hidden">
-              <PirceDetails
-                diff={diff}
-                lodge={lodge}
-                searchParams={searchParams}
-              />
+              <PirceDetails diff={diff} lodge={lodge} />
             </div>
 
             <div className="mt-8">
@@ -321,7 +316,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                           ],
                         },
                       ],
-                    }
+                    },
                   ].map((policy: any, indx) => {
                     return <KnowMore policy={policy} key={indx} />;
                   })}
@@ -333,16 +328,12 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
           </div>
           {/* desktop view details */}
           <div className="hidden md:block">
-            <PirceDetails
-              diff={diff}
-              lodge={lodge}
-              searchParams={searchParams}
-            />
+            <PirceDetails diff={diff} lodge={lodge} />
           </div>
         </div>
       </div>
-      <Footer />
-      <ChatbotButton />
+      {/* <Footer /> */}
+      {/* <ChatbotButton /> */}
     </>
   );
 }

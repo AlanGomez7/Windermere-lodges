@@ -126,10 +126,6 @@ export const fetchOrderedLodge = async (userId: string, lodgeId: string) => {
       },
     });
 
-    console.log(
-      lodge,
-      "=++++++++++++++++++++++++++++++++++++++++++========================"
-    );
     return lodge;
   } catch (err) {
     throw err;

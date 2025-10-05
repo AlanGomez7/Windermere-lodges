@@ -3,17 +3,17 @@
 import { use, useState } from "react";
 import LandscapeLodgeCard from "../cards/landscape-lodge-card";
 
-export function LodgeList({ properties }: { properties: any }) {
+export function LodgeList({
+  properties,
+  available,
+  showBadge
+}: {
+  properties: any;
+  available: string[];
+  showBadge: boolean
+}) {
+  console.log(available);
   const lodges: any = use(properties);
-  const [favorites, setFavorites] = useState<number[]>([]);
-
-  const toggleFavorite = (id: number) => {
-    if (favorites.includes(id)) {
-      setFavorites(favorites.filter((favId) => favId !== id));
-    } else {
-      setFavorites([...favorites, id]);
-    }
-  };
 
   if (lodges.length === 0) {
     return <>No lodges found</>;
@@ -30,7 +30,13 @@ export function LodgeList({ properties }: { properties: any }) {
       {/* grid h-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 */}
       <div className="flex flex-col justify-center items-center w-full pt-8 gap-4">
         {lodges.map((lodge: any) => (
-          <LandscapeLodgeCard lodge={lodge} key={lodge.id} needsButton={true} />
+          <LandscapeLodgeCard
+            lodge={lodge}
+            key={lodge.id}
+            needsButton={true}
+            available={available.includes(lodge?.refNo)}
+            showBadge={showBadge}
+          />
         ))}
       </div>
     </div>

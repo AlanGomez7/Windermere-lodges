@@ -28,12 +28,25 @@ import { Checkbox } from "../ui/checkbox";
 import { postEnquiryData } from "@/lib/api";
 import toast from "react-hot-toast";
 
-export function ContactForm() {
+// type ContactFormProps = {
+//   session: {
+//     user: {
+//       name: string;
+//       method?: string;
+//       id?: string;
+//       image?: string | null;
+//       email: string;
+//     };
+//   };
+// };
+
+export function ContactForm({ email, name }: { email: string; name: string }) {
   const [marketing, setMarketing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    name: name || "",
+    email: email || "",
     phone: "",
     subject: "",
     message: "",
@@ -51,19 +64,19 @@ export function ContactForm() {
     setFormData((prev) => ({ ...prev, subject: value }));
   };
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    const data = {...formData, subscribe: marketing}
+    const data = { ...formData, subscribe: marketing };
 
-    const response = await postEnquiryData(data)
+    const response = await postEnquiryData(data);
 
-    if(response.ok){
-      toast.success("We will get back to you as soon as possible")
-    }else{
-      toast.error("Something went wrong")
+    if (response.ok) {
+      toast.success("We will get back to you as soon as possible");
+    } else {
+      toast.error("Something went wrong");
     }
-    
+
     setIsLoading(false);
 
     setFormData({
@@ -73,7 +86,7 @@ export function ContactForm() {
       subject: "",
       message: "",
     });
-    setMarketing(false)
+    setMarketing(false);
   };
 
   return (

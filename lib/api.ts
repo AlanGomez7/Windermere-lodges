@@ -10,6 +10,7 @@ import {
   updateOrderPaymentStatus,
 } from "@/app/queries/order";
 import {
+  checkAvailability,
   getAllLodgeComments,
   getLodgeComments,
   getLodgeGalleryImages,
@@ -17,6 +18,7 @@ import {
   getUserReviews,
 } from "@/app/queries/properties";
 import { auth } from "@/auth";
+import { format } from "date-fns";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const baseUplistingUrl = process.env.UPLISTING_URL;
@@ -131,8 +133,9 @@ export const fetchPropertyDetails = async (id: string) => {
 
 export const checkAvailableLodges = async (
   params: any,
-  id:string
-): Promise<AvailabilityResponse> => {
+  minStay: number,
+  maxStay: number
+) => {
   if (!params?.dates?.from || !params?.dates?.to) {
     return {
       data: [],
@@ -142,29 +145,33 @@ export const checkAvailableLodges = async (
     };
   }
 
+
   try {
+
     const checkIn = new Date(params.dates.from);
     const checkOut = new Date(params.dates.to);
+    const totalGuests = params?.guests.adults + params?.guests.teens + params?.guests.infants + params?.guests.children
+    console.log(totalGuests)
 
     const diffTime = checkOut.getTime() - checkIn.getTime(); // milliseconds
     const diffDays = diffTime / (1000 * 60 * 60 * 24); // convert ms → days
 
-    if (diffDays < 3) {
+    if (diffDays < minStay) {
       return {
         data: [],
         included: [],
         message:
-          "Your stay must be at least 3 nights. Please choose a longer stay.",
+          "Your stay must be at least "+ minStay +" nights. Please choose a longer stay.",
         ok: false,
       };
     }
 
-    if (diffDays > 14) {
+    if (diffDays > maxStay) {
       return {
         data: [],
         included: [],
         message:
-          "Your stay cannot be longer than 14 nights. Please choose a shorter stay.",
+          "Your stay cannot be longer than "+ maxStay+" nights. Please choose a shorter stay.",
         ok: false,
       };
     }
@@ -178,92 +185,37 @@ export const checkAvailableLodges = async (
       };
     }
 
-    const checkInStr = checkIn.toISOString().split("T")[0];
-    const checkOutStr = checkOut.toISOString().split("T")[0];
+    const checkInStr = format(checkIn, "yyyy-MM-dd");
+    const checkOutStr = format(checkOut, "yyyy-MM-dd");
 
-    if (!process.env.UPLISTING_KEY) {
-      return {
-        data: [],
-        included: [],
-        message: "Something went wrong. Please try again later.",
-        ok: false,
-      };
-    }
-    const response = await fetch(
-      `${baseUplistingUrl}/availability?check_in=${checkInStr}&check_out=${checkOutStr}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Basic ${process.env.UPLISTING_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
+    const response = await checkAvailability(
+      checkInStr,
+      checkOutStr,
+      minStay,
+      maxStay,
+      totalGuests
     );
 
-    if (!response.ok) {
-      return {
-        data: [],
-        included: [],
-        message: `Something went wrong`,
-        ok: false,
-      };
-    }
+    if (!response) throw new Error();
 
-    if (response.status === 429) {
-      return {
-        data: [],
-        included: [],
-        message: "Too many requests. Please try again in a few seconds.",
-        ok: false,
-      };
-    }
+    const { data } = response;
 
-    const result = (await response.json()) as AvailabilityResponse;
-    const { data, included } = result;
-
-    if (!Array.isArray(data) || data.length === 0) {
+    if (data.length === 0) {
       return {
-        data: [],
+        data,
         included: [],
         message: "No available lodges on these days",
         ok: false,
       };
     }
 
-    // Filter for selected lodge if provided
-    if (id) {
-      const selectedLodge = data.find((d: any) => {
-        if (d.id === id) return d.id;
-      });
-
-      if (!selectedLodge) {
-        return {
-          data: [],
-          included,
-          message: "Lodge not available",
-          ok: false,
-        };
-      }
-
-
-      return {
-        data: [selectedLodge.id],
-        included,
-        message: "Lodge available",
-        ok: true,
-      };
-    }
-
-    const availableLodges = data.map((d) => {
-      return d.id;
-    });
-
     return {
-      data: availableLodges,
-      included,
-      message: "Lodges found",
+      data,
+      included: [],
+      message: "Lodges Found",
       ok: true,
     };
+    // Filter for selected lodge if provided
   } catch (err) {
     console.error("checkAvailableLodges error:", err);
     return {
@@ -276,6 +228,7 @@ export const checkAvailableLodges = async (
 };
 
 export const postEnquiryData = async (data: any) => {
+  console.log(data)
   try {
     const response = await fetch(`${baseUrl}/api/contact`, {
       method: "POST",
@@ -361,9 +314,8 @@ export const updateOrderPayment = async ({
     const fromDate = bookingDetails?.dates.from;
     const toDate = bookingDetails?.dates.to;
 
-
-    const checkIn = new Date(fromDate)?.toISOString().slice(0,10);
-    const checkOut = new Date(toDate)?.toISOString().slice(0,10);
+    const checkIn = new Date(fromDate)?.toISOString().slice(0, 10);
+    const checkOut = new Date(toDate)?.toISOString().slice(0, 10);
 
     const reqBody = {
       data: {

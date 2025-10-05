@@ -11,17 +11,13 @@ export default async function OurLodgesPage({
 }: {
   searchParams: Promise<{ ids?: string }>;
 }) {
-  const ids: string[] = (await searchParams).ids?.split(",") ?? [];
+  const ids: string[] | boolean = (await searchParams).ids?.split(",") ?? [];
   let lodges: Promise<any>;
 
-  if (ids.length > 0) {
-    lodges = fetchPropertiesWithIds(ids);
-  } else {
-    lodges = fetchProperties();
-  }
+  lodges = fetchProperties();
 
   const res = await lodges;
-  console.log(res)
+  console.log(res);
 
   return (
     <main className="min-h-screen bg-white">
@@ -35,7 +31,7 @@ export default async function OurLodgesPage({
         <div className="container mx-auto px-4">
           <div className="flex flex-row">
             <Suspense fallback={<Loading />}>
-              <LodgeList properties={lodges} />
+              <LodgeList properties={lodges} available={ids} showBadge={ids.length === 0 ? false : true}/>
             </Suspense>
           </div>
         </div>

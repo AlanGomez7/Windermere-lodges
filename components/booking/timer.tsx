@@ -38,7 +38,7 @@ export default function BookingTimer({ isActive, id }: { isActive: boolean, id:s
   useEffect(() => {
     if (expired) {
       const timeout = setTimeout(() => {
-        // router.replace(`/our-lodges/${id}`); // go home
+        router.replace(`/our-lodges/${id}`); // go home
       }, 3000); // wait 3 seconds
       return () => clearTimeout(timeout);
     }

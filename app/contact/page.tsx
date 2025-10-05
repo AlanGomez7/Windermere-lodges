@@ -4,8 +4,10 @@ import { ContactForm } from "@/components/contact/contact-form"
 import { ContactInfo } from "@/components/contact/contact-info"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
 import contactBanner from "@/public/contact.jpg"
+import { auth } from "@/auth"
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const session = await auth();
   return (
     <main className="min-h-screen bg-white">
       {/* <NavbarWrapper /> */}
@@ -19,7 +21,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <ContactInfo />
-            <ContactForm />
+            <ContactForm email={session?.user?.email || ""} name={session?.user?.name || ""}/>
           </div>
         </div>
       </section>

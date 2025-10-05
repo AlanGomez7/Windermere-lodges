@@ -43,6 +43,8 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
     return () => window.removeEventListener("scroll", handleScroll, true);
   }, [open]);
 
+  const { searchParams } = useAppContext();
+
   // helper: max 6 guests (excluding pets)
   const totalGuests = guests.adults + guests.children + guests.teens;
   const maxGuests = 6;
@@ -71,19 +73,19 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
       <PopoverTrigger asChild>
         <Button variant="outline" className="w-full justify-start truncate">
           <Users className="mr-2 h-4 w-4" />
-          {guests.adults} {guests.adults === 1 ? "Adult" : "Adults"}
-          {guests.children > 0 &&
-            `, ${guests.children} ${
-              guests.children === 1 ? "Child" : "Children"
+          {searchParams?.guests?.adults} {searchParams?.guests?.adults === 1 ? "Adult" : "Adults"}
+          {searchParams?.guests?.children > 0 &&
+            `, ${searchParams?.guests?.children} ${
+              searchParams?.guests?.children === 1 ? "Child" : "Children"
             }`}
-          {guests.teens > 0 &&
-            `, ${guests.teens} ${guests.teens === 1 ? "Teen" : "Teens"}`}
-          {guests.infants > 0 &&
-            `, ${guests.infants} ${
-              guests.infants === 1 ? "Infant" : "Infants"
+          {searchParams?.guests?.teens > 0 &&
+            `, ${searchParams?.guests?.teens} ${searchParams?.guests?.teens === 1 ? "Teen" : "Teens"}`}
+          {searchParams?.guests?.infants > 0 &&
+            `, ${searchParams?.guests?.infants} ${
+              searchParams?.guests?.infants === 1 ? "Infant" : "Infants"
             }`}
-          {guests.pets > 0 &&
-            `, ${guests.pets} ${guests.pets === 1 ? "Pet" : "Pets"}`}
+          {searchParams?.guests?.pets > 0 &&
+            `, ${searchParams?.guests?.pets} ${searchParams?.guests?.pets === 1 ? "Pet" : "Pets"}`}
         </Button>
       </PopoverTrigger>
 
@@ -158,60 +160,6 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
             </div>
           ))}
 
-          {/* <div className="grid grid-cols-3 items-center gap-4">
-            {lodge?.pets > 0 ? (
-              <>
-                <Label htmlFor="pets">Pets</Label>
-                <div className="col-span-2 flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() =>
-                      updateGuest("pets", guests.pets - 1, lodge.pets)
-                    }
-                    disabled={guests.pets <= 0}
-                  >
-                    -
-                  </Button>
-                  <Input
-                    id="pets"
-                    type="number"
-                    value={guests.pets}
-                    onChange={(e) =>
-                      updateGuest(
-                        "pets",
-                        parseInt(e.target.value) || 0,
-                        lodge.pets
-                      )
-                    }
-                    min={0}
-                    max={lodge.pets}
-                    className="h-8 w-14 text-center overflow-hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() =>
-                      updateGuest("pets", guests.pets + 1, lodge.pets)
-                    }
-                    disabled={guests.pets >= lodge.pets}
-                  >
-                    +
-                  </Button>
-                </div>
-                <p className="text-sm col-span-3 text-gray-400">
-                  Only {lodge?.pets} {lodge?.pets > 1 ? "pets are" : "pet is"}{" "}
-                  allowed
-                </p>
-              </>
-            ) : (
-              <p className="text-sm col-span-3">Pets are not allowed</p>
-            )}
-          </div> */}
         </div>
       </PopoverContent>
     </Popover>

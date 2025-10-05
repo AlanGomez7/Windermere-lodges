@@ -4,6 +4,7 @@ import { VisuallyHidden } from "../ui/visually-hidden";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { Cross, X } from "lucide-react";
 
 export default function Gallery({
   images,
@@ -129,6 +130,13 @@ export default function Gallery({
         {/* Modal/Lightbox */}
         <Dialog open={modalOpen} onOpenChange={setModalOpen}>
           <DialogContent className="max-w-5xl p-0 bg-black/95 border-none flex flex-col items-center justify-center">
+            <p
+              className="text-white cursor-pointer mt-5 ml-5 mr-auto"
+              onClick={() => setModalOpen(false)}
+            >
+              <X />
+            </p>
+
             <VisuallyHidden asChild>
               <DialogTitle>Gallery images for {lodgeName}</DialogTitle>
             </VisuallyHidden>

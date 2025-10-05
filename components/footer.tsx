@@ -7,8 +7,13 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
+import NewsLetter from "./newletter-subscription";
+import { auth } from "@/auth";
 
-const Footer = () => {
+const Footer = async() => {
+
+  const session = await auth();
+  
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="container mx-auto px-4">
@@ -106,25 +111,7 @@ const Footer = () => {
           </div>
 
           {/* Newsletter */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Newsletter</h3>
-            <p className="text-gray-300 mb-4">
-              Subscribe to our newsletter for special offers and updates.
-            </p>
-            <form className="space-y-2">
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-              <button
-                type="submit"
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded transition-colors"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
+          <NewsLetter name={session?.user?.name || ""} email={session?.user?.email || ""}/>
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">

@@ -24,7 +24,7 @@ export default function CalendarModal({
 
   const handleSelect = (newDate: DateRange | undefined) => {
     if (!newDate) return;
-    console.log(newDate)
+    console.log(newDate);
     setDate(newDate);
     onSelect(newDate);
   };
@@ -99,8 +99,16 @@ export default function CalendarModal({
           ) : (
             <p className="text-2xl">{nights} Nights</p>
           )}
-          <p className="">{nights === 0  && "Minimum stay: 3 nights"}</p>
-          <p className="text-gray-400">{date?.from && date?.to && nights > 0 && `${format(date?.from, "d MMM yyyy")} - ${format(date?.to, "d MMM yyyy")}`}</p>
+          <p className="">{nights === 0 && "Minimum stay: 3 nights"}</p>
+          <p className="text-gray-400">
+            {date?.from &&
+              date?.to &&
+              nights > 0 &&
+              `${format(date?.from, "d MMM yyyy")} - ${format(
+                date?.to,
+                "d MMM yyyy"
+              )}`}
+          </p>
         </div>
         {/* Scrollable content area */}
         <div className="overflow-y-auto max-h-[70vh]">

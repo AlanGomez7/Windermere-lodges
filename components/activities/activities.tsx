@@ -8,7 +8,7 @@ export default function ActivitiesList({ activity }: { activity: any }) {
   return (
     <>
       <div
-        className="relative h-96 group overflow-hidden rounded-md cursor-pointer"
+        className="relative h-96 group overflow-hidden rounded-2xl cursor-pointer"
         onClick={() => setOpen(true)}
       >
         <Image

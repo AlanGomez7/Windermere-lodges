@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { Card, CardContent } from "../ui/card";
@@ -14,17 +14,19 @@ import { useRouter } from "next/navigation";
 export default function PirceDetails({
   lodge,
   diff,
-  searchParams,
 }: {
   lodge: any;
   diff: number | null;
-  searchParams: any;
 }) {
+
+  useEffect(()=>{
+    setSearchParams({...searchParams, lodge})
+  }, [lodge])
+
   const router = useRouter();
-  console.log(diff)
 
   const [date, setDate] = useState<DateRange | undefined>();
-  const { setSearchParams } = useAppContext();
+  const { searchParams, setSearchParams } = useAppContext();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [availability, setAvailability] = useState(false);
@@ -41,9 +43,9 @@ export default function PirceDetails({
       lodge,
     };
 
-    console.log(searchParams)
-
-    const response = await checkAvailableLodges(searchParams, lodge.refNo);
+    const from = format(searchParams.dates.from, "yyyy-MM-dd");
+    const to = format(searchParams.dates.to, "yyyy-MM-dd");
+    const response = await checkAvailableLodges({ dates: { from, to } }, 3, 14);
 
     if (!response.ok) {
       toast.error(response?.message ?? "Something went wrong");
@@ -62,24 +64,34 @@ export default function PirceDetails({
     router.push("/booking");
   };
 
+  const disableDates = lodge.calendar
+    .filter((a: { date: string; available: boolean }) => !a.available)
+    .map((a: { date: string; available: boolean }) => {
+      if (!a.available) {
+        return new Date(a.date);
+      }
+    });
+
   return (
     <Card className="w-full md:w-96 rounded-md transition-all sticky top-20 self-start">
-      <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-md">
+      <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
         {/* Calendar scrolls if too tall */}
 
         <div className="flex-1">
           <Calendar
             mode="range"
-            selected={date}
-            defaultMonth={date?.from}
+            selected={searchParams.dates ? searchParams?.dates : date}
+            defaultMonth={
+              searchParams.dates ? searchParams?.dates?.from : date?.from
+            }
             className="mb-3"
             showOutsideDays={false}
             fixedWeeks
-            disabled={{ before: new Date() }}
+            disabled={[{ before: new Date() }, ...disableDates]}
             onSelect={(dates) => {
               if (!dates) return;
               setDate(dates);
-              setSearchParams({...searchParams,dates})
+              setSearchParams({ ...searchParams, dates });
             }}
           />
 
@@ -118,8 +130,11 @@ export default function PirceDetails({
                   !date && "text-muted-foreground"
                 )}
               >
-                {date?.from
-                  ? format(date?.from, "LLL dd, yyyy")
+                {date?.from ?? searchParams?.dates?.from
+                  ? format(
+                      date?.from ?? searchParams?.dates?.from,
+                      "LLL dd, yyyy"
+                    )
                   : "Pick a date"}
               </Button>
 
@@ -130,11 +145,9 @@ export default function PirceDetails({
                   !date?.to && "text-muted-foreground"
                 )}
               >
-                {date?.to ? (
-                  format(date?.to, "LLL dd, yyyy")
-                ) : (
-                  <span>Pick a date</span>
-                )}
+                {date?.to ?? searchParams?.dates?.to
+                  ? format(date?.to ?? searchParams?.dates?.to, "LLL dd, yyyy")
+                  : "Pick a date"}
               </Button>
             </div>
 
@@ -150,25 +163,28 @@ export default function PirceDetails({
 
         {/* Sticky action button */}
         <div className="mt-3">
-          {!availability ? (
-            <Button
-              onClick={() => handleSearch()}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
-              disabled={loading}
-            >
-              Check Availability
-            </Button>
-          ) : (
+          {/* {searchParams?.dates || date && (
+          )} */}
             <Button
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
               disabled={loading}
               onClick={handleBooking}
             >
-              Book Now
+              Reserve
             </Button>
-          )}
         </div>
       </CardContent>
     </Card>
   );
 }
+
+// {!availability ? (
+//     <Button
+//       onClick={() => handleSearch()}
+//       className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
+//       disabled={loading}
+//     >
+//       Check Availability
+//     </Button>
+//   ) : (
+//   )}

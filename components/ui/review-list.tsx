@@ -1,13 +1,16 @@
-"use client"
+"use client";
 import { useState } from "react";
 import ReviewCard from "../cards/review-card";
 import EmptyList from "../empty-ui";
+import ReviewActionCard from "../cards/review-action-card";
 
 export default function ReviewList({ reviews }: { reviews: any }) {
   const [initialReviews, setInitialReviews] = useState(reviews);
 
   const handleDelete = (id: string) => {
-    setInitialReviews((prev:any) => prev.filter((review:any) => review.id !== id));
+    setInitialReviews((prev: any) =>
+      prev.filter((review: any) => review.id !== id)
+    );
   };
 
   return (
@@ -15,10 +18,16 @@ export default function ReviewList({ reviews }: { reviews: any }) {
       <div className="flex gap-6 flex-wrap justify-center">
         {initialReviews.length > 0 ? (
           initialReviews.map((testimonial: any, id: number) => (
-            <ReviewCard testimonial={testimonial} key={id} isUser={true} onDelete={handleDelete}/>
+            <ReviewActionCard
+              testimonial={testimonial}
+              onDelete={handleDelete}
+              key={id}
+              isUser={true}
+              
+            />
           ))
         ) : (
-          <EmptyList type="Reviews"/>
+          <EmptyList type="Reviews" />
         )}
       </div>
     </div>

@@ -19,7 +19,7 @@ export default function AmenitiesPage() {
       <AmenitiesGallery />
 
       <Footer />
-      <ChatbotButton />
+      {/* <ChatbotButton /> */}
     </main>
   )
 }

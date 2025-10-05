@@ -37,7 +37,7 @@ export default async function OurLodgesPage({
         </div>
       </section>
       <Footer />
-      <ChatbotButton />
+      {/* <ChatbotButton /> */}
     </main>
   );
 }

@@ -50,7 +50,7 @@ export default function RegisterPage() {
       </section>
 
       <Footer />
-      <ChatbotButton />
+      {/* <ChatbotButton /> */}
     </main>
   )
 }

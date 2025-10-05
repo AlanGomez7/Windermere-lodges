@@ -39,7 +39,6 @@ export default function ItineraryPlannerPage() {
       </section>
 
       <Footer />
-      <ChatbotButton />
     </main>
   )
 }

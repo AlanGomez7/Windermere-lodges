@@ -49,7 +49,7 @@ export default function LoginPage() {
       </section>
 
       <Footer />
-      <ChatbotButton />
+      {/* <ChatbotButton /> */}
     </main>
   )
 }

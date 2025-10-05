@@ -31,14 +31,10 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const [diff, setDiff] = useState<number | null>(null);
   const [showBanner, setShowBanner] = useState(false);
 
-
-
-
   const [date, setDate] = useState<DateRange | undefined>({
     from: undefined,
     to: undefined,
   });
-
 
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(() => {
     const today = new Date();
@@ -51,11 +47,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
   const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
 
-
-  useEffect(()=>{
-    setShowBanner(!isAvailable && isFromSearch)
-  }, [])
-
+  useEffect(() => {
+    setShowBanner(!isAvailable && isFromSearch);
+  }, []);
 
   useEffect(() => {
     if (dates) {
@@ -66,9 +60,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     const nights = findDays(date?.from, date?.to);
     setDiff(nights);
     return;
-
   }, [lodge, date, checkOutDate]);
-
 
   React.useEffect(() => {
     if (!open) return;
@@ -81,11 +73,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
   const params = useSearchParams();
   const value1 = params.get("available");
-  const value2 = params.get("isSearched")
-  const isAvailable = value1 === 'true'
-  const isFromSearch = value2 === 'true'
-
-
+  const value2 = params.get("isSearched");
+  const isAvailable = value1 === "true";
+  const isFromSearch = value2 === "true";
 
   return (
     <>
@@ -139,7 +129,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
           </div>
         )}
 
-        <div className="flex flex-col md:flex-row gap-3  md:gap-6">
+        <div className="flex flex-col lg:flex-row gap-3  lg:gap-6">
           <div className="flex-1">
             <Gallery
               images={lodge.images}
@@ -147,8 +137,12 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
               lodgeId={lodge.id}
             />
 
-            <div className="md:hidden">
-              <PirceDetails diff={diff} lodge={lodge} setShowBanner={setShowBanner}/>
+            <div className="lg:hidden">
+              <PirceDetails
+                diff={diff}
+                lodge={lodge}
+                setShowBanner={setShowBanner}
+              />
             </div>
 
             <div className="mt-8">
@@ -343,13 +337,15 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
             </div>
           </div>
           {/* desktop view details */}
-          <div className="hidden md:block">
-              <PirceDetails diff={diff} lodge={lodge} setShowBanner={setShowBanner}/>
+          <div className="hidden lg:block">
+            <PirceDetails
+              diff={diff}
+              lodge={lodge}
+              setShowBanner={setShowBanner}
+            />
           </div>
         </div>
       </div>
-      {/* <Footer /> */}
-      {/* <ChatbotButton /> */}
     </>
   );
 }

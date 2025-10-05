@@ -126,7 +126,7 @@ export default function LandscapeLodgeCard({
                 <Button
                   onClick={(e) => {
                     e.preventDefault();
-                    router.push(`/our-lodges/${lodge.refNo}`);
+                    router.push(`/our-lodges/${lodge.refNo}?available=${available}&isSearched=${showBadge}`);
                   }}
                   className="bg-emerald-600 font-bold hover:bg-emerald-700"
                 >

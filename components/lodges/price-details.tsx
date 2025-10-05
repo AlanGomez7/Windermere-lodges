@@ -56,7 +56,7 @@ export default function PirceDetails({
   }, [isAvailable]);
 
   return (
-    <Card className="w-full md:w-96 rounded-md transition-all sticky top-20 self-start">
+    <Card className="w-full lg:w-96 rounded-md transition-all sticky top-20 self-start">
       <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
         {/* Calendar scrolls if too tall */}
 

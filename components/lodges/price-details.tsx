@@ -14,13 +14,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function PirceDetails({
   lodge,
   diff,
-  setShowBanner
+  setShowBanner,
 }: {
   lodge: any;
   diff: number | null;
-  setShowBanner: (value:boolean)=>void
+  setShowBanner: (value: boolean) => void;
 }) {
-
   useEffect(() => {
     setSearchParams({ ...searchParams, lodge });
   }, [lodge]);
@@ -33,9 +32,8 @@ export default function PirceDetails({
   const [loading, setLoading] = useState<boolean>(false);
   const [availability, setAvailability] = useState(false);
 
-
   const handleBooking = () => {
-    setSearchParams({...searchParams, dates:date})
+    setSearchParams({ ...searchParams, dates: date });
     localStorage.setItem("order", JSON.stringify(searchParams));
     router.push("/booking");
   };
@@ -53,7 +51,7 @@ export default function PirceDetails({
   const isAvailable = value === "true";
 
   useEffect(() => {
-    setDate(searchParams.dates)
+    setDate(searchParams.dates);
     setAvailability(isAvailable);
   }, [isAvailable]);
 
@@ -63,7 +61,6 @@ export default function PirceDetails({
         {/* Calendar scrolls if too tall */}
 
         <div className="flex-1">
-          
           <Calendar
             mode="range"
             selected={date}
@@ -86,7 +83,6 @@ export default function PirceDetails({
                   ]
                 : []),
             ]}
-
             onSelect={(dates) => {
               if (!dates?.from || !dates?.to) return;
 
@@ -114,8 +110,8 @@ export default function PirceDetails({
               }
 
               setDate(dates);
-              setAvailability(true)
-              setShowBanner(false)
+              setAvailability(true);
+              setShowBanner(false);
               // setSearchParams({ ...searchParams, dates });
             }}
           />
@@ -123,7 +119,7 @@ export default function PirceDetails({
             <p
               className="text-sm underline absolute right-0 bottom-3 cursor-pointer"
               onClick={() => {
-                setDate(undefined)
+                setDate(undefined);
               }}
             >
               Clear dates
@@ -180,9 +176,7 @@ export default function PirceDetails({
                   !date?.to && "text-muted-foreground"
                 )}
               >
-                {date?.to
-                  ? format(date?.to, "LLL dd, yyyy")
-                  : "Pick a date"}
+                {date?.to ? format(date?.to, "LLL dd, yyyy") : "Pick a date"}
               </Button>
             </div>
 
@@ -194,6 +188,7 @@ export default function PirceDetails({
               }
             />
           </div>
+          
         </div>
 
         {/* Sticky action button */}
@@ -208,8 +203,10 @@ export default function PirceDetails({
             </Button>
           </div>
         )}
+      <p className="text-xs mt-2 text-gray-400">
+            Min stay 3 nights & 14 nights max
+          </p>
       </CardContent>
     </Card>
   );
 }
-

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getLodgeDetails } from "@/app/queries/properties";
 import { findDays } from "@/lib/utils";
-import { confirmBooking } from "@/lib/api";
 import { createBooking } from "@/app/queries/order";
 
 type booking = {
@@ -51,9 +50,9 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log(orderDetails);
-    console.log("________________________________________________________")
-    console.log(bookingDetails);
+    // console.log(orderDetails);
+    // console.log("________________________________________________________")
+    // console.log(bookingDetails);
 
 
 

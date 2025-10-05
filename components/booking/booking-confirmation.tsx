@@ -28,7 +28,10 @@ export function BookingConfirmation({
 
   const router = useRouter();
   const [bookingNumber, setBookingNumber] = useState<string>("");
-  const nights = findDays(bookingDetails.dates.from, bookingDetails?.dates?.to);
+  const nights = findDays(
+    bookingDetails?.dates?.from,
+    bookingDetails?.dates?.to
+  );
 
   useEffect(() => {
     if (orderSuccess) {
@@ -37,7 +40,6 @@ export function BookingConfirmation({
       setBookingNumber("123");
     }
   }, []);
-
 
   const handleBack = () => {
     localStorage.clear();
@@ -50,7 +52,7 @@ export function BookingConfirmation({
 
   return (
     <section
-      className={`p-16 mb-5 min-h-screen flex justify-center ${
+      className={`p-4 mb-5 min-h-screen flex justify-center ${
         isActive ? "block" : "hidden"
       }`}
     >
@@ -290,7 +292,7 @@ export function BookingConfirmation({
                   <div>
                     <p className="font-medium">Prepare for your stay</p>
                     <p className="text-gray-600">
-                    Plan your Lake District adventure.
+                      Plan your Lake District adventure.
                     </p>
                   </div>
                 </li>

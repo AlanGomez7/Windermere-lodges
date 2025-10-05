@@ -53,10 +53,10 @@ export function StripePayment({
   const { orderDetails, searchParams } = useAppContext();
 
 
-  const nights = findDays(searchParams.dates.from, searchParams.dates.to);
+  const nights = findDays(searchParams?.dates?.from, searchParams?.dates?.to);
 
   let amount = 1;
-  
+
   if (nights) {
     amount =
       bookingDetails.lodge.price * nights +

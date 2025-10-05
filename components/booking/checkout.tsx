@@ -38,7 +38,6 @@ const CheckoutPage = ({
 
   useEffect(() => {
     if (orderDetails) {
-      console.log("rendered")
       fetch("/api/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,14 +87,14 @@ const CheckoutPage = ({
         stripeId: paymentIntent.id,
         status: "SUCCESSFUL",
       });
-
-      console.log(response);
+      
 
       if(!response?.ok){
         toast("Something went wrong")
-        return null
+        return
       }
 
+      setOrderSuccess(response);
        
       setCurrentStep();
       setLoading(false);

@@ -26,7 +26,7 @@ export default async function GalleryPage() {
       </section>
 
       <Footer />
-      <ChatbotButton />
+      {/* <ChatbotButton /> */}
     </main>
   );
 }

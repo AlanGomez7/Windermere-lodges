@@ -20,7 +20,7 @@ export default async function Home() {
       <Activities />
       <Testimonials />
       <Footer />
-      <ChatbotButton />
+      {/* <ChatbotButton /> */}
     </>
   );
 }

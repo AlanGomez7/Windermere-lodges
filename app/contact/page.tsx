@@ -27,7 +27,7 @@ export default async function ContactPage() {
       </section>
 
       <Footer />
-      <ChatbotButton />
+      {/* <ChatbotButton /> */}
     </main>
   )
 }

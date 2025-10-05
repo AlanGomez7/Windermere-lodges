@@ -10,6 +10,7 @@ import { useAppContext } from "@/app/context/context";
 import { updateOrderPayment } from "@/lib/api";
 import PaymentError from "../ui/payment-error";
 import BookingTimer from "./timer";
+import toast from "react-hot-toast";
 
 const CheckoutPage = ({
   amount,
@@ -24,7 +25,7 @@ const CheckoutPage = ({
   bookingDetails: any;
   orderDetails: any;
 }) => {
-  const { setOrderDetails, setOrderSuccess } = useAppContext();
+  const { setOrderDetails, setOrderSuccess, setSearchParams } = useAppContext();
   const stripe = useStripe();
   const elements = useElements();
 
@@ -81,6 +82,7 @@ const CheckoutPage = ({
     if (error) {
       setErrorModal(true);
     } else {
+
       const response = await updateOrderPayment({
         orderDetails,
         bookingDetails,
@@ -88,7 +90,11 @@ const CheckoutPage = ({
         status: "SUCCESSFUL",
       });
 
-      // console.log(response)
+      if(!response?.ok){
+        toast("Something went wrong")
+        return
+      }
+
       setOrderSuccess(response);
 
       setOrderDetails({
@@ -108,6 +114,8 @@ const CheckoutPage = ({
           specialRequests: "",
         },
       });
+
+       
       setCurrentStep();
       setLoading(false);
     }

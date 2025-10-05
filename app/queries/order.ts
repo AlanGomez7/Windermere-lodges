@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
+import { checkIsOnDemandRevalidate } from "next/dist/server/api-utils";
 
 export const createBooking = async ({
   orderDetails,
@@ -164,6 +165,27 @@ export const updateOrderPaymentStatus = async ({
     throw err;
   }
 };
+
+export const updateAvailability = async(checkIn:string, checkOut:string, lodgeId:string)=>{
+  try{
+    const response = prisma.calendar.updateMany({
+      where: {
+        refNo: lodgeId,
+        date:{
+          gte: checkIn,
+          lte: checkOut
+        }
+      },
+      data:{
+        available:false
+      }
+    });
+    
+    return response
+  }catch(err){
+    throw err;
+  }
+}
 
 export const getRatingInfo = async (lodgeId: string) => {
   try {

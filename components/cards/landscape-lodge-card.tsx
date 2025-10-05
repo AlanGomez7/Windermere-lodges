@@ -68,7 +68,6 @@ export default function LandscapeLodgeCard({
             <p className="text-gray-600 text-sm sm:text-base line-clamp-2">
               {lodge.address}
             </p>
-            <>{available ? "available" : ""}</>
 
             {/* Details */}
             <div className="flex flex-wrap gap-4 text-xs sm:text-sm">

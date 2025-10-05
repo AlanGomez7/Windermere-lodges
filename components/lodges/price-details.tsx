@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { Card, CardContent } from "../ui/card";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { addDays, format, isSameDay } from "date-fns";
 import { GuestSelector } from "../booking/guest-selector";
 import { useAppContext } from "@/app/context/context";
 import { checkAvailableLodges } from "@/lib/api";
@@ -18,10 +18,9 @@ export default function PirceDetails({
   lodge: any;
   diff: number | null;
 }) {
-
-  useEffect(()=>{
-    setSearchParams({...searchParams, lodge})
-  }, [lodge])
+  useEffect(() => {
+    setSearchParams({ ...searchParams, lodge });
+  }, [lodge]);
 
   const router = useRouter();
 
@@ -64,6 +63,10 @@ export default function PirceDetails({
     router.push("/booking");
   };
 
+  const checkDates = lodge?.calendar.map(
+    (c: { date: string; available: boolean }) => c.date
+  );
+
   const disableDates = lodge.calendar
     .filter((a: { date: string; available: boolean }) => !a.available)
     .map((a: { date: string; available: boolean }) => {
@@ -87,13 +90,60 @@ export default function PirceDetails({
             className="mb-3"
             showOutsideDays={false}
             fixedWeeks
-            disabled={[{ before: new Date() }, ...disableDates]}
+            disabled={[
+              ...disableDates,
+              ...(searchParams?.dates?.from
+                ? [
+                    { before: searchParams.dates.from }, // disable all dates before check-in
+                    {
+                      after: searchParams.dates.from,
+                      before: addDays(searchParams.dates.from, 3),
+                    },
+                    { after: addDays(searchParams.dates.from, 14) }, /// disable anything after +14 days
+                  ]
+                : []),
+            ]}
             onSelect={(dates) => {
-              if (!dates) return;
+              if (!dates?.from || !dates?.to) return;
+
+              // Collect all unavailable dates as yyyy-MM-dd strings
+              const unavailableDates = lodge.calendar
+                .filter((d:any) => !d.available)
+                .map((d:any) => d.date);
+
+              // Helper to iterate date range
+              function* daysBetween(start: Date, end: Date) {
+                let d = new Date(start);
+                while (d <= end) {
+                  yield format(d, "yyyy-MM-dd");
+                  d.setDate(d.getDate() + 1);
+                }
+              }
+
+              // Check for any unavailable date in selected range
+              for (let d of daysBetween(dates.from, dates.to)) {
+                if (unavailableDates.includes(d)) {
+                  toast.error("Selected range includes unavailable dates.");
+                  setDate(undefined)
+                  return; // Reject selection
+                }
+              }
+
               setDate(dates);
               setSearchParams({ ...searchParams, dates });
             }}
           />
+          <div className="relative">
+            <p
+              className="text-sm underline absolute right-0 bottom-3 cursor-pointer"
+              onClick={() => {
+                setDate(undefined),
+                  setSearchParams({ ...searchParams, dates: undefined });
+              }}
+            >
+              Clear dates
+            </p>
+          </div>
 
           <hr className="my-3" />
 
@@ -162,17 +212,19 @@ export default function PirceDetails({
         </div>
 
         {/* Sticky action button */}
-        <div className="mt-3">
-          {/* {searchParams?.dates || date && (
-          )} */}
-            <Button
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
-              disabled={loading}
-              onClick={handleBooking}
-            >
-              Reserve
-            </Button>
-        </div>
+        {searchParams?.dates?.from !== searchParams?.dates?.to &&
+          !checkDates.includes(searchParams.dates.from) &&
+          !checkDates.includes(searchParams.dates.to) && (
+            <div className="mt-3">
+              <Button
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
+                disabled={loading}
+                onClick={handleBooking}
+              >
+                Reserve
+              </Button>
+            </div>
+          )}
       </CardContent>
     </Card>
   );

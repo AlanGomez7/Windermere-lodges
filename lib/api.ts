@@ -7,6 +7,7 @@ import {
   fetchOrderedLodge,
   getPropertiesWithId,
   getRatingInfo,
+  updateAvailability,
   updateOrderPaymentStatus,
 } from "@/app/queries/order";
 import {
@@ -19,6 +20,7 @@ import {
 } from "@/app/queries/properties";
 import { auth } from "@/auth";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const baseUplistingUrl = process.env.UPLISTING_URL;
@@ -145,13 +147,15 @@ export const checkAvailableLodges = async (
     };
   }
 
-
   try {
-
     const checkIn = new Date(params.dates.from);
     const checkOut = new Date(params.dates.to);
-    const totalGuests = params?.guests.adults + params?.guests.teens + params?.guests.infants + params?.guests.children
-    console.log(totalGuests)
+    const totalGuests =
+      params?.guests.adults +
+      params?.guests.teens +
+      params?.guests.infants +
+      params?.guests.children;
+    console.log(totalGuests);
 
     const diffTime = checkOut.getTime() - checkIn.getTime(); // milliseconds
     const diffDays = diffTime / (1000 * 60 * 60 * 24); // convert ms → days
@@ -161,7 +165,9 @@ export const checkAvailableLodges = async (
         data: [],
         included: [],
         message:
-          "Your stay must be at least "+ minStay +" nights. Please choose a longer stay.",
+          "Your stay must be at least " +
+          minStay +
+          " nights. Please choose a longer stay.",
         ok: false,
       };
     }
@@ -171,7 +177,9 @@ export const checkAvailableLodges = async (
         data: [],
         included: [],
         message:
-          "Your stay cannot be longer than "+ maxStay+" nights. Please choose a shorter stay.",
+          "Your stay cannot be longer than " +
+          maxStay +
+          " nights. Please choose a shorter stay.",
         ok: false,
       };
     }
@@ -228,7 +236,7 @@ export const checkAvailableLodges = async (
 };
 
 export const postEnquiryData = async (data: any) => {
-  console.log(data)
+  console.log(data);
   try {
     const response = await fetch(`${baseUrl}/api/contact`, {
       method: "POST",
@@ -311,6 +319,12 @@ export const updateOrderPayment = async ({
   status,
 }: any) => {
   try {
+    const total =
+      bookingDetails?.guests?.adults +
+      bookingDetails?.guests?.children +
+      bookingDetails?.guests?.infants +
+      bookingDetails?.guests?.teens;
+
     const fromDate = bookingDetails?.dates.from;
     const toDate = bookingDetails?.dates.to;
 
@@ -326,7 +340,8 @@ export const updateOrderPayment = async ({
           guest_name: `${orderDetails.firstName} ${orderDetails.lastName}`,
           guest_email: `${orderDetails.email}`,
           guest_phone: `${orderDetails.phone}`,
-          number_of_guests: 3, //need dynamic guests count
+          number_of_guests: total,
+          //need dynamic guests count
         },
         relationships: {
           property: {
@@ -339,6 +354,7 @@ export const updateOrderPayment = async ({
       },
     };
 
+
     const response = await fetch(`${baseUplistingUrl}/v2/bookings`, {
       method: "POST",
       headers: {
@@ -350,7 +366,18 @@ export const updateOrderPayment = async ({
       body: JSON.stringify(reqBody),
     });
 
+    if (response.status !== 200) {
+      return { ok: false, message: "failed to create payment" };
+    }
+
+    console.log(response);
     const result = await response.json();
+
+    await updateAvailability(
+      bookingDetails?.dates?.from,
+      bookingDetails?.dates?.to,
+      bookingDetails?.lodge?.refNo
+    );
 
     const res = await updateOrderPaymentStatus({
       orderDetails,
@@ -359,7 +386,7 @@ export const updateOrderPayment = async ({
       result,
       status,
     });
-    return res;
+    return { ok: true, ...res };
   } catch (err) {
     throw err;
   }

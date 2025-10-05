@@ -24,14 +24,13 @@ export function BookingConfirmation({
   bookingDetails,
   isActive,
 }: BookingConfirmationProps) {
-  const { orderSuccess } = useAppContext();
+  const { orderSuccess, setSearchParams } = useAppContext();
 
   const router = useRouter();
   const [bookingNumber, setBookingNumber] = useState<string>("");
   const nights = findDays(bookingDetails.dates.from, bookingDetails?.dates?.to);
 
   useEffect(() => {
-    console.log(orderSuccess)
     if (orderSuccess) {
       setBookingNumber(orderSuccess.enquiryId);
     } else {
@@ -59,6 +58,10 @@ export function BookingConfirmation({
     router.replace("/");
   };
 
+  // useEffect(() => {
+
+  // }, []);
+
   return (
     <section
       className={`p-16 mb-5 min-h-screen flex justify-center ${
@@ -83,7 +86,9 @@ export function BookingConfirmation({
           <Card>
             <CardHeader>
               <CardTitle>Booking Details</CardTitle>
-              <CardDescription>Reference: {orderSuccess ? orderSuccess?.enquiryId:""}</CardDescription>
+              <CardDescription>
+                Reference: {orderSuccess ? orderSuccess?.enquiryId : ""}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

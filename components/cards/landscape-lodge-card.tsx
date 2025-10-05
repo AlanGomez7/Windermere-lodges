@@ -112,7 +112,7 @@ export default function LandscapeLodgeCard({
             </div>
 
             {/* Price + Button */}
-            <div className="pt-3 gap-2 flex md:flex-col items-start">
+            <div className="pt-3 gap-2 flex md:flex-col md:items-start justify-between">
               <div>
                 <span className="text-xl sm:text-2xl font-bold text-emerald-600">
                   £{lodge.price}

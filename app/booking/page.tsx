@@ -14,8 +14,8 @@ import { Icons } from "@/components/ui/icons";
 import { MapPin } from "lucide-react";
 
 export default function BookingPage() {
+  
   const { searchParams } = useAppContext();
-  console.log(searchParams)
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
   const [orderDetails, setOrderDetails] = useState<any>();

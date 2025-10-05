@@ -62,7 +62,6 @@ export function GuestInformation({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
-  console.log(bookingDetails)
   const session = useSession();
   const { data } = session;
 
@@ -129,6 +128,8 @@ export function GuestInformation({
       setError("Please enter a valid email address");
       return;
     }
+
+    console.log(contactInfo)
 
     localStorage.setItem("userInfo", JSON.stringify(contactInfo));
     setOrderDetails(contactInfo);

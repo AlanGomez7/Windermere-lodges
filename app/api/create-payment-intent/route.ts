@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getLodgeDetails } from "@/app/queries/properties";
-import { createBooking } from "@/app/queries/order";
 import { findDays } from "@/lib/utils";
 import { confirmBooking } from "@/lib/api";
+import { createBooking } from "@/app/queries/order";
 
 type booking = {
   id: string;
@@ -21,6 +21,7 @@ type booking = {
 export async function POST(req: Request) {
   try {
     const { bookingDetails, orderDetails } = await req.json();
+    console.log(bookingDetails, orderDetails, "+++++++++++++++++++++++++++++")
     const { guests, lodge, dates } = bookingDetails;
 
     if (!guests || !lodge || !dates) {
@@ -51,14 +52,17 @@ export async function POST(req: Request) {
       },
     });
 
+    console.log(paymentIntent, orderDetails, bookingDetails);
 
-    await confirmBooking({
+
+
+    await createBooking(
       orderDetails,
       bookingDetails,
-      result: null,
-      stripeId: paymentIntent.id,
+      null,
+      paymentIntent.id,
       amount
-    });
+    );
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
 

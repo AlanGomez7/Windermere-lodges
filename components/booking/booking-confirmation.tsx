@@ -38,20 +38,6 @@ export function BookingConfirmation({
     }
   }, []);
 
-  const generatePdf = () => {
-    // In a real app, this would generate and download a booking confirmation PDF
-    console.log("Generating PDF for booking", bookingNumber);
-  };
-
-  const addToCalendar = () => {
-    // In a real app, this would generate a calendar event file
-    console.log("Adding to calendar");
-  };
-
-  const contactSupport = () => {
-    // In a real app, this would open a support chat or redirect to contact page
-    router.push("/contact");
-  };
 
   const handleBack = () => {
     localStorage.clear();
@@ -269,56 +255,12 @@ export function BookingConfirmation({
                           bookingDetails.lodge?.cleaning_fee +
                           bookingDetails.guests.pets *
                             bookingDetails.lodge.pets_fee}
-                        {/* {bookingDetails.lodge
-                          ? Math.round(
-                              bookingDetails.lodge.price *
-                                bookingDetails.nights +
-                                (bookingDetails.extras?.reduce(
-                                  (sum: number, item: any) => sum + item.price,
-                                  0
-                                ) || 0) +
-                                bookingDetails.lodge.price *
-                                  bookingDetails.nights *
-                                  0.2 -
-                                (bookingDetails.discountApplied
-                                  ? bookingDetails.lodge.price *
-                                    bookingDetails.nights *
-                                    0.2
-                                  : 0)
-                            )
-                          : 0} */}
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
             </CardContent>
-            {/* <CardFooter className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                className="flex items-center"
-                onClick={generatePdf}
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Download Confirmation
-              </Button>
-              <Button
-                variant="outline"
-                className="flex items-center"
-                onClick={addToCalendar}
-              >
-                <Calendar className="mr-2 h-4 w-4" />
-                Add to Calendar
-              </Button>
-              <Button
-                variant="outline"
-                className="flex items-center"
-                onClick={contactSupport}
-              >
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Contact Support
-              </Button>
-            </CardFooter> */}
           </Card>
 
           <Card>
@@ -348,14 +290,7 @@ export function BookingConfirmation({
                   <div>
                     <p className="font-medium">Prepare for your stay</p>
                     <p className="text-gray-600">
-                      Check out our{" "}
-                      <a
-                        href="/activities"
-                        className="text-teal-600 hover:underline"
-                      >
-                        activities page
-                      </a>{" "}
-                      to plan your Lake District adventure.
+                    Plan your Lake District adventure.
                     </p>
                   </div>
                 </li>

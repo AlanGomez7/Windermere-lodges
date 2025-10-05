@@ -23,26 +23,39 @@ import Gallery from "../gallery/lodge-gallery";
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const { searchParams } = useAppContext();
-  const [showAmenities, setShowAmenities] = useState(false);
-
   const { dates } = searchParams;
+  const router = useRouter();
 
+  const [showAmenities, setShowAmenities] = useState(false);
+  const [aboutDialog, setAboutDialog] = useState(false);
   const [diff, setDiff] = useState<number | null>(null);
+  const [showBanner, setShowBanner] = useState(false);
+
+
+
 
   const [date, setDate] = useState<DateRange | undefined>({
     from: undefined,
     to: undefined,
   });
 
-  const [aboutDialog, setAboutDialog] = useState(false);
 
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(() => {
     const today = new Date();
     today.setDate(today.getDate() + 3); // add 5 days
     return today;
   });
+  const [openCalendar, setOpenCalendar] = React.useState<
+    "checkin" | "checkout" | null
+  >(null);
 
   const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
+
+
+  useEffect(()=>{
+    setShowBanner(!isAvailable && isFromSearch)
+  }, [])
+
 
   useEffect(() => {
     if (dates) {
@@ -53,11 +66,9 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
     const nights = findDays(date?.from, date?.to);
     setDiff(nights);
     return;
+
   }, [lodge, date, checkOutDate]);
 
-  const [openCalendar, setOpenCalendar] = React.useState<
-    "checkin" | "checkout" | null
-  >(null);
 
   React.useEffect(() => {
     if (!open) return;
@@ -74,7 +85,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const isAvailable = value1 === 'true'
   const isFromSearch = value2 === 'true'
 
-  const router = useRouter();
+
 
   return (
     <>
@@ -118,7 +129,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
           </div>
         </div>
 
-        {!isAvailable && isFromSearch && (
+        {showBanner && (
           <div className="p-3 flex rounded-xl mb-4 bg-[#FFD3D3]">
             <Info />
             <p className="pl-5">
@@ -137,7 +148,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
             />
 
             <div className="md:hidden">
-              <PirceDetails diff={diff} lodge={lodge} />
+              <PirceDetails diff={diff} lodge={lodge} setShowBanner={setShowBanner}/>
             </div>
 
             <div className="mt-8">
@@ -333,7 +344,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
           </div>
           {/* desktop view details */}
           <div className="hidden md:block">
-            <PirceDetails diff={diff} lodge={lodge} />
+              <PirceDetails diff={diff} lodge={lodge} setShowBanner={setShowBanner}/>
           </div>
         </div>
       </div>

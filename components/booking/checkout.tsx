@@ -25,7 +25,8 @@ const CheckoutPage = ({
   bookingDetails: any;
   orderDetails: any;
 }) => {
-  const { setOrderDetails, setOrderSuccess, setSearchParams } = useAppContext();
+
+  const { setOrderDetails, setOrderSuccess } = useAppContext();
   const stripe = useStripe();
   const elements = useElements();
 
@@ -46,9 +47,6 @@ const CheckoutPage = ({
         .then((data) => setClientSecret(data.clientSecret));
     }
   }, [amount, bookingDetails, orderDetails]);
-
-
-
 
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -95,6 +93,7 @@ const CheckoutPage = ({
         return
       }
 
+      // console.log(response)
       setOrderSuccess(response);
 
       setOrderDetails({

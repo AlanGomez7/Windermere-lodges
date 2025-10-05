@@ -14,10 +14,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function PirceDetails({
   lodge,
   diff,
+  setShowBanner
 }: {
   lodge: any;
   diff: number | null;
+  setShowBanner: (value:boolean)=>void
 }) {
+
   useEffect(() => {
     setSearchParams({ ...searchParams, lodge });
   }, [lodge]);
@@ -30,42 +33,12 @@ export default function PirceDetails({
   const [loading, setLoading] = useState<boolean>(false);
   const [availability, setAvailability] = useState(false);
 
-  const handleSearch = async () => {
-    setLoading(true);
-
-    const params = {
-      dates: {
-        from: date?.from,
-        to: date?.to,
-      },
-      guests: searchParams.guests,
-      lodge,
-    };
-
-    const from = format(searchParams.dates.from, "yyyy-MM-dd");
-    const to = format(searchParams.dates.to, "yyyy-MM-dd");
-    const response = await checkAvailableLodges({ dates: { from, to } }, 3, 14);
-
-    if (!response.ok) {
-      toast.error(response?.message ?? "Something went wrong");
-      setLoading(false);
-      return;
-    }
-
-    setAvailability(true);
-    setSearchParams(params);
-    toast.success("Lodge available");
-    setLoading(false);
-  };
 
   const handleBooking = () => {
+    setSearchParams({...searchParams, dates:date})
     localStorage.setItem("order", JSON.stringify(searchParams));
     router.push("/booking");
   };
-
-  const checkDates = lodge?.calendar.map(
-    (c: { date: string; available: boolean }) => c.date
-  );
 
   const disableDates = lodge.calendar
     .filter((a: { date: string; available: boolean }) => !a.available)
@@ -80,6 +53,7 @@ export default function PirceDetails({
   const isAvailable = value === "true";
 
   useEffect(() => {
+    setDate(searchParams.dates)
     setAvailability(isAvailable);
   }, [isAvailable]);
 
@@ -89,9 +63,10 @@ export default function PirceDetails({
         {/* Calendar scrolls if too tall */}
 
         <div className="flex-1">
+          
           <Calendar
             mode="range"
-            selected={searchParams.dates ? searchParams?.dates : date}
+            selected={date}
             defaultMonth={
               searchParams.dates ? searchParams?.dates?.from : date?.from
             }
@@ -100,14 +75,14 @@ export default function PirceDetails({
             fixedWeeks
             disabled={[
               ...disableDates,
-              ...(searchParams?.dates?.from
+              ...(date?.from
                 ? [
-                    { before: searchParams.dates.from }, // disable all dates before check-in
+                    { before: date?.from }, // disable all dates before check-in
                     {
-                      after: searchParams.dates.from,
-                      before: addDays(searchParams.dates.from, 3),
+                      after: date?.from,
+                      before: addDays(date?.from, 3),
                     },
-                    { after: addDays(searchParams.dates.from, 14) }, /// disable anything after +14 days
+                    { after: addDays(date?.from, 14) }, /// disable anything after +14 days
                   ]
                 : []),
             ]}
@@ -138,17 +113,17 @@ export default function PirceDetails({
                 }
               }
 
-              setAvailability(true)
               setDate(dates);
-              setSearchParams({ ...searchParams, dates });
+              setAvailability(true)
+              setShowBanner(false)
+              // setSearchParams({ ...searchParams, dates });
             }}
           />
           <div className="relative">
             <p
               className="text-sm underline absolute right-0 bottom-3 cursor-pointer"
               onClick={() => {
-                setDate(undefined),
-                  setSearchParams({ ...searchParams, dates: undefined });
+                setDate(undefined)
               }}
             >
               Clear dates
@@ -205,8 +180,8 @@ export default function PirceDetails({
                   !date?.to && "text-muted-foreground"
                 )}
               >
-                {date?.to ?? searchParams?.dates?.to
-                  ? format(date?.to ?? searchParams?.dates?.to, "LLL dd, yyyy")
+                {date?.to
+                  ? format(date?.to, "LLL dd, yyyy")
                   : "Pick a date"}
               </Button>
             </div>
@@ -238,13 +213,3 @@ export default function PirceDetails({
   );
 }
 
-// {!availability ? (
-//     <Button
-//       onClick={() => handleSearch()}
-//       className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
-//       disabled={loading}
-//     >
-//       Check Availability
-//     </Button>
-//   ) : (
-//   )}

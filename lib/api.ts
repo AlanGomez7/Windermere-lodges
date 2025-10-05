@@ -354,7 +354,6 @@ export const updateOrderPayment = async ({
       },
     };
 
-
     const response = await fetch(`${baseUplistingUrl}/v2/bookings`, {
       method: "POST",
       headers: {
@@ -399,13 +398,14 @@ export const confirmBooking = async ({
   amount,
 }: any) => {
   try {
-    const response = await createBooking({
-      orderDetails,
-      bookingDetails,
-      stripeId,
-      amount,
-    });
-    return response;
+    // const response = await createBooking({
+    //   orderDetails,
+    //   bookingDetails,
+    //   stripeId,
+    //   amount,
+    // });
+
+    // return response;
   } catch (err) {
     throw err;
   }

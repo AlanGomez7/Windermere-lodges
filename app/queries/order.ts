@@ -3,15 +3,13 @@ import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
-import { checkIsOnDemandRevalidate } from "next/dist/server/api-utils";
 
-export const createBooking = async ({
-  orderDetails,
-  bookingDetails,
-  result,
-  stripeId,
-  amount,
-}: any) => {
+export const createBooking = async (
+  orderDetails:any,
+  bookingDetails:any,
+  result:any,
+  stripeId:string,
+  amount:number) => {
   try {
     const session = await auth();
     const checkIn = new Date(bookingDetails?.dates?.from)
@@ -41,9 +39,13 @@ export const createBooking = async ({
       stripeId,
     };
 
+    console.log(userData)
+
     const response = await prisma.enquiryBooking.create({
       data: userData as Prisma.EnquiryBookingUncheckedCreateInput,
     });
+
+    // const response = {}
 
     return response;
   } catch (err) {

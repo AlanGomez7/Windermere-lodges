@@ -14,8 +14,6 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./checkout";
 import { findDays } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { createBooking } from "@/app/queries/order";
 import { useAppContext } from "@/app/context/context";
 
 interface ContactInfo {

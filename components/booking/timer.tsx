@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function BookingTimer({ isActive, id }: { isActive: boolean, id:string }) {
-  const TIMER_DURATION = 2 * 60; // 2 minutes in seconds
+  const TIMER_DURATION = 5 * 60; // 5 minutes in seconds
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [expired, setExpired] = useState(false);
   const router = useRouter();

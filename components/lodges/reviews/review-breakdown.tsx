@@ -96,16 +96,17 @@ export default function ReviewBreakDown({ lodgeId }: { lodgeId: string }) {
                 <span className="text-gray-500">★</span>
                 <span className="text-xs text-gray-700">
                   (
-                  {i + 1 === 5
+                  {b.rating === 5
                     ? "Excellent"
-                    : i + 1 === 4
+                    : b.rating === 4
                     ? "Very Good"
-                    : i + 1 === 3
+                    : b.rating === 3
                     ? "Good"
-                    : i + 1 === 2
+                    : b.rating === 2
                     ? "Average"
                     : "Poor"}
                   )
+                  {/* {b?.rating}, {i} */}
                 </span>
 
                 <span className="ml-2 font-bold text-gray-700 text-xs">

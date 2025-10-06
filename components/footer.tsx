@@ -56,14 +56,14 @@ const Footer = async() => {
                   Amenities
                 </Link>
               </li> */}
-              <li>
+              {/* <li>
                 <Link
                   href="/activities"
                   className="text-gray-300 hover:text-emerald-400 transition-colors"
                 >
                   Activities
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   href="/gallery"

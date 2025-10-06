@@ -65,7 +65,7 @@ export const Hero = () => {
   return (
     <div
       ref={heroRef}
-      className="relative min-h-[860px] flex items-center justify-center overflow-hidden"
+      className="relative min-h-[560px] lg:min-h-[860px] flex items-center justify-center overflow-hidden"
     >
       {/* Slider Images */}
       {sliderImages.map((i, idx) => (

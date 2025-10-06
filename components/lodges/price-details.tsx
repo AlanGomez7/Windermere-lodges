@@ -145,7 +145,7 @@ export default function PirceDetails({
                       searchParams.guests.pets * lodge.pets_fee}
                   </span>
                   <span className="text-xs">
-                    for {diff} {diff < 1 ? "night" : "nights"}
+                    {" "}for {diff} {diff < 1 ? "night" : "nights"}
                   </span>
                 </span>
                 <span className="text-sm mt-2 text-gray-400">

@@ -12,7 +12,7 @@ export function ContactInfo() {
           <CardDescription>Get in touch with our friendly team</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex items-start">
+          {/* <div className="flex items-start">
             <MapPin className="h-5 w-5 text-teal-600 mt-1 mr-3" />
             <div>
               <h4 className="font-medium">Our Address</h4>
@@ -29,7 +29,7 @@ export function ContactInfo() {
                 View on map
               </Button>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex items-start">
             <Mail className="h-5 w-5 text-teal-600 mt-1 mr-3" />

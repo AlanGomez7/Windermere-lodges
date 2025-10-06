@@ -32,7 +32,7 @@ const Navbar = ({ session }: { session: any }) => {
     { name: "Our Lodges", href: "/our-lodges" },
     // { name: "Amenities", href: "/amenities" },
     // { name: "Activities", href: "/activities" },
-    { name: "Gallery", href: "/gallery" },
+    // { name: "Gallery", href: "/gallery" },
     { name: "Contact", href: "/contact" },
   ];
 

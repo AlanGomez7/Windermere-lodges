@@ -62,6 +62,7 @@ export const getUserBookings = async (id: string | null | undefined) => {
       const bookings = await prisma.enquiryBooking.findMany({
         where: {
           userId: id,
+          payment: "SUCCESSFUL"
         },
         include: {
           property: true,

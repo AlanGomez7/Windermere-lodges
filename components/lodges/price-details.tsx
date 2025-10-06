@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { Card, CardContent } from "../ui/card";
 import { DateRange } from "react-day-picker";
-import { cn } from "@/lib/utils";
+import { cn, findDays } from "@/lib/utils";
 import { addDays, format, isSameDay } from "date-fns";
 import { GuestSelector } from "../booking/guest-selector";
 import { useAppContext } from "@/app/context/context";
@@ -13,11 +13,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 export default function PirceDetails({
   lodge,
-  diff,
   setShowBanner,
 }: {
   lodge: any;
-  diff: number | null;
   setShowBanner: (value: boolean) => void;
 }) {
   useEffect(() => {
@@ -27,6 +25,7 @@ export default function PirceDetails({
   const router = useRouter();
 
   const [date, setDate] = useState<DateRange | undefined>();
+  const [diff, setDiff] = useState(1)
   const { searchParams, setSearchParams } = useAppContext();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,6 +36,12 @@ export default function PirceDetails({
     localStorage.setItem("order", JSON.stringify(searchParams));
     router.push("/booking");
   };
+
+  useEffect(() => {
+    const days = findDays(date?.from, date?.to);
+    console.log(days);
+    setDiff(days);
+  }, [date]);
 
   const disableDates = lodge.calendar
     .filter((a: { date: string; available: boolean }) => !a.available)
@@ -56,7 +61,7 @@ export default function PirceDetails({
   }, [isAvailable]);
 
   return (
-    <Card className="w-full lg:w-96 rounded-md transition-all sticky top-20 self-start">
+    <Card className="w-full lg:w-96 rounded-md transition-all sticky top-16 self-start">
       <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
         {/* Calendar scrolls if too tall */}
 
@@ -161,11 +166,8 @@ export default function PirceDetails({
                   !date && "text-muted-foreground"
                 )}
               >
-                {date?.from ?? searchParams?.dates?.from
-                  ? format(
-                      date?.from ?? searchParams?.dates?.from,
-                      "LLL dd, yyyy"
-                    )
+                {date?.from
+                  ? format(date?.from, "LLL dd, yyyy")
                   : "Pick a date"}
               </Button>
 
@@ -188,7 +190,6 @@ export default function PirceDetails({
               }
             />
           </div>
-          
         </div>
 
         {/* Sticky action button */}
@@ -203,9 +204,9 @@ export default function PirceDetails({
             </Button>
           </div>
         )}
-      <p className="text-xs mt-2 text-gray-400">
-            Min stay 3 nights & 14 nights max
-          </p>
+        <p className="text-xs mt-2 text-gray-400">
+          Min stay 3 nights & 14 nights max
+        </p>
       </CardContent>
     </Card>
   );

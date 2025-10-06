@@ -139,7 +139,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
             <div className="lg:hidden">
               <PirceDetails
-                diff={diff}
+                // diff={diff}
                 lodge={lodge}
                 setShowBanner={setShowBanner}
               />
@@ -339,7 +339,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
           {/* desktop view details */}
           <div className="hidden lg:block">
             <PirceDetails
-              diff={diff}
+              // diff={diff}
               lodge={lodge}
               setShowBanner={setShowBanner}
             />

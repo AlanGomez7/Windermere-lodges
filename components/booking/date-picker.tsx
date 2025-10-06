@@ -120,7 +120,6 @@ export function DateRangePicker({
               <CalendarIcon className="mr-2 h-4 w-4" />
               {date?.to ? format(date.to, "LLL dd, y") : <span>Check out</span>}
             </Button>
-            
           </div>
         </PopoverTrigger>
 
@@ -142,6 +141,8 @@ export function DateRangePicker({
               classNames={{
                 months:
                   "flex flex-col relative sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                week: "flex gap-2",
+                month_grid: "space-y-2"
               }}
               disabled={{ before: new Date() }}
             />

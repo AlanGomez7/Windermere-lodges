@@ -22,7 +22,7 @@ enum ORDERTATUS {
 
 export default function BookingCard({ booking }: any) {
   const [currentBooking, setCurrentBooking] = useState(booking);
-  console.log(currentBooking);
+
   const nights = findDays(
     currentBooking.arrivalDate,
     currentBooking.departureDate

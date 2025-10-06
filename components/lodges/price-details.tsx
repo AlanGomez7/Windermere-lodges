@@ -133,7 +133,7 @@ export default function PirceDetails({
 
           <hr className="my-3" />
 
-          d<div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
             {/* Price */}
             {diff ? (
               <div className="flex flex-col md:flex-row items-baseline gap-2 justify-between">

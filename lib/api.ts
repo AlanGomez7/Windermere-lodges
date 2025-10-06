@@ -107,13 +107,40 @@ export const changePassword = async ({
   }
 };
 
-export const cancelUserBooking = async (orderId: string) => {
+export const cancelUserBooking = async (orderId: string, orderRef: string) => {
   try {
     if (!orderId) {
       throw new Error("Invalid id");
     }
 
     const response = await cancelBooking(orderId);
+
+    if (response) {
+      const cancellation = await fetch(`${baseUplistingUrl}/v2/bookings/${orderRef}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Basic ${process.env.UPLISTING_KEY}`,
+          "X-Uplisting-Client-Id": `${process.env.UPLISTING_CLIENT_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            attributes: {
+              reason: "cancelled",
+            },
+          },
+        }),
+      });
+
+      await updateAvailability(
+        response.arrivalDate,
+        response.departureDate,
+        response.propertyId,
+        true
+      );
+      
+    }
+
     return response;
   } catch (err) {
     throw err;
@@ -365,8 +392,7 @@ export const updateOrderPayment = async ({
       body: JSON.stringify(reqBody),
     });
 
-
-    console.log(response)
+    console.log(response);
     if (!response.ok) {
       return { ok: false, message: "failed to create payment" };
     }
@@ -376,7 +402,8 @@ export const updateOrderPayment = async ({
     await updateAvailability(
       bookingDetails?.dates?.from,
       bookingDetails?.dates?.to,
-      bookingDetails?.lodge?.refNo
+      bookingDetails?.lodge?.refNo,
+      false
     );
 
     const res = await updateOrderPaymentStatus({
@@ -405,7 +432,6 @@ export const confirmBooking = async ({
     //   stripeId,
     //   amount,
     // });
-
     // return response;
   } catch (err) {
     throw err;

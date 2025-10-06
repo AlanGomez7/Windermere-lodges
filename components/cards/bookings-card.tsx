@@ -34,7 +34,8 @@ export default function BookingCard({ booking }: any) {
         toast.error("Invalid id");
       }
 
-      const response = await cancelUserBooking(currentBooking?.id);
+      const response = await cancelUserBooking(currentBooking?.id, currentBooking?.enquiryId);
+
       if (response) {
         toast.success("Booking cancelled successfully!");
         setCurrentBooking((prev: any) => ({
@@ -159,7 +160,7 @@ export default function BookingCard({ booking }: any) {
           </div>
         </div>
 
-        <Button
+        {/* <Button
           onClick={handleCancelOrder}
           variant={"ghost"}
           className={`bg-red-500 text-white mt-3 ${
@@ -167,7 +168,7 @@ export default function BookingCard({ booking }: any) {
           }`}
         >
           CANCEL BOOKING
-        </Button>
+        </Button> */}
       </CardContent>
 
       {/* Rating */}

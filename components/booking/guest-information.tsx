@@ -86,15 +86,15 @@ export function GuestInformation({
   const { setOrderDetails } = useAppContext();
 
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    firstName: data?.user?.name && data?.user?.name.split(" ")[0] || "",
-    lastName: data?.user?.name && data?.user?.name.split(" ")[1] || "",
+    firstName: (data?.user?.name && data?.user?.name.split(" ")[0]) || "",
+    lastName: (data?.user?.name && data?.user?.name.split(" ")[1]) || "",
     email: data?.user?.email ?? "",
-    phone: bookingDetails.contactInfo?.phone ?? "",
-    address: bookingDetails.contactInfo?.address ?? "",
-    city: bookingDetails.contactInfo?.city ?? "",
-    postalCode: bookingDetails.contactInfo?.postalCode ?? "",
-    country: bookingDetails.contactInfo?.country ?? "",
-    specialRequests: bookingDetails.specialRequests ?? "",
+    phone: bookingDetails?.contactInfo?.phone ?? "",
+    address: bookingDetails?.contactInfo?.address ?? "",
+    city: bookingDetails?.contactInfo?.city ?? "",
+    postalCode: bookingDetails?.contactInfo?.postalCode ?? "",
+    country: bookingDetails?.contactInfo?.country ?? "",
+    specialRequests: bookingDetails?.specialRequests ?? "",
   });
 
   const [error, setError] = useState("");
@@ -129,7 +129,7 @@ export function GuestInformation({
       return;
     }
 
-    console.log(contactInfo)
+    console.log(contactInfo);
 
     localStorage.setItem("userInfo", JSON.stringify(contactInfo));
     setOrderDetails(contactInfo);
@@ -303,29 +303,29 @@ export function GuestInformation({
           <Card className=" bg-[#EDF6F4] p-4">
             <div className="relative h-64 w-100">
               <Image
-                src={bookingDetails.lodge.images[0] || "/placeholder.svg"}
-                alt={bookingDetails.lodge.name}
+                src={bookingDetails?.lodge.images[0] || "/placeholder.svg"}
+                alt={bookingDetails?.lodge.name}
                 fill
                 className="object-cover rounded-md"
                 priority
               />
-              {bookingDetails.lodge.isNew && (
+              {bookingDetails?.lodge.isNew && (
                 <Badge className="absolute top-4 left-4 bg-emerald-600 hover:bg-emerald-700">
                   New
                 </Badge>
               )}
               <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
-                £{bookingDetails.lodge.price}/night
+                £{bookingDetails?.lodge.price}/night
               </div>
             </div>
 
             <CardHeader className="px-0">
               <div className="flex flex-col w-full items-start gap-3">
                 <CardTitle className="text-lg lg:text-xl font-bold">
-                  {bookingDetails.lodge.nickname}
+                  {bookingDetails?.lodge.nickname}
                 </CardTitle>
                 <CardDescription className="">
-                  {bookingDetails.lodge.address}
+                  {bookingDetails?.lodge.address}
                 </CardDescription>
               </div>
             </CardHeader>
@@ -335,13 +335,13 @@ export function GuestInformation({
                 <span>Check In</span>
                 <span className="font-bold">
                   {" "}
-                  {format(new Date(bookingDetails.dates.from), "dd MMM yyyy")}
+                  {format(new Date(bookingDetails?.dates.from), "dd MMM yyyy")}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Check Out</span>
                 <span className="font-bold">
-                  {format(new Date(bookingDetails.dates.to), "dd MMM yyyy")}
+                  {format(new Date(bookingDetails?.dates.to), "dd MMM yyyy")}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -352,41 +352,54 @@ export function GuestInformation({
                   {nights}
                 </span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span>No. of Adults</span>
-                <span className="font-bold">
-                  {" "}
-                  {bookingDetails.guests.adults}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>No. of Children</span>
-                <span className="font-bold">
-                  {bookingDetails.guests.children}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>No. of Teenagers</span>
-                <span className="font-bold">
-                  {" "}
-                  {bookingDetails.guests.teens}
-                </span>
-              </div>
+              {bookingDetails?.guests.adults > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>No. of Adults</span>
+                  <span className="font-bold">
+                    {" "}
+                    {bookingDetails?.guests.adults}
+                  </span>
+                </div>
+              )}
 
-              <div className="flex justify-between text-sm">
-                <span>No. of Infants</span>
-                <span className="font-bold">
-                  {" "}
-                  {bookingDetails.guests.infants}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>No. of Pets</span>
-                <span className="font-bold">
-                  {/* &pound; */}
-                  {bookingDetails.guests.pets}
-                </span>
-              </div>
+              {bookingDetails?.guests.children > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>No. of Children</span>
+                  <span className="font-bold">
+                    {bookingDetails?.guests.children}
+                  </span>
+                </div>
+              )}
+
+              {bookingDetails?.guests.teens > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>No. of Teenagers</span>
+                  <span className="font-bold">
+                    {" "}
+                    {bookingDetails?.guests.teens}
+                  </span>
+                </div>
+              )}
+
+              {bookingDetails?.guests.infants > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>No. of Infants</span>
+                  <span className="font-bold">
+                    {" "}
+                    {bookingDetails?.guests.infants}
+                  </span>
+                </div>
+              )}
+
+              {bookingDetails?.guests?.pets > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>No. of Pets</span>
+                  <span className="font-bold">
+                    {/* &pound; */}
+                    {bookingDetails?.guests.pets}
+                  </span>
+                </div>
+              )}
 
               <hr />
               <div className="flex justify-between text-sm">
@@ -397,12 +410,12 @@ export function GuestInformation({
                 </span>
               </div>
 
-              {bookingDetails.guests.pets > 0 && (
+              {bookingDetails?.guests.pets > 0 && (
                 <div className="flex justify-between text-sm">
                   <span>Pet fee</span>
                   <span className="font-bold">
                     {" "}
-                    &pound;{bookingDetails.lodge.pets_fee}
+                    &pound;{bookingDetails?.lodge.pets_fee}
                   </span>
                 </div>
               )}
@@ -422,10 +435,10 @@ export function GuestInformation({
                 <span className="font-bold">
                   &pound;
                   {nights &&
-                    bookingDetails.lodge.price * nights +
-                      bookingDetails?.lodge.cleaning_fee +
+                    bookingDetails?.lodge?.price * nights +
+                      bookingDetails?.lodge?.cleaning_fee +
                       bookingDetails?.guests.pets *
-                        bookingDetails.lodge.pets_fee}
+                        bookingDetails?.lodge?.pets_fee}
                 </span>
               </div>
             </CardContent>

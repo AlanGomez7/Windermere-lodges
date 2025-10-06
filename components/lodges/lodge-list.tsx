@@ -29,7 +29,7 @@ export function LodgeList({
       </div>
       {/* grid h-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 */}
       <div className="flex flex-col justify-center items-center w-full pt-8 gap-4">
-        {lodges.map((lodge: any) => (
+        {lodges?.map((lodge: any) => (
           <LandscapeLodgeCard
             lodge={lodge}
             key={lodge.id}

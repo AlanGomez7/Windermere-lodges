@@ -40,15 +40,9 @@ export const createBooking = async (
       stripeId,
     };
 
-    console.log(userData)
-
     const response = await prisma.enquiryBooking.create({
       data: userData as Prisma.EnquiryBookingUncheckedCreateInput,
     });
-
-
-    console.log(response, ":**:**:*:*:*:*:*:*:*:*:*:")
-    // const response = {}
 
     return response;
   } catch (err) {
@@ -172,7 +166,7 @@ export const updateOrderPaymentStatus = async ({
   }
 };
 
-export const updateAvailability = async(checkIn:string, checkOut:string, lodgeId:string)=>{
+export const updateAvailability = async(checkIn:string, checkOut:string, lodgeId:string, status:boolean)=>{
   try{
     const response = prisma.calendar.updateMany({
       where: {
@@ -183,7 +177,7 @@ export const updateAvailability = async(checkIn:string, checkOut:string, lodgeId
         }
       },
       data:{
-        available:false
+        available:status
       }
     });
     

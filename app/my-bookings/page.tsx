@@ -23,7 +23,6 @@ export default async function MyBookings() {
       ) : (
         <section className="py-20 bg-white px-6">
           <div className="flex flex-col items-center gap-8">
-            
             {bookings &&
               bookings.map((r, i: number) => (
                 <BookingCard booking={r} key={i} />

@@ -25,7 +25,7 @@ export default function PirceDetails({
   const router = useRouter();
 
   const [date, setDate] = useState<DateRange | undefined>();
-  const [diff, setDiff] = useState(1)
+  const [diff, setDiff] = useState(1);
   const { searchParams, setSearchParams } = useAppContext();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -136,24 +136,34 @@ export default function PirceDetails({
           <div className="flex flex-col gap-3">
             {/* Price */}
             {diff ? (
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-bold underline">
-                  &pound;
-                  {lodge.price * diff +
-                    lodge.cleaning_fee +
-                    searchParams.guests.pets * lodge.pets_fee}
+              <div className="flex items-baseline gap-2 relative">
+                <span>
+                  <span className="text-xl font-bold underline">
+                    &pound;
+                    {lodge.price * diff +
+                      lodge.cleaning_fee +
+                      searchParams.guests.pets * lodge.pets_fee}
+                  </span>
+                  <span className="text-xs">
+                    for {diff} {diff < 1 ? "night" : "nights"}
+                  </span>
                 </span>
-                <span className="text-xs">
-                  for {diff} {diff < 1 ? "night" : "nights"}
+                <span className="text-sm mt-2 text-gray-400 absolute right-2">
+                  Min stay 3 nights & 14 nights max
                 </span>
               </div>
             ) : (
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-bold underline">
-                  &pound;
-                  {lodge.price}
+              <div className="flex items-baseline gap-2 relative">
+                <span>
+                  <span className="text-xl font-bold underline">
+                    &pound;
+                    {lodge.price}
+                  </span>
+                  <span className="text-xs"> for 1 night</span>
                 </span>
-                <span className="text-xs">for 1 night</span>
+                <span className="text-sm mt-2 text-gray-400 absolute right-2">
+                  Min stay 3 nights & 14 nights max
+                </span>
               </div>
             )}
 

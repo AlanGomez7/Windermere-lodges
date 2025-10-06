@@ -133,10 +133,10 @@ export default function PirceDetails({
 
           <hr className="my-3" />
 
-          <div className="flex flex-col gap-3">
+          d<div className="flex flex-col gap-3">
             {/* Price */}
             {diff ? (
-              <div className="flex items-baseline gap-2 relative">
+              <div className="flex flex-col md:flex-row items-baseline gap-2 justify-between">
                 <span>
                   <span className="text-xl font-bold underline">
                     &pound;
@@ -148,12 +148,12 @@ export default function PirceDetails({
                     for {diff} {diff < 1 ? "night" : "nights"}
                   </span>
                 </span>
-                <span className="text-sm mt-2 text-gray-400 absolute right-2">
+                <span className="text-sm mt-2 text-gray-400">
                   Min stay 3 nights & 14 nights max
                 </span>
               </div>
             ) : (
-              <div className="flex items-baseline gap-2 relative">
+              <div className="flex flex-col md:flex-row items-baseline gap-2 justify-between">
                 <span>
                   <span className="text-xl font-bold underline">
                     &pound;
@@ -161,7 +161,7 @@ export default function PirceDetails({
                   </span>
                   <span className="text-xs"> for 1 night</span>
                 </span>
-                <span className="text-sm mt-2 text-gray-400 absolute right-2">
+                <span className="text-sm mt-2 text-gray-400">
                   Min stay 3 nights & 14 nights max
                 </span>
               </div>
@@ -214,9 +214,6 @@ export default function PirceDetails({
             </Button>
           </div>
         )}
-        <p className="text-xs mt-2 text-gray-400">
-          Min stay 3 nights & 14 nights max
-        </p>
       </CardContent>
     </Card>
   );

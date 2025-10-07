@@ -138,7 +138,6 @@ export const getLodgeGalleryImages = async (id: string) => {
       },
     });
 
-    console.log(response);
     return response;
   } catch (err) {
     throw err;
@@ -148,10 +147,9 @@ export const getLodgeGalleryImages = async (id: string) => {
 export const checkAvailability = async (
   checkIn: string,
   checkOut: string,
-  minStay: number,
-  maxStay: number,
   guestsNo: number
 ) => {
+  
   try {
     const start = parse(checkIn, "yyyy-MM-dd", new Date());
     const end = parse(checkOut, "yyyy-MM-dd", new Date());

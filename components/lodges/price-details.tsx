@@ -7,7 +7,6 @@ import { cn, findDays } from "@/lib/utils";
 import { addDays, format, isSameDay } from "date-fns";
 import { GuestSelector } from "../booking/guest-selector";
 import { useAppContext } from "@/app/context/context";
-import { checkAvailableLodges } from "@/lib/api";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -18,6 +17,7 @@ export default function PirceDetails({
   lodge: any;
   setShowBanner: (value: boolean) => void;
 }) {
+  console.log(lodge);
   useEffect(() => {
     setSearchParams({ ...searchParams, lodge });
   }, [lodge]);
@@ -82,9 +82,9 @@ export default function PirceDetails({
                     { before: date?.from }, // disable all dates before check-in
                     {
                       after: date?.from,
-                      before: addDays(date?.from, 3),
+                      before: addDays(date?.from, lodge?.minStay),
                     },
-                    { after: addDays(date?.from, 14) }, /// disable anything after +14 days
+                    { after: addDays(date?.from, lodge?.maxStay) }, /// disable anything after +14 days
                   ]
                 : []),
             ]}
@@ -140,16 +140,15 @@ export default function PirceDetails({
                 <span>
                   <span className="text-xl font-bold underline">
                     &pound;
-                    {lodge.price * diff +
-                      lodge.cleaning_fee +
-                      searchParams.guests.pets * lodge.pets_fee}
+                    {lodge.price * diff}
                   </span>
                   <span className="text-xs">
-                    {" "}for {diff} {diff < 1 ? "night" : "nights"}
+                    {" "}
+                    for {diff} {diff <= 1 ? "night" : "nights"}
                   </span>
                 </span>
                 <span className="text-sm mt-2 text-gray-400">
-                  Min stay 3 nights & 14 nights max
+                  Min stay {lodge?.minStay} nights & 14 nights max
                 </span>
               </div>
             ) : (
@@ -162,7 +161,7 @@ export default function PirceDetails({
                   <span className="text-xs"> for 1 night</span>
                 </span>
                 <span className="text-sm mt-2 text-gray-400">
-                  Min stay 3 nights & 14 nights max
+                  Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
                 </span>
               </div>
             )}
@@ -203,15 +202,19 @@ export default function PirceDetails({
         </div>
 
         {/* Sticky action button */}
-        {availability && date?.from !== date?.to && (
-          <div className="mt-3">
-            <Button
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
-              disabled={loading}
-              onClick={handleBooking}
-            >
-              Reserve
-            </Button>
+        {diff >= lodge?.minStay && (
+          <div>
+            {availability && date?.from !== date?.to && (
+              <div className="mt-3">
+                <Button
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
+                  disabled={loading}
+                  onClick={handleBooking}
+                >
+                  Reserve
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </CardContent>

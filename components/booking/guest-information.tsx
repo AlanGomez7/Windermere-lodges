@@ -98,7 +98,7 @@ export function GuestInformation({
   });
 
   const [error, setError] = useState("");
-  const [marketing, setMarketing] = useState(false);
+  // const [marketing, setMarketing] = useState(false);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

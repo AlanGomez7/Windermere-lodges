@@ -162,8 +162,6 @@ export const fetchPropertyDetails = async (id: string) => {
 
 export const checkAvailableLodges = async (
   params: any,
-  minStay: number,
-  maxStay: number
 ) => {
   if (!params?.dates?.from || !params?.dates?.to) {
     return {
@@ -182,34 +180,33 @@ export const checkAvailableLodges = async (
       params?.guests.teens +
       params?.guests.infants +
       params?.guests.children;
-    console.log(totalGuests);
 
-    const diffTime = checkOut.getTime() - checkIn.getTime(); // milliseconds
-    const diffDays = diffTime / (1000 * 60 * 60 * 24); // convert ms → days
+    // const diffTime = checkOut.getTime() - checkIn.getTime(); // milliseconds
+    // const diffDays = diffTime / (1000 * 60 * 60 * 24); // convert ms → days
 
-    if (diffDays < minStay) {
-      return {
-        data: [],
-        included: [],
-        message:
-          "Your stay must be at least " +
-          minStay +
-          " nights. Please choose a longer stay.",
-        ok: false,
-      };
-    }
+    // if (diffDays < minStay) {
+    //   return {
+    //     data: [],
+    //     included: [],
+    //     message:
+    //       "Your stay must be at least " +
+    //       minStay +
+    //       " nights. Please choose a longer stay.",
+    //     ok: false,
+    //   };
+    // }
 
-    if (diffDays > maxStay) {
-      return {
-        data: [],
-        included: [],
-        message:
-          "Your stay cannot be longer than " +
-          maxStay +
-          " nights. Please choose a shorter stay.",
-        ok: false,
-      };
-    }
+    // if (diffDays > maxStay) {
+    //   return {
+    //     data: [],
+    //     included: [],
+    //     message:
+    //       "Your stay cannot be longer than " +
+    //       maxStay +
+    //       " nights. Please choose a shorter stay.",
+    //     ok: false,
+    //   };
+    // }
 
     if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
       return {
@@ -226,8 +223,8 @@ export const checkAvailableLodges = async (
     const response = await checkAvailability(
       checkInStr,
       checkOutStr,
-      minStay,
-      maxStay,
+      // minStay,
+      // maxStay,
       totalGuests
     );
 

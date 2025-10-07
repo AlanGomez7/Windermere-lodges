@@ -44,7 +44,7 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
 
   const handleSearch = async () => {
     setLoading(true);
-    const response = await checkAvailableLodges(searchParams, 3, 14);
+    const response = await checkAvailableLodges(searchParams);
 
     if (!response.ok) {
       setIsLodgeAvailable(false);

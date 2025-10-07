@@ -81,6 +81,10 @@ model Property {
   nickname        String
   pets            Int
   pets_fee        Int
+  checkInTime     String?                @default("3 pm")
+  checkOutTime    String?                @default("10 am")
+  maxStay         Int                    @default(1)
+  minStay         Int                    @default(1)
   bookings        Booking[]
   calendar        Calendar[]
   comments        Comment[]

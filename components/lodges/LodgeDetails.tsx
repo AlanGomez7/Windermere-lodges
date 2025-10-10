@@ -139,7 +139,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
 
             <div className="lg:hidden">
               <PirceDetails
-                // diff={diff}
                 lodge={lodge}
                 setShowBanner={setShowBanner}
               />

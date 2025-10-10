@@ -17,7 +17,7 @@ export default async function LodgeDetailsPage({
   if (!lodge) return notFound();
   return (
     <>
-      <LodgeDetails lodge={lodge} session={session} />
+      <LodgeDetails lodge={lodge} session={session}/>
       <Footer/>
     </>
   );

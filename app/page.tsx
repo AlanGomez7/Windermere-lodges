@@ -5,7 +5,6 @@ import { Amenities } from "@/components/amenities";
 import { Activities } from "@/components/activities";
 import { Testimonials } from "@/components/testimonials";
 import Footer from "@/components/footer";
-import { ChatbotButton } from "@/components/chatbot/chatbot-button";
 import { fetchProperties } from "@/lib/api";
 
 export default async function Home() {
@@ -20,7 +19,6 @@ export default async function Home() {
       <Activities />
       <Testimonials />
       <Footer />
-      {/* <ChatbotButton /> */}
     </>
   );
 }

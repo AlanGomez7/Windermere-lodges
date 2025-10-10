@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* slick-carousel CSS */
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -12,8 +16,26 @@ body {
   }
 }
 
-*{
-    -ms-overflow-style: none;
+.day-with-tooltip {
+  position: relative;
+}
+.day-with-tooltip:hover::after {
+  content: "Special info!";
+  position: absolute;
+  left: 50%;
+  top: -26px;
+  transform: translateX(-50%);
+  background: #444;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-size: 13px;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+* {
+  -ms-overflow-style: none;
 }
 /* ::-webkit-scrollbar {
     display: none;
@@ -98,7 +120,8 @@ body {
   height: 48px;
   animation: spin 1s linear infinite;
 }
-.loader:after, .loader:before {
+.loader:after,
+.loader:before {
   content: "";
   width: 24px;
   height: 24px;
@@ -124,7 +147,6 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-    
 
 @layer base {
   * {

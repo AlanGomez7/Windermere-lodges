@@ -115,12 +115,12 @@ const Footer = async() => {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-center items-center">
             <p className="text-gray-400 text-sm">
               &copy; {new Date().getFullYear()} Windermere Lodges. All rights
               reserved.
             </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
+            {/* <div className="flex space-x-6 mt-4 md:mt-0">
               <Link
                 href="/privacy-policy"
                 className="text-gray-400 hover:text-emerald-400 text-sm"
@@ -139,7 +139,7 @@ const Footer = async() => {
               >
                 Cookie Policy
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

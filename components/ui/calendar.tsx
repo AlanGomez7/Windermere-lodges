@@ -5,12 +5,6 @@ import { DayPicker, DayProps, UI } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
   checkIn?: Date;
@@ -24,26 +18,11 @@ function Calendar({
   ...props
 }: CalendarProps) {
   return (
-    <TooltipProvider>
       <DayPicker
         showOutsideDays={showOutsideDays}
         className={cn(className)}
         defaultMonth={checkIn}
-        // ✅ Add Tooltip wrapper around each day cell
-        // components={{
-        //   Day: ({ day, modifiers, ...dayProps }:DayProps) => (
-        //     <Tooltip>
-        //       <TooltipTrigger asChild>
-        //         {/* <button {...dayProps} className={dayProps.className}>
-        //           {day.date.getDate()}
-        //         </button> */}
-        //       </TooltipTrigger>
-        //       <TooltipContent side="top" className="text-sm">
-        //         hello
-        //       </TooltipContent>
-        //     </Tooltip>
-        //   ),
-        // }}
+
         classNames={{
           months: cn("relative", userClassNames?.months),
           month: cn("space-y-4", userClassNames?.month),
@@ -102,14 +81,13 @@ function Calendar({
             userClassNames?.disabled
           ),
           range_middle: cn(
-            "aria-selected:bg-accent aria-selected:text-accent-foreground",
+            "aria-selected:bg-[#007752] aria-selected:text-white",
             userClassNames?.range_middle
           ),
           hidden: cn("invisible", userClassNames?.hidden),
         }}
         {...props}
       />
-    </TooltipProvider>
   );
 }
 

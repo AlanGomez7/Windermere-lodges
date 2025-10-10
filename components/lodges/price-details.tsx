@@ -17,7 +17,6 @@ export default function PirceDetails({
   lodge: any;
   setShowBanner: (value: boolean) => void;
 }) {
-  console.log(lodge);
   useEffect(() => {
     setSearchParams({ ...searchParams, lodge });
   }, [lodge]);
@@ -39,17 +38,8 @@ export default function PirceDetails({
 
   useEffect(() => {
     const days = findDays(date?.from, date?.to);
-    console.log(days);
     setDiff(days);
   }, [date]);
-
-  const disableDates = lodge.calendar
-    .filter((a: { date: string; available: boolean }) => !a.available)
-    .map((a: { date: string; available: boolean }) => {
-      if (!a.available) {
-        return new Date(a.date);
-      }
-    });
 
   const params = useSearchParams();
   const value = params.get("available");
@@ -60,6 +50,70 @@ export default function PirceDetails({
     setAvailability(isAvailable);
   }, [isAvailable]);
 
+  function toLocalDate(dateString: any) {
+    const [y, m, d] = dateString.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  // Use local-safe keys
+  const dataMap = Object.fromEntries(
+    lodge.calendar.map((d: any) => [
+      format(toLocalDate(d.date), "yyyy-MM-dd"),
+      d,
+    ])
+  );
+
+  const closedForArrival = (day: any) => {
+    const key = format(day, "yyyy-MM-dd");
+    const data = dataMap[key];
+    return !!data?.closed_for_arrival;
+  };
+
+  const closedForDeparture = (day: Date) => {
+    const key = format(day, "yyyy-MM-dd");
+    const data = dataMap[key];
+
+    // Disable if it's closed for departure
+    if (data?.closed_for_departure) {
+      return true;
+    }
+
+    // Disable if the day is less than 3 days after the check-in date
+    if (date?.from) {
+      const diff = findDays(day, date.from);
+      if (diff < lodge?.minStay - 1) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+  // Define modifiers
+  const modifiers = {
+    closedArrival: (day: Date) => closedForArrival(day),
+
+    closedDeparture: (day: Date) => closedForDeparture(day),
+  };
+  // Disabled days logic
+  function getDisabled(day: Date) {
+    const key = format(day, "yyyy-MM-dd");
+    const data = dataMap[key];
+
+    if (!data?.available) return true;
+    if (date?.from && !date?.to && day < date.from) return true;
+
+    return false;
+  }
+
+  // Style classes
+  const modifiersClassNames = {
+    unavailable: "text-gray-400 line-through cursor-not-allowed",
+    closedArrival: date?.from
+      ? "text-black aria-selected:bg-[#007752] aria-selected:text-white" // clickable after check-in
+      : "text-gray-300 aria-selected:bg-emerald-100 aria-selected:text-white", // gray + unclickable before check-in
+    // closedDeparture: "text-gray-500",
+  };
+
   return (
     <Card className="w-full lg:w-96 rounded-md transition-all sticky top-16 self-start">
       <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
@@ -67,59 +121,42 @@ export default function PirceDetails({
 
         <div className="flex-1">
           <Calendar
+            className="mb-3"
             mode="range"
             selected={date}
             defaultMonth={
               searchParams.dates ? searchParams?.dates?.from : date?.from
             }
-            className="mb-3"
+            modifiers={modifiers}
+            modifiersClassNames={modifiersClassNames}
             showOutsideDays={false}
+            disabled={
+              getDisabled
+            }
             fixedWeeks
-            disabled={[
-              ...disableDates,
-              ...(date?.from
-                ? [
-                    { before: date?.from }, // disable all dates before check-in
-                    {
-                      after: date?.from,
-                      before: addDays(date?.from, lodge?.minStay),
-                    },
-                    { after: addDays(date?.from, lodge?.maxStay) }, /// disable anything after +14 days
-                  ]
-                : []),
-            ]}
+            excludeDisabled
+            min={lodge?.minStay}
+            max={lodge?.maxStay}
+            // Use only onSelect for state updates
+            onDayMouseEnter={(day: Date) => {
+              console.log(day);
+            }}
             onSelect={(dates) => {
-              if (!dates?.from || !dates?.to) return;
-
-              // Collect all unavailable dates as yyyy-MM-dd strings
-              const unavailableDates = lodge.calendar
-                .filter((d: any) => !d.available)
-                .map((d: any) => d.date);
-
-              // Helper to iterate date range
-              function* daysBetween(start: Date, end: Date) {
-                let d = new Date(start);
-                while (d <= end) {
-                  yield format(d, "yyyy-MM-dd");
-                  d.setDate(d.getDate() + 1);
-                }
+              // When selecting check-in
+              if (!date?.from && dates?.from && closedForArrival(dates.from)) {
+                toast.error("Cannot check in on this day");
+                setDate(undefined);
+                return;
               }
 
-              // Check for any unavailable date in selected range
-              for (let d of daysBetween(dates.from, dates.to)) {
-                if (unavailableDates.includes(d)) {
-                  toast.error("Selected range includes unavailable dates.");
-                  setDate(undefined);
-                  return; // Reject selection
-                }
-              }
 
               setDate(dates);
               setAvailability(true);
               setShowBanner(false);
-              // setSearchParams({ ...searchParams, dates });
+              setSearchParams({ ...searchParams, dates });
             }}
           />
+
           <div className="relative">
             <p
               className="text-sm underline absolute right-0 bottom-3 cursor-pointer"
@@ -221,3 +258,26 @@ export default function PirceDetails({
     </Card>
   );
 }
+
+// onDayClick={(day, modifiers) => {
+//             if (date?.from) {
+//               const isClosed = isClosedForArrival(day);
+//               if (isClosed) {
+//                 toast.error("Cannot check in on this day");
+//                 setDate(undefined); // clear selection
+//                 return;
+//               } else {
+//                 setDate({ from: date.from, to: day });
+//                 console.log(date)
+//                 setAvailability(true);
+//                 setShowBanner(false);
+//                 setSearchParams({
+//                   ...searchParams,
+//                   dates: { from: date.from, to: day },
+//                 });
+//                 return;
+//               }
+
+//               // Optional: auto-set the range if 'from' exists and day is valid
+//             }
+//           }}

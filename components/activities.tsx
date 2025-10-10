@@ -7,9 +7,12 @@ import sightseeing from "@/public/activities/sightseeing.jpg";
 import kayaking from "@/public/activities/kayaking.jpg";
 import trekking from "@/public/activities/trekking.jpg";
 import discoverWCB from "@/public/discoverwcb.jpg";
+import WCBMap from "@/public/white_bay_map.jpg";
 import { useState } from "react";
 import ActivitiesList from "./activities/activities";
 import { adventures } from "./activities/data";
+import { Button } from "./ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const activities = [
   {
@@ -38,9 +41,18 @@ const activities = [
     description:
       "From gentle lakeside strolls to thrilling climbs, the Lake District offers unforgettable family walks for all ages. Enjoy pushchair-friendly paths around Buttermere and Tarn Hows, scenic climbs like Catbells and Orrest Head, or adventurous treks up Helvellyn and Scafell Pike",
   },
-]
+];
 
 export const Activities = () => {
+  const [current, setCurrent] = useState(0);
+  const sliderImages = [discoverWCB, WCBMap];
+
+  const nextSlide = () =>
+    setCurrent((prev) => (prev + 1) % sliderImages.length);
+  const prevSlide = () =>
+    setCurrent(
+      (prev) => (prev - 1 + sliderImages.length) % sliderImages.length
+    );
   return (
     <section className="py-20">
       <div className="container mx-auto px-4 pb-20 flex flex-col md:flex-row items-start gap-8">
@@ -66,13 +78,32 @@ export const Activities = () => {
 
         {/* Image panel */}
         <div className="relative w-full md:w-1/2 aspect-[4/3] md:aspect-[3/2] lg:aspect-[16/10]">
-          <Image
-            src={discoverWCB || "/placeholder.svg"}
-            alt={"discover white cross bay"}
-            fill
-            className="object-cover rounded-lg"
-            priority
-          />
+          {sliderImages.map((img, indx) => (
+            <Image
+            key={indx}
+              src={img || "/placeholder.svg"}
+              alt={"discover white cross bay"}
+              fill
+              className={`object-cover rounded-lg transition-opacity duration-700  ${
+                indx === current ? "opacity-100 z-0" : "opacity-0 z-0"
+              }`}
+              priority
+            />
+          ))}
+          <button
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 z-20"
+            onClick={prevSlide}
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-7 h-7" />
+          </button>
+          <button
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 z-20"
+            onClick={nextSlide}
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-7 h-7" />
+          </button>
         </div>
       </div>
       <div className="container mx-auto px-4">
@@ -89,7 +120,7 @@ export const Activities = () => {
         {/* <Link href={"/activities"}> */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {adventures.map((activity, index) => (
-            <ActivitiesList activity={activity} key={index}/>
+            <ActivitiesList activity={activity} key={index} />
           ))}
         </div>
         {/* </Link> */}

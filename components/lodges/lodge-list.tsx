@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use } from "react";
 import LandscapeLodgeCard from "../cards/landscape-lodge-card";
 
 export function LodgeList({
@@ -12,7 +12,6 @@ export function LodgeList({
   available: string[];
   showBadge: boolean
 }) {
-  console.log(available);
   const lodges: any = use(properties);
 
   if (lodges.length === 0) {
@@ -36,7 +35,7 @@ export function LodgeList({
             needsButton={true}
             available={available.includes(lodge?.refNo) ?? false}
             showBadge={showBadge}
-          />
+            />
         ))}
       </div>
     </div>

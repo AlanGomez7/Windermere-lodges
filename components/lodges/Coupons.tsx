@@ -9,7 +9,7 @@ export default function Coupons() {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const { setAppliedCoupon, searchParams } = useAppContext();
+  const { setAppliedCoupon, searchParams, appliedCoupon } = useAppContext();
 
   type CouponType = {
     id: string;
@@ -24,11 +24,11 @@ export default function Coupons() {
 
   const handleSubmit = async () => {
     setLoading(true);
-    setError(false)
-    setSuccess(false)
+    setError(false);
+    setSuccess(false);
     try {
       const response: CouponType = await verifyCoupon(coupon);
-      console.log(response)
+      console.log(response);
       if (response) {
         setAppliedCoupon(response);
         setSuccess(true);
@@ -55,15 +55,15 @@ export default function Coupons() {
         </p>
       )}
 
-      {!searchParams?.dates?.from &&
-        !searchParams?.dates?.to && (
-          <p className="text-yellow-500 text-sm py-3">
-            Please select your trip days to apply coupon!
-          </p>
-        )}
+      {!searchParams?.dates?.from && !searchParams?.dates?.to && !appliedCoupon && (
+        <p className="text-yellow-500 text-sm py-3">
+          Please select your trip days to apply coupon!
+        </p>
+      )}
 
       <div className="flex gap-5 ">
         <input
+          value={appliedCoupon?.code || coupon || ""}
           className="bg-secondary rounded-md focus:outline-emerald-600 w-3/4 lg:w-2/4 px-3"
           onChange={(e) => setCoupon(e.target.value)}
         />
@@ -71,7 +71,10 @@ export default function Coupons() {
         <Button
           className="bg-emerald-600 hover:bg-emerald-500"
           onClick={handleSubmit}
-          disabled={!searchParams?.dates?.from && !searchParams?.dates?.to}
+          disabled={
+            (!searchParams?.dates?.from && !searchParams?.dates?.to) ||
+            appliedCoupon?.code
+          }
         >
           Apply code
         </Button>

@@ -17,7 +17,6 @@ export default function PirceDetails({
   lodge: any;
   setShowBanner: (value: boolean) => void;
 }) {
-
   useEffect(() => {
     setSearchParams({ ...searchParams, lodge });
   }, [lodge]);
@@ -26,8 +25,13 @@ export default function PirceDetails({
 
   const [date, setDate] = useState<DateRange | undefined>();
   const [diff, setDiff] = useState(1);
-  const { searchParams, setSearchParams, appliedCoupon, availability, setAvailability } = useAppContext();
-  console.log(availability);
+  const {
+    searchParams,
+    setSearchParams,
+    appliedCoupon,
+    availability,
+    setAvailability,
+  } = useAppContext();
   const [price, setPrice] = useState(lodge.price);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,15 +52,18 @@ export default function PirceDetails({
   const isAvailable = value === "true";
 
   useEffect(() => {
-    setDate(searchParams.dates);
-    setAvailability(isAvailable);
+    if (searchParams?.dates) setDate(searchParams.dates);
   }, [isAvailable]);
 
   useEffect(() => {
     if (appliedCoupon) {
-      setPrice(findDiscountAmount(appliedCoupon, lodge.price, diff));
+      setPrice(
+        diff > 0
+          ? findDiscountAmount(appliedCoupon, lodge.price, diff)
+          : lodge?.price
+      );
     } else {
-      setPrice(diff > 0 ? lodge.price * diff : lodge.price);
+      setPrice(diff > 0 ? lodge?.price * diff : lodge?.price);
     }
   }, [diff, appliedCoupon]);
 
@@ -127,10 +134,8 @@ export default function PirceDetails({
   return (
     <Card className="w-full lg:w-96 rounded-md transition-all sticky top-16 self-start">
       <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
-
         <div className="flex-1">
           <Calendar
-
             className="mb-3"
             mode="range"
             selected={date}
@@ -162,7 +167,6 @@ export default function PirceDetails({
               setShowBanner(false);
               setSearchParams({ ...searchParams, dates });
             }}
-
           />
 
           <div className="relative">
@@ -251,7 +255,8 @@ export default function PirceDetails({
         {/* Sticky action button */}
         {diff >= lodge?.minStay && (
           <div>
-            {availability && date?.from !== date?.to && (
+            {((date?.from && !getDisabled(date.from)) ||
+              (date?.to && !getDisabled(date.to))) && (
               <div className="mt-3">
                 <Button
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
@@ -268,26 +273,3 @@ export default function PirceDetails({
     </Card>
   );
 }
-
-// onDayClick={(day, modifiers) => {
-//             if (date?.from) {
-//               const isClosed = isClosedForArrival(day);
-//               if (isClosed) {
-//                 toast.error("Cannot check in on this day");
-//                 setDate(undefined); // clear selection
-//                 return;
-//               } else {
-//                 setDate({ from: date.from, to: day });
-//                 console.log(date)
-//                 setAvailability(true);
-//                 setShowBanner(false);
-//                 setSearchParams({
-//                   ...searchParams,
-//                   dates: { from: date.from, to: day },
-//                 });
-//                 return;
-//               }
-
-//               // Optional: auto-set the range if 'from' exists and day is valid
-//             }
-//           }}

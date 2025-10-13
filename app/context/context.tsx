@@ -50,7 +50,7 @@ export function AppWrapper({ children }: { children: ReactNode }) {
   const [orderDetails, setOrderDetails] = useState<any>(undefined);
   const [isLodgeAvailable, setIsLodgeAvailable] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState<any>(undefined);
-  
+  const [appliedCoupon, setAppliedCoupon] = useState<any>()
   const [searchParams, setSearchParams] = useState<SearchParams>({
     dates: undefined,
     guests: { adults: 2, children: 0, pets:0, infants:0, teens:0 },
@@ -81,6 +81,8 @@ export function AppWrapper({ children }: { children: ReactNode }) {
         setOrderDetails,
         orderDetails,
         properties,
+        appliedCoupon,
+        setAppliedCoupon,
         setProperties,
       }}
     >

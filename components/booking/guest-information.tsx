@@ -15,11 +15,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useAppContext } from "@/app/context/context";
 import Image from "next/image";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
+import { findDiscountAmount } from "@/lib/utils";
 
 interface ContactInfo {
   firstName: string;
@@ -83,7 +83,7 @@ export function GuestInformation({
     setNights(nights);
   }, []);
 
-  const { setOrderDetails } = useAppContext();
+  const { setOrderDetails, appliedCoupon } = useAppContext();
 
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
     firstName: (data?.user?.name && data?.user?.name.split(" ")[0]) || "",
@@ -415,11 +415,10 @@ export function GuestInformation({
                   <span>Pet fee</span>
                   <span className="font-bold">
                     {" "}
-                    &pound;{bookingDetails?.lodge.pets_fee}
+                    &pound;{bookingDetails?.lodge.pets_fee * bookingDetails?.guests.pets}
                   </span>
                 </div>
               )}
-
               <div className="flex justify-between text-sm">
                 <span>Cleaning fee</span>
                 <span className="font-bold">
@@ -428,18 +427,43 @@ export function GuestInformation({
                 </span>
               </div>
 
+              {appliedCoupon && nights && (
+                <div className="flex justify-between text-sm">
+                  <span>Discount</span>
+                  <span>
+                    - &pound;
+                    {bookingDetails.lodge.price * nights -
+                      findDiscountAmount(
+                        appliedCoupon,
+                        bookingDetails.lodge.price,
+                        nights ?? 1
+                      )}
+                  </span>
+                </div>
+              )}
+
               <hr className="" />
 
               <div className="flex text-[#007752] justify-between text-md lg:text-xl">
                 <span>Total Payment</span>
-                <span className="font-bold">
-                  &pound;
-                  {nights &&
-                    bookingDetails?.lodge?.price * nights +
-                      bookingDetails?.lodge?.cleaning_fee +
-                      bookingDetails?.guests.pets *
-                        bookingDetails?.lodge?.pets_fee}
-                </span>
+                {nights && (
+                  <span className="font-bold">
+                    &pound;
+                    {appliedCoupon
+                      ? findDiscountAmount(
+                          appliedCoupon,
+                          bookingDetails.lodge.price,
+                          nights ?? 1
+                        ) +
+                        bookingDetails?.lodge?.cleaning_fee +
+                        bookingDetails?.guests.pets *
+                          bookingDetails?.lodge?.pets_fee
+                      : bookingDetails?.lodge?.price * nights +
+                        bookingDetails?.lodge?.cleaning_fee +
+                        bookingDetails?.guests.pets *
+                          bookingDetails?.lodge?.pets_fee}
+                  </span>
+                )}
               </div>
             </CardContent>
           </Card>

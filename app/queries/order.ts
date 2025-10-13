@@ -4,15 +4,27 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
 
+type CouponType = {
+  id: string;
+  description: string;
+  code: string;
+  discountType: string;
+  discountValue: number;
+  maxUsesPerUser: number;
+  expiresAt: Date | null;
+  isActive: boolean;
+} | null;
+
 export const createBooking = async (
-  orderDetails:any,
-  bookingDetails:any,
-  result:any,
-  stripeId:string,
-  amount:number) => {
+  orderDetails: any,
+  bookingDetails: any,
+  result: any,
+  stripeId: string,
+  amount: number
+) => {
   try {
     const session = await auth();
-    
+
     const checkIn = new Date(bookingDetails?.dates?.from)
       .toISOString()
       .split("T")[0];
@@ -22,7 +34,7 @@ export const createBooking = async (
 
     const userData = {
       userId: session?.user?.id ?? `guest_${randomUUID()}`,
-      enquiryId: result ? result.data.id : null,
+      enquiryId: result ? result.data.id : randomUUID(),
       firstName: orderDetails?.firstName,
       lastName: orderDetails?.lastName,
       propertyId: bookingDetails?.lodge?.id,
@@ -38,6 +50,8 @@ export const createBooking = async (
       message: orderDetails?.specialRequests,
       amount,
       stripeId,
+      reason:'',
+      timestamp: new Date()
     };
 
     const response = await prisma.enquiryBooking.create({
@@ -56,7 +70,7 @@ export const getUserBookings = async (id: string | null | undefined) => {
       const bookings = await prisma.enquiryBooking.findMany({
         where: {
           userId: id,
-          payment: "SUCCESSFUL"
+          payment: "SUCCESSFUL",
         },
         include: {
           property: true,
@@ -71,26 +85,21 @@ export const getUserBookings = async (id: string | null | undefined) => {
   }
 };
 
-
-
-export const cancelBooking = async (
-  orderId: string,
-) => {
+export const cancelBooking = async (orderId: string) => {
   try {
-    
-    if(!orderId){
-      throw new Error("Invalid id")
+    if (!orderId) {
+      throw new Error("Invalid id");
     }
     const response = await prisma.enquiryBooking.update({
-      where:{
-        id: orderId
+      where: {
+        id: orderId,
       },
       data: {
-        status: "CANCELLED"
+        status: "CANCELLED",
       },
     });
 
-    return response
+    return response;
   } catch (err) {
     throw err;
   }
@@ -100,7 +109,7 @@ export const getPropertiesWithId = async (ids: string[]) => {
   try {
     const response = await prisma.property.findMany({
       where: {
-        status: 'active',
+        status: "active",
         refNo: {
           in: ids,
         },
@@ -157,7 +166,7 @@ export const updateOrderPaymentStatus = async ({
       },
       data: {
         payment: status,
-        enquiryId: result ? result.data.id : null,
+        enquiryId: result && result.data.id,
       },
     });
     return response;
@@ -166,26 +175,31 @@ export const updateOrderPaymentStatus = async ({
   }
 };
 
-export const updateAvailability = async(checkIn:string, checkOut:string, lodgeId:string, status:boolean)=>{
-  try{
+export const updateAvailability = async (
+  checkIn: string,
+  checkOut: string,
+  lodgeId: string,
+  status: boolean
+) => {
+  try {
     const response = prisma.calendar.updateMany({
       where: {
         refNo: lodgeId,
-        date:{
+        date: {
           gte: checkIn,
-          lte: checkOut
-        }
+          lte: checkOut,
+        },
       },
-      data:{
-        available:status
-      }
+      data: {
+        available: status,
+      },
     });
-    
-    return response
-  }catch(err){
+
+    return response;
+  } catch (err) {
     throw err;
   }
-}
+};
 
 export const getRatingInfo = async (lodgeId: string) => {
   try {
@@ -193,7 +207,7 @@ export const getRatingInfo = async (lodgeId: string) => {
       by: ["rating"],
       where: {
         propertyId: lodgeId,
-        status: 'APPROVED'
+        status: "APPROVED",
       },
       _count: {
         rating: true,
@@ -201,6 +215,27 @@ export const getRatingInfo = async (lodgeId: string) => {
       _sum: {
         rating: true,
       },
+    });
+
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const verifyCoupon = async (code: string): Promise<CouponType> => {
+  try {
+    if (!code) {
+      throw new Error("Invalid coupon");
+    }
+
+    const response = await prisma.coupon.findUnique({
+      where: {
+        code: code,
+      },
+      include: {
+        uses:true
+      }
     });
 
     return response;

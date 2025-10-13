@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { Card, CardContent } from "../ui/card";
 import { DateRange } from "react-day-picker";
-import { cn, findDays } from "@/lib/utils";
+import { cn, findDays, findDiscountAmount } from "@/lib/utils";
 import { addDays, format, isSameDay } from "date-fns";
 import { GuestSelector } from "../booking/guest-selector";
 import { useAppContext } from "@/app/context/context";
@@ -25,7 +25,8 @@ export default function PirceDetails({
 
   const [date, setDate] = useState<DateRange | undefined>();
   const [diff, setDiff] = useState(1);
-  const { searchParams, setSearchParams } = useAppContext();
+  const { searchParams, setSearchParams, appliedCoupon } = useAppContext();
+  const [price, setPrice] = useState(lodge.price);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [availability, setAvailability] = useState(false);
@@ -49,6 +50,14 @@ export default function PirceDetails({
     setDate(searchParams.dates);
     setAvailability(isAvailable);
   }, [isAvailable]);
+
+  useEffect(() => {
+    if (appliedCoupon) {
+      setPrice(findDiscountAmount(appliedCoupon, lodge.price, diff));
+    } else {
+      setPrice(diff > 0 ? lodge.price * diff : lodge.price);
+    }
+  }, [diff, appliedCoupon]);
 
   function toLocalDate(dateString: any) {
     const [y, m, d] = dateString.split("-").map(Number);
@@ -105,6 +114,7 @@ export default function PirceDetails({
     return false;
   }
 
+  console.log(date?.from, date?.to, diff, availability)
   // Style classes
   const modifiersClassNames = {
     unavailable: "text-gray-400 line-through cursor-not-allowed",
@@ -117,10 +127,10 @@ export default function PirceDetails({
   return (
     <Card className="w-full lg:w-96 rounded-md transition-all sticky top-16 self-start">
       <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
-        {/* Calendar scrolls if too tall */}
 
         <div className="flex-1">
           <Calendar
+
             className="mb-3"
             mode="range"
             selected={date}
@@ -130,9 +140,7 @@ export default function PirceDetails({
             modifiers={modifiers}
             modifiersClassNames={modifiersClassNames}
             showOutsideDays={false}
-            disabled={
-              getDisabled
-            }
+            disabled={getDisabled}
             fixedWeeks
             excludeDisabled
             min={lodge?.minStay}
@@ -149,18 +157,19 @@ export default function PirceDetails({
                 return;
               }
 
-
               setDate(dates);
               setAvailability(true);
               setShowBanner(false);
               setSearchParams({ ...searchParams, dates });
             }}
+
           />
 
           <div className="relative">
             <p
               className="text-sm underline absolute right-0 bottom-3 cursor-pointer"
               onClick={() => {
+                setSearchParams({ ...searchParams, dates: undefined });
                 setDate(undefined);
               }}
             >
@@ -172,12 +181,13 @@ export default function PirceDetails({
 
           <div className="flex flex-col gap-3">
             {/* Price */}
+
             {diff ? (
               <div className="flex flex-col md:flex-row items-baseline gap-2 justify-between">
                 <span>
                   <span className="text-xl font-bold underline">
                     &pound;
-                    {lodge.price * diff}
+                    {price}
                   </span>
                   <span className="text-xs">
                     {" "}
@@ -193,7 +203,7 @@ export default function PirceDetails({
                 <span>
                   <span className="text-xl font-bold underline">
                     &pound;
-                    {lodge.price}
+                    {price}
                   </span>
                   <span className="text-xs"> for 1 night</span>
                 </span>

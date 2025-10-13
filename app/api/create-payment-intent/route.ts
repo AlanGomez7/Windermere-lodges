@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getLodgeDetails } from "@/app/queries/properties";
 import { findDays } from "@/lib/utils";
-import { createBooking } from "@/app/queries/order";
+import { createBooking, verifyCoupon } from "@/app/queries/order";
 
 type booking = {
   id: string;
@@ -19,12 +19,14 @@ type booking = {
 
 export async function POST(req: Request) {
   try {
-    const { bookingDetails, orderDetails } = await req.json();
+    const { bookingDetails, orderDetails, appliedCoupon } = await req.json();
     const { guests, lodge, dates } = bookingDetails;
 
     if (!guests || !lodge || !dates) {
       return NextResponse.json({ error: "Invalid body" }, { status: 400 });
     }
+
+    const coupon = await verifyCoupon(appliedCoupon.code)
 
     const nights = findDays(dates.from, dates.to);
 
@@ -35,7 +37,7 @@ export async function POST(req: Request) {
     const amount =
       property?.price * nights +
       guests.pets * property.pets_fee +
-      property?.cleaning_fee;
+      property?.cleaning_fee; 
 
     // Validate amount
     if (!amount || amount <= 0) {
@@ -49,12 +51,6 @@ export async function POST(req: Request) {
         enabled: true,
       },
     });
-
-    // console.log(orderDetails);
-    // console.log("________________________________________________________")
-    // console.log(bookingDetails);
-
-
 
     await createBooking(
       orderDetails,

@@ -178,3 +178,18 @@ export function getAmenityIcon(name: string) {
   const key = name.toLowerCase();// normalize string
   return amenityIcons[key] || amenityIcons["info"]; // fallback to default if missing
 }
+
+export function findDiscountAmount(appliedCoupon:any, price:number, diff:number){
+
+      const total = price * diff;
+
+        if (appliedCoupon.discountType === "FIXED") {
+        return(total - appliedCoupon.discountValue);
+      } else {
+        const percentValue = Math.ceil(
+          (total * appliedCoupon.discountValue) / 100
+        );
+
+        return(total - percentValue);
+      }
+}

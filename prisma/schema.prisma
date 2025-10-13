@@ -57,39 +57,39 @@ model PropertyGalleryImage {
   url        String
   tag        String
   uploadedAt DateTime @default(now())
-  property   Property @relation(fields: [propertyId], references: [id])
+  Property   Property @relation(fields: [propertyId], references: [id])
 }
 
 model Property {
-  id              String                 @id @default(uuid())
-  name            String
-  description     String
-  address         String
-  refNo           String                 @unique
-  longitude       Float
-  latitude        Float
-  features        String[]               @default([])
-  price           Float                  @default(0)
-  status          String                 @default("active")
-  images          String[]               @default([])
-  createdAt       DateTime               @default(now())
-  updatedAt       DateTime               @updatedAt
-  guests          Int
-  bathrooms       String
-  bedrooms        String
-  cleaning_fee    Int
-  nickname        String
-  pets            Int
-  pets_fee        Int
-  checkInTime     String?                @default("3 pm")
-  checkOutTime    String?                @default("10 am")
-  maxStay         Int                    @default(1)
-  minStay         Int                    @default(1)
-  bookings        Booking[]
-  calendar        Calendar[]
-  comments        Comment[]
-  enquiryBookings EnquiryBooking[]
-  galleryImages   PropertyGalleryImage[]
+  id                   String                 @id @default(uuid())
+  name                 String
+  description          String
+  address              String
+  refNo                String                 @unique
+  longitude            Float
+  latitude             Float
+  features             String[]               @default([])
+  price                Float                  @default(0)
+  status               String                 @default("active")
+  images               String[]               @default([])
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  guests               Int
+  bathrooms            String
+  bedrooms             String
+  cleaning_fee         Int
+  nickname             String
+  pets                 Int
+  pets_fee             Int
+  checkInTime          String?                @default("3 pm")
+  checkOutTime         String?                @default("10 am")
+  maxStay              Int                    @default(1)
+  minStay              Int                    @default(1)
+  bookings             Booking[]
+  calendar             Calendar[]
+  comments             Comment[]
+  enquiryBookings      EnquiryBooking[]
+  PropertyGalleryImage PropertyGalleryImage[]
 }
 
 model Booking {
@@ -167,7 +167,7 @@ model EnquiryBooking {
   message       String?
   status        EnquiryBookingStatus @default(PENDING)
   createdAt     DateTime             @default(now())
-  enquiryId     String?
+  enquiryId     String               @unique
   pets          Int?                 @default(0)
   userId        String
   payment       PaymentStatus        @default(PENDING)
@@ -177,6 +177,8 @@ model EnquiryBooking {
   infant        Int?                 @default(0)
   teens         Int?                 @default(0)
   channel       String?
+  reason        String
+  timestamp     DateTime?
   property      Property             @relation(fields: [propertyId], references: [id])
 }
 
@@ -191,12 +193,37 @@ model Calendar {
   maximum_available_nights Int
   closed_for_arrival       Boolean
   closed_for_departure     Boolean
-  calendar                 Property @relation(fields: [refNo], references: [refNo])
+  Property                 Property @relation(fields: [refNo], references: [refNo])
+}
+
+model Coupon {
+  id             String      @id @default(uuid())
+  code           String      @unique
+  discountType   CouponType
+  discountValue  Float
+  description    String
+  maxUsesPerUser Int         @default(1)
+  expiresAt      DateTime?
+  isActive       Boolean     @default(true)
+  uses           CouponUse[]
+}
+
+model CouponUse {
+  id       String   @id @default(uuid())
+  couponId String
+  userId   String
+  usedAt   DateTime @default(now())
+  coupon   Coupon   @relation(fields: [couponId], references: [id])
 }
 
 enum EnquiryStatus {
   PENDING
   REPLIED
+}
+
+enum CouponType {
+  DISCOUNT
+  FIXED
 }
 
 enum PaymentType {

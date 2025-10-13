@@ -13,7 +13,7 @@ import Image from "next/image";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./checkout";
-import { findDays } from "@/lib/utils";
+import { findDays, findDiscountAmount } from "@/lib/utils";
 import { useAppContext } from "@/app/context/context";
 
 interface ContactInfo {
@@ -50,23 +50,30 @@ export function StripePayment({
   isActive,
   setCurrentStep,
 }: GuestInformationProps) {
-  const { orderDetails, searchParams } = useAppContext();
-
+  const { orderDetails, searchParams, appliedCoupon } = useAppContext();
 
   const nights = findDays(searchParams?.dates?.from, searchParams?.dates?.to);
 
   let amount = 1;
 
   if (nights) {
-    amount =
-      bookingDetails.lodge.price * nights +
-      bookingDetails?.lodge.cleaning_fee +
-      bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee;
+    if (appliedCoupon) {
+      amount =
+        findDiscountAmount(appliedCoupon, bookingDetails.lodge.price, nights) +
+        (bookingDetails?.lodge.cleaning_fee +
+          bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
+    } else {
+      amount =
+        bookingDetails.lodge.price * nights +
+        bookingDetails?.lodge.cleaning_fee +
+        bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee;
+    }
   }
 
   if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
     throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
   }
+
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
   if (!orderDetails) {
@@ -121,17 +128,34 @@ export function StripePayment({
                     &pound;{nights && bookingDetails.lodge.price * nights}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>{bookingDetails.guests.pets} Pets</span>
-                  <span>
-                    &pound;
-                    {bookingDetails.guests.pets * bookingDetails.lodge.pets_fee}
-                  </span>
-                </div>
+                {bookingDetails.guests.pets > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>{bookingDetails.guests.pets} Pets</span>
+                    <span>
+                      &pound;
+                      {bookingDetails.guests.pets *
+                        bookingDetails.lodge.pets_fee}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span>Cleaning fee</span>
-                  <span> &pound;{bookingDetails?.lodge.cleaning_fee}</span>
+                  <span> &pound; {bookingDetails?.lodge?.cleaning_fee}</span>
                 </div>
+
+                <div className="flex justify-between text-sm">
+                  <span>Discount</span>
+                  <span>
+                    {" "}
+                    - &pound;{" "}
+                    {bookingDetails.lodge.price * nights +
+                      bookingDetails?.lodge.cleaning_fee +
+                      bookingDetails?.guests.pets *
+                        bookingDetails.lodge.pets_fee -
+                      amount}
+                  </span>
+                </div>
+
                 <div className="flex justify-between text-md lg:text-lg mt-2">
                   <span>Total Payment</span>
                   <span className="font-bold">

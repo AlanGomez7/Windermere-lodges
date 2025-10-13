@@ -34,7 +34,10 @@ export default function BookingCard({ booking }: any) {
         toast.error("Invalid id");
       }
 
-      const response = await cancelUserBooking(currentBooking?.id, currentBooking?.enquiryId);
+      const response = await cancelUserBooking(
+        currentBooking?.id,
+        currentBooking?.enquiryId
+      );
 
       if (response) {
         toast.success("Booking cancelled successfully!");
@@ -117,6 +120,8 @@ export default function BookingCard({ booking }: any) {
                 &pound;{nights && currentBooking.property.price * nights}
               </span>
             </div>
+
+
 
             <div className="flex justify-between text-sm">
               <span>Cleaning fee</span>

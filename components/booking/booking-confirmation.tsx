@@ -50,6 +50,8 @@ export function BookingConfirmation({
 
   // }, []);
 
+  console.log(orderSuccess)
+
   return (
     <section
       className={`p-4 mb-5 min-h-screen flex justify-center ${
@@ -221,7 +223,7 @@ export function BookingConfirmation({
 
                     {bookingDetails.discountApplied && (
                       <div className="flex justify-between text-green-600">
-                        <span>Discount (20%)</span>
+                        <span>Discount </span>
                         <span>
                           -£
                           {Math.round(

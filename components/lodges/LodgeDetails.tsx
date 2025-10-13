@@ -16,10 +16,11 @@ import KnowMore from "../ui/know-more";
 
 import { Icons } from "../ui/icons";
 import ListingModal from "../ui/listings-modal";
-import { Info, MapPin } from "lucide-react";
+import { Info, MapPin, Ticket } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import PirceDetails from "./price-details";
 import Gallery from "../gallery/lodge-gallery";
+import Coupons from "./Coupons";
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const { searchParams } = useAppContext();
@@ -138,10 +139,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
             />
 
             <div className="lg:hidden">
-              <PirceDetails
-                lodge={lodge}
-                setShowBanner={setShowBanner}
-              />
+              <PirceDetails lodge={lodge} setShowBanner={setShowBanner} />
             </div>
 
             <div className="mt-8">
@@ -208,6 +206,21 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                 setShowDialog={setShowAmenities}
                 value={[{ title: "Amenities", data: lodge.features }]}
               />
+
+              {/* Coupons */}
+
+              <div className="py-6">
+                <div className="flex gap-4">
+                  <div className="border border-emerald-600 rounded-full p-2">
+                    <Ticket className="text-emerald-600 w-6 h-6" />
+                  </div>
+                  <p className="text-2xl ">Apply coupon</p>
+                </div>
+
+                <div className="py-6">
+                  <Coupons/>
+                </div>
+              </div>
 
               {/* Rating & Review */}
 
@@ -338,7 +351,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
           {/* desktop view details */}
           <div className="hidden lg:block">
             <PirceDetails
-              // diff={diff}
               lodge={lodge}
               setShowBanner={setShowBanner}
             />

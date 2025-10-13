@@ -342,8 +342,9 @@ export const updateOrderPayment = async ({
   stripeId,
   status,
 }: any) => {
+  
   try {
-    const total =
+    const guestTotal =
       bookingDetails?.guests?.adults +
       bookingDetails?.guests?.children +
       bookingDetails?.guests?.infants +
@@ -364,7 +365,7 @@ export const updateOrderPayment = async ({
           guest_name: `${orderDetails.firstName} ${orderDetails.lastName}`,
           guest_email: `${orderDetails.email}`,
           guest_phone: `${orderDetails.phone}`,
-          number_of_guests: total,
+          number_of_guests: guestTotal,
           //need dynamic guests count
         },
         relationships: {
@@ -410,6 +411,7 @@ export const updateOrderPayment = async ({
       result,
       status,
     });
+    
     return { ok: true, ...res };
   } catch (err) {
     throw err;

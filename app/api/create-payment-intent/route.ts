@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getLodgeDetails } from "@/app/queries/properties";
-import { findDays } from "@/lib/utils";
+import { findDays, findDiscountAmount } from "@/lib/utils";
 import { createBooking, verifyCoupon } from "@/app/queries/order";
 
 type booking = {
@@ -26,18 +26,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid body" }, { status: 400 });
     }
 
-    const coupon = await verifyCoupon(appliedCoupon.code)
+    const coupon = await verifyCoupon(appliedCoupon.code);
 
     const nights = findDays(dates.from, dates.to);
-
     const property = await getLodgeDetails(lodge?.refNo);
 
     if (!property) throw new Error("Lodge not found");
 
-    const amount =
-      property?.price * nights +
-      guests.pets * property.pets_fee +
-      property?.cleaning_fee; 
+    let amount = 1;
+    if (coupon) {
+      amount =
+        findDiscountAmount(appliedCoupon, property?.price, nights) +
+        guests.pets * property.pets_fee +
+        property?.cleaning_fee;
+    } else {
+      amount =
+        property?.price * nights +
+        guests.pets * property.pets_fee +
+        property?.cleaning_fee;
+    }
 
     // Validate amount
     if (!amount || amount <= 0) {
@@ -55,13 +62,13 @@ export async function POST(req: Request) {
     await createBooking(
       orderDetails,
       bookingDetails,
+      appliedCoupon ?? null,
       null,
       paymentIntent.id,
       amount
     );
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
-
   } catch (error) {
     console.error("Error creating payment intent:", error);
     return NextResponse.json(

@@ -174,7 +174,7 @@ export function BookingConfirmation({
                       <ul className="list-disc list-inside text-gray-600">
                         {bookingDetails.extras.map((extra: any) => (
                           <li key={extra.id}>{extra.name}</li>
-                        ))}
+                        ))} 
                       </ul>
                     </div>
                   </>
@@ -221,18 +221,15 @@ export function BookingConfirmation({
                         </div>
                       )}
 
-                    {bookingDetails.discountApplied && (
+                    {orderSuccess?.coupon && (
                       <div className="flex justify-between text-green-600">
                         <span>Discount </span>
                         <span>
                           -£
-                          {Math.round(
-                            bookingDetails.lodge
-                              ? bookingDetails.lodge.price *
-                                  bookingDetails.nights *
-                                  0.2
-                              : 0
-                          )}
+                          {(bookingDetails.lodge?.price * nights +
+                          bookingDetails.lodge?.cleaning_fee +
+                          bookingDetails.guests.pets *
+                            bookingDetails.lodge.pets_fee) - orderSuccess?.amount}
                         </span>
                       </div>
                     )}
@@ -255,10 +252,7 @@ export function BookingConfirmation({
                       <span>Total Paid</span>
                       <span>
                         £{" "}
-                        {bookingDetails.lodge?.price * nights +
-                          bookingDetails.lodge?.cleaning_fee +
-                          bookingDetails.guests.pets *
-                            bookingDetails.lodge.pets_fee}
+                        {orderSuccess?.amount}
                       </span>
                     </div>
                   </div>

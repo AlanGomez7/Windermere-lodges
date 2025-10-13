@@ -17,6 +17,7 @@ export default function PirceDetails({
   lodge: any;
   setShowBanner: (value: boolean) => void;
 }) {
+
   useEffect(() => {
     setSearchParams({ ...searchParams, lodge });
   }, [lodge]);
@@ -25,11 +26,11 @@ export default function PirceDetails({
 
   const [date, setDate] = useState<DateRange | undefined>();
   const [diff, setDiff] = useState(1);
-  const { searchParams, setSearchParams, appliedCoupon } = useAppContext();
+  const { searchParams, setSearchParams, appliedCoupon, availability, setAvailability } = useAppContext();
+  console.log(availability);
   const [price, setPrice] = useState(lodge.price);
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [availability, setAvailability] = useState(false);
 
   const handleBooking = () => {
     setSearchParams({ ...searchParams, dates: date });
@@ -114,7 +115,6 @@ export default function PirceDetails({
     return false;
   }
 
-  console.log(date?.from, date?.to, diff, availability)
   // Style classes
   const modifiersClassNames = {
     unavailable: "text-gray-400 line-through cursor-not-allowed",

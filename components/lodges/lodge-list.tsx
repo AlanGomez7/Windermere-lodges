@@ -34,7 +34,7 @@ export function LodgeList({
             lodge={lodge}
             key={lodge.id}
             needsButton={true}
-            available={available.includes(lodge?.refNo)}
+            available={available.includes(lodge?.refNo) ?? false}
             showBadge={showBadge}
           />
         ))}

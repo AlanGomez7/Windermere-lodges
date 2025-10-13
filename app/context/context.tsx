@@ -21,9 +21,9 @@ interface SearchParams {
   guests: {
     adults: number;
     children: number;
-    teens:number;
-    infants:number;
-    pets:number
+    teens: number;
+    infants: number;
+    pets: number;
   };
   lodge: Lodge | undefined;
   contactInfo:
@@ -45,15 +45,16 @@ interface SearchParams {
 const AppContext = createContext<any>(undefined);
 
 export function AppWrapper({ children }: { children: ReactNode }) {
-
   const [properties, setProperties] = useState<any[]>();
   const [orderDetails, setOrderDetails] = useState<any>(undefined);
   const [isLodgeAvailable, setIsLodgeAvailable] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState<any>(undefined);
-  const [appliedCoupon, setAppliedCoupon] = useState<any>()
+  const [appliedCoupon, setAppliedCoupon] = useState<any>();
+  const [availability, setAvailability] = useState(false);
+
   const [searchParams, setSearchParams] = useState<SearchParams>({
     dates: undefined,
-    guests: { adults: 2, children: 0, pets:0, infants:0, teens:0 },
+    guests: { adults: 2, children: 0, pets: 0, infants: 0, teens: 0 },
     lodge: undefined,
     nights: undefined,
     contactInfo: {
@@ -80,6 +81,8 @@ export function AppWrapper({ children }: { children: ReactNode }) {
         setSearchParams,
         setOrderDetails,
         orderDetails,
+        availability,
+        setAvailability,
         properties,
         appliedCoupon,
         setAppliedCoupon,

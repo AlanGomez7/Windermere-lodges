@@ -18,11 +18,13 @@ type CouponType = {
 export const createBooking = async (
   orderDetails: any,
   bookingDetails: any,
+  coupon:any,
   result: any,
   stripeId: string,
   amount: number
 ) => {
   try {
+    console.log(amount)
     const session = await auth();
 
     const checkIn = new Date(bookingDetails?.dates?.from)
@@ -49,6 +51,7 @@ export const createBooking = async (
       pets: bookingDetails.guests.pets,
       message: orderDetails?.specialRequests,
       amount,
+      coupon: coupon.code,
       stripeId,
       reason:'',
       timestamp: new Date()
@@ -59,6 +62,7 @@ export const createBooking = async (
     });
 
     return response;
+
   } catch (err) {
     throw err;
   }

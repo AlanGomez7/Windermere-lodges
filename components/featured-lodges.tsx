@@ -1,8 +1,6 @@
-
 import LandscapeLodgeCard from "./cards/landscape-lodge-card";
 
 export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
-
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
@@ -18,7 +16,13 @@ export const FeaturedLodges = ({ lodges }: { lodges: any }) => {
 
         <div className="flex flex-col items-center gap-8">
           {lodges.slice(0, 3).map((lodge: any) => (
-            <LandscapeLodgeCard lodge={lodge} key={lodge.id} needsButton={false} showBadge={false}/>
+            <LandscapeLodgeCard
+              lodge={lodge}
+              key={lodge.id}
+              needsButton={false}
+              showBadge={false}
+              available={true}
+            />
           ))}
         </div>
       </div>

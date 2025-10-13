@@ -179,6 +179,7 @@ model EnquiryBooking {
   channel       String?
   reason        String
   timestamp     DateTime?
+  coupon        String?
   property      Property             @relation(fields: [propertyId], references: [id])
 }
 

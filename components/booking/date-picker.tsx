@@ -84,6 +84,10 @@ export function DateRangePicker({
     };
   }, [open]);
 
+  const today = new Date();
+  const twoYearsLater = new Date(today);
+  twoYearsLater.setFullYear(today.getFullYear() + 2);
+
   return (
     <>
       <Popover open={open} onOpenChange={setOpen}>
@@ -131,6 +135,8 @@ export function DateRangePicker({
         >
           <div className="py-12 px-6">
             <Calendar
+              startMonth={today}
+              endMonth={twoYearsLater}
               mode="range"
               defaultMonth={date?.from}
               selected={date}
@@ -142,7 +148,7 @@ export function DateRangePicker({
                 months:
                   "flex flex-col relative sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
                 week: "flex gap-2",
-                month_grid: "space-y-2"
+                month_grid: "space-y-2",
               }}
               disabled={{ before: new Date() }}
             />

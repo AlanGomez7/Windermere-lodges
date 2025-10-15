@@ -7,7 +7,7 @@ export default function NewsLetter({ email, name }: { email: string; name: strin
   const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: name||"",
+    name: name||"User",
     email: email||"",
     phone: "00000000000",
     subject: "SUBSCRIBED",
@@ -25,13 +25,8 @@ export default function NewsLetter({ email, name }: { email: string; name: strin
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // const data = { ...formData, subscribe: marketing };
 
-    console.log(formData);
     const response = await postEnquiryData(formData);
-
-
-    console.log(response)
 
     if (response.ok) {
       toast.success("Thank you for subscribing, we will get back to you soon");
@@ -40,15 +35,6 @@ export default function NewsLetter({ email, name }: { email: string; name: strin
     }
 
     setIsLoading(false);
-
-    // setFormData({
-    //   name: "",
-    //   email: "",
-    //   phone: "",
-    //   subject: "",
-    //   message: "",
-    // });
-    // setMarketing(false);
   };
 
   return (

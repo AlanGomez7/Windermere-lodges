@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { verifyCoupon } from "@/app/queries/order";
 import { useAppContext } from "@/app/context/context";
 
@@ -22,6 +22,11 @@ export default function Coupons() {
     isActive: boolean;
   } | null;
 
+  useEffect(() => {
+    setError(false);
+    setSuccess(false);
+  }, [searchParams]);
+
   const handleSubmit = async () => {
     setLoading(true);
     setError(false);
@@ -29,6 +34,7 @@ export default function Coupons() {
     try {
       const response: CouponType = await verifyCoupon(coupon);
       console.log(response);
+
       if (response) {
         setAppliedCoupon(response);
         setSuccess(true);
@@ -55,17 +61,23 @@ export default function Coupons() {
         </p>
       )}
 
-      {!searchParams?.dates?.from && !searchParams?.dates?.to && !appliedCoupon && (
-        <p className="text-yellow-500 text-sm py-3">
-          Please select your trip days to apply coupon!
-        </p>
-      )}
+      {!searchParams?.dates?.from &&
+        !searchParams?.dates?.to &&
+        !appliedCoupon && (
+          <p className="text-yellow-500 text-sm py-3">
+            Please select your trip days to apply coupon!
+          </p>
+        )}
 
       <div className="flex gap-5 ">
         <input
           value={appliedCoupon?.code || coupon || ""}
           className="bg-secondary rounded-md focus:outline-emerald-600 w-3/4 lg:w-2/4 px-3"
           onChange={(e) => setCoupon(e.target.value)}
+          disabled={
+            (!searchParams?.dates?.from && !searchParams?.dates?.to) ||
+            appliedCoupon?.code
+          }
         />
 
         <Button

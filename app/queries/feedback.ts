@@ -56,6 +56,7 @@ export const createEnquiryData = async (data: {
       },
     });
 
+    console.log(response)
     return response;
   } catch (err) {
     throw err;

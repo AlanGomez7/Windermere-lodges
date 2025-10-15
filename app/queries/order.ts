@@ -18,13 +18,13 @@ type CouponType = {
 export const createBooking = async (
   orderDetails: any,
   bookingDetails: any,
-  coupon:any,
+  coupon: any,
   result: any,
   stripeId: string,
   amount: number
 ) => {
   try {
-    console.log(amount)
+    console.log(amount);
     const session = await auth();
 
     const checkIn = new Date(bookingDetails?.dates?.from)
@@ -53,8 +53,8 @@ export const createBooking = async (
       amount,
       coupon: coupon.code,
       stripeId,
-      reason:'',
-      timestamp: new Date()
+      reason: "",
+      timestamp: new Date(),
     };
 
     const response = await prisma.enquiryBooking.create({
@@ -62,7 +62,6 @@ export const createBooking = async (
     });
 
     return response;
-
   } catch (err) {
     throw err;
   }
@@ -173,6 +172,36 @@ export const updateOrderPaymentStatus = async ({
         enquiryId: result && result.data.id,
       },
     });
+
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const updateCouponUse = async (coupon: any, user: any) => {
+  try {
+    const existingUse = await prisma.couponUse.findFirst({
+      where: {
+        userId: user.id,
+        couponId: coupon.id,
+      },
+    });
+
+    if (existingUse) {
+      throw new Error("User has already used this coupon");
+    }
+
+    const response = prisma.couponUse.create({
+      data: {
+        userId: user?.id,
+        coupon: {
+          connect: { id: coupon.id },
+        },
+        usedAt: new Date(),
+      },
+    });
+
     return response;
   } catch (err) {
     throw err;
@@ -229,21 +258,46 @@ export const getRatingInfo = async (lodgeId: string) => {
 
 export const verifyCoupon = async (code: string): Promise<CouponType> => {
   try {
+    const session = await auth();
     if (!code) {
       throw new Error("Invalid coupon");
     }
+
+    const now = new Date();
 
     const response = await prisma.coupon.findUnique({
       where: {
         code: code,
       },
       include: {
-        uses:true
-      }
+        uses: true,
+      },
     });
 
-    return response;
+    if (response?.isActive) {
+      
+      if (response.expiresAt && response.expiresAt > now) {
+        return null;
+      }
+
+      const existingUse = await prisma.couponUse.findFirst({
+        where: {
+          userId: session?.user?.id,
+          couponId: response.id,
+        },
+      });
+
+      console.log(existingUse)
+      if(existingUse){
+        return null
+      }
+
+      return response;
+    } else {
+      return null;
+    }
   } catch (err) {
+    console.log(err)
     throw err;
   }
 };

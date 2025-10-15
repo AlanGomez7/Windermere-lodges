@@ -11,21 +11,25 @@ import { updateOrderPayment } from "@/lib/api";
 import PaymentError from "../ui/payment-error";
 import BookingTimer from "./timer";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import { updateCouponUse } from "@/app/queries/order";
 
 const CheckoutPage = ({
   amount,
+  auth,
   setCurrentStep,
   bookingDetails,
   isActive,
   orderDetails,
 }: {
   amount: number;
+  auth: any
   isActive: boolean;
   setCurrentStep: any;
   bookingDetails: any;
   orderDetails: any;
 }) => {
-
+  const session = useSession;
   const { setOrderSuccess, appliedCoupon } = useAppContext();
   const stripe = useStripe();
   const elements = useElements();
@@ -48,12 +52,12 @@ const CheckoutPage = ({
     }
   }, [amount, bookingDetails, orderDetails]);
 
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!stripe || !elements || !clientSecret) return;
     setLoading(true);
     // Wait for PaymentElement to be mounted
+
     if (!elementReady) {
       setErrorMessage("Payment form is still loading, please wait.");
       setLoading(false);
@@ -80,27 +84,32 @@ const CheckoutPage = ({
     if (error) {
       setErrorModal(true);
     } else {
-
       const response = await updateOrderPayment({
         orderDetails,
         bookingDetails,
         stripeId: paymentIntent.id,
         status: "SUCCESSFUL",
       });
-      
 
-      if(!response?.ok){
-        toast("Something went wrong")
-        return
+      if (auth) {
+        const response = await updateCouponUse(appliedCoupon, auth.user);
+        if (!response) {
+          toast("Invalid Coupon");
+          return;
+        }
+      }
+
+      if (!response?.ok) {
+        toast("Something went wrong");
+        return;
       }
 
       setOrderSuccess(response);
-       
+
       setCurrentStep();
       setLoading(false);
     }
   };
-
 
   if (!orderDetails) {
     return <>loading....</>;
@@ -121,7 +130,7 @@ const CheckoutPage = ({
 
   return (
     <>
-      <BookingTimer isActive={isActive} id={bookingDetails.lodge.refNo}/>
+      <BookingTimer isActive={isActive} id={bookingDetails?.lodge?.refNo} />
 
       <PaymentError setShowDialog={setErrorModal} showDialog={errorModal} />
       {/* <Button onClick={()=>setCurrentStep()}>back</Button> */}

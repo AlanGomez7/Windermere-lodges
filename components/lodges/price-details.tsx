@@ -51,6 +51,10 @@ export default function PirceDetails({
   const value = params.get("available");
   const isAvailable = value === "true";
 
+  const today = new Date();
+  const twoYearsLater = new Date(today);
+  twoYearsLater.setFullYear(today.getFullYear() + 2);
+
   useEffect(() => {
     if (searchParams?.dates) setDate(searchParams.dates);
   }, [isAvailable]);
@@ -150,6 +154,8 @@ export default function PirceDetails({
             excludeDisabled
             min={lodge?.minStay}
             max={lodge?.maxStay}
+            startMonth={today}
+            endMonth={twoYearsLater}
             // Use only onSelect for state updates
             onDayMouseEnter={(day: Date) => {
               console.log(day);
@@ -253,6 +259,7 @@ export default function PirceDetails({
         </div>
 
         {/* Sticky action button */}
+
         {diff >= lodge?.minStay && (
           <div>
             {((date?.from && !getDisabled(date.from)) ||

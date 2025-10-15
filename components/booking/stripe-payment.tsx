@@ -40,6 +40,7 @@ interface BookingDetails {
 interface GuestInformationProps {
   onContinue?: (contactInfo: ContactInfo) => void;
   onBack?: () => void;
+  auth:any
   bookingDetails: BookingDetails;
   isActive: boolean;
   setCurrentStep: () => void;
@@ -48,6 +49,7 @@ interface GuestInformationProps {
 export function StripePayment({
   bookingDetails,
   isActive,
+  auth,
   setCurrentStep,
 }: GuestInformationProps) {
   const { orderDetails, searchParams, appliedCoupon } = useAppContext();
@@ -179,6 +181,7 @@ export function StripePayment({
             }}
           >
             <CheckoutPage
+              auth={auth}
               isActive={isActive}
               bookingDetails={bookingDetails}
               setCurrentStep={setCurrentStep}

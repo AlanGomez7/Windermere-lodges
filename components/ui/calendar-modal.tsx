@@ -29,6 +29,10 @@ export default function CalendarModal({
     onSelect(newDate);
   };
 
+  const today = new Date();
+  const twoYearsLater = new Date(today);
+  twoYearsLater.setFullYear(today.getFullYear() + 2);
+
   const nights = findDays(date?.from, date?.to);
 
   useEffect(() => {
@@ -115,6 +119,8 @@ export default function CalendarModal({
           <div className="py-12 px-6">
             <Calendar
               mode="range"
+              startMonth={today}
+              endMonth={twoYearsLater}
               defaultMonth={date?.from}
               selected={date}
               onSelect={handleSelect}

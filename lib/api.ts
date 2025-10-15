@@ -390,19 +390,18 @@ export const updateOrderPayment = async ({
       body: JSON.stringify(reqBody),
     });
 
-    console.log(response);
     if (!response.ok) {
       return { ok: false, message: "failed to create payment" };
     }
 
     const result = await response.json();
 
-    await updateAvailability(
-      bookingDetails?.dates?.from,
-      bookingDetails?.dates?.to,
-      bookingDetails?.lodge?.refNo,
-      false
-    );
+    // await updateAvailability(
+    //   bookingDetails?.dates?.from,
+    //   bookingDetails?.dates?.to,
+    //   bookingDetails?.lodge?.refNo,
+    //   false
+    // );
 
     const res = await updateOrderPaymentStatus({
       orderDetails,

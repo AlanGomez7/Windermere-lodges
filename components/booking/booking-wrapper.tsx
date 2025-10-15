@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { MapPin } from "lucide-react";
 
-export default function BookingWrapper() {
+export default function BookingWrapper({auth}:{auth:any}) {
   const { searchParams } = useAppContext();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
@@ -111,6 +111,7 @@ export default function BookingWrapper() {
         <StripePayment
           bookingDetails={orderDetails}
           isActive={currentStep === 3}
+          auth={auth}
           onBack={() => setCurrentStep(currentStep - 1)}
           setCurrentStep={() => setCurrentStep(currentStep + 1)}
         />

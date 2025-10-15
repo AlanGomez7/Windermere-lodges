@@ -111,7 +111,7 @@ const Footer = async() => {
           </div>
 
           {/* Newsletter */}
-          <NewsLetter name={session?.user?.name || ""} email={session?.user?.email || ""}/>
+          <NewsLetter name={session?.user?.name || "User"} email={session?.user?.email || ""}/>
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">

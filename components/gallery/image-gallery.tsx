@@ -15,12 +15,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 // import { GalleryImage } from "./gallery-data";
 
-export function ImageGallery({
-  images,
-}: {
-  lodgeKey: string;
-  images: any;
-}) {
+export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [category, setCategory] = useState<string>("all");
   const [visibleCount, setVisibleCount] = useState(8);
@@ -30,6 +25,9 @@ export function ImageGallery({
     { id: "interior", name: "Interior" },
     { id: "exterior", name: "Exterior" },
     { id: "surroundings", name: "Surroundings" },
+    { id: "bedrooms", name: "Bedrooms" },
+    { id: "bathrooms", name: "Bathrooms" },
+    { id: "lounge", name: "Lounge" },
   ];
 
   const galleryImages = images || [];
@@ -37,9 +35,9 @@ export function ImageGallery({
   const filteredImages =
     category === "all"
       ? galleryImages
-      : galleryImages.filter((img:any) => img.tag === category);
+      : galleryImages.filter((img: any) => img.tag === category);
 
-  const featuredImages = galleryImages.filter((img:any) => img.featured);
+  const featuredImages = galleryImages.filter((img: any) => img.featured);
   const visibleImages = filteredImages.slice(0, visibleCount);
 
   const nextImage = () => {
@@ -56,11 +54,15 @@ export function ImageGallery({
 
   return (
     <div className="bg-white">
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center flex-nowrap whitespace-nowrap mb-8 overflow-x-auto scrollbar-hide">
         <Tabs defaultValue="all" onValueChange={setCategory}>
-          <TabsList className="grid grid-cols-4">
+          <TabsList className="flex flex-nowrap space-x-2 px-2">
             {galleryCategories.map((cat) => (
-              <TabsTrigger key={cat.id} value={cat.id}>
+              <TabsTrigger
+                key={cat.id}
+                value={cat.id}
+                className="whitespace-nowrap px-4 py-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-black"
+              >
                 {cat.name}
               </TabsTrigger>
             ))}
@@ -96,7 +98,8 @@ export function ImageGallery({
 
             {/* <!-- Description --> */}
             <p className="text-sm text-gray-500 mt-2 text-center max-w-xs">
-              There aren’t any images for this property yet.Try selecting another property.
+              There aren’t any images for this property yet.Try selecting
+              another property.
             </p>
 
             {/* <!-- Action buttons --> */}
@@ -115,7 +118,7 @@ export function ImageGallery({
           {/* <h3 className="text-2xl font-bold mb-6 text-center">Featured Images</h3> */}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            {featuredImages.map((image:any, index:number) => (
+            {featuredImages.map((image: any, index: number) => (
               <Dialog key={index}>
                 <DialogTrigger asChild>
                   <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300">
@@ -157,7 +160,7 @@ export function ImageGallery({
 
       <div className="relative">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {visibleImages.map((image:any, index:number) => (
+          {visibleImages.map((image: any, index: number) => (
             <Card
               key={index}
               className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"

@@ -1,7 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { amenityIcons } from "./icons";
-
+import { DateRange } from "react-day-picker";
+import { eachDayOfInterval, format } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -175,21 +176,49 @@ export const formatDate = (dateStr: Date | undefined) => {
 };
 
 export function getAmenityIcon(name: string) {
-  const key = name.toLowerCase();// normalize string
+  const key = name.toLowerCase(); // normalize string
   return amenityIcons[key] || amenityIcons["info"]; // fallback to default if missing
 }
 
-export function findDiscountAmount(appliedCoupon:any, price:number, diff:number){
+export function findDiscountAmount(
+  appliedCoupon: any,
+  price: number,
+  diff: number
+) {
+  const total = price * diff;
 
-      const total = price * diff;
+  if (appliedCoupon.discountType === "FIXED") {
+    return total - appliedCoupon.discountValue;
+  } else {
+    const percentValue = Math.ceil((total * appliedCoupon.discountValue) / 100);
 
-        if (appliedCoupon.discountType === "FIXED") {
-        return(total - appliedCoupon.discountValue);
-      } else {
-        const percentValue = Math.ceil(
-          (total * appliedCoupon.discountValue) / 100
-        );
+    return total - percentValue;
+  }
+}
 
-        return(total - percentValue);
-      }
+export function calculatePrices(
+  dateRange: DateRange | undefined,
+  lodge: any,
+  dataMap: any
+) {
+  if (!dateRange?.from || !dateRange?.to) {
+    return lodge?.price;
+  }
+
+  const days = eachDayOfInterval({
+    start: dateRange?.from,
+    end: dateRange?.to,
+  });
+  const formattedDays = days.map((d) => {
+    return format(d, "yyyy-MM-dd");
+  });
+
+  let total = 0;
+
+  for (const day of formattedDays.slice(0, formattedDays.length-1)) {
+    const data = dataMap[day];
+    total = total + data.day_rate;
+  }
+
+  return total;
 }

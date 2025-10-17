@@ -396,12 +396,12 @@ export const updateOrderPayment = async ({
 
     const result = await response.json();
 
-    // await updateAvailability(
-    //   bookingDetails?.dates?.from,
-    //   bookingDetails?.dates?.to,
-    //   bookingDetails?.lodge?.refNo,
-    //   false
-    // );
+    await updateAvailability(
+      bookingDetails?.dates?.from,
+      bookingDetails?.dates?.to,
+      bookingDetails?.lodge?.refNo,
+      false
+    );
 
     const res = await updateOrderPaymentStatus({
       orderDetails,

@@ -3,12 +3,13 @@ import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { Card, CardContent } from "../ui/card";
 import { DateRange } from "react-day-picker";
-import { cn, findDays, findDiscountAmount } from "@/lib/utils";
-import { addDays, format, isSameDay } from "date-fns";
+import { calculatePrices, cn, findDays, findDiscountAmount } from "@/lib/utils";
+import { addDays, format, eachDayOfInterval } from "date-fns";
 import { GuestSelector } from "../booking/guest-selector";
 import { useAppContext } from "@/app/context/context";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
+import { data } from "@/data/lodges";
 
 export default function PirceDetails({
   lodge,
@@ -25,13 +26,8 @@ export default function PirceDetails({
 
   const [date, setDate] = useState<DateRange | undefined>();
   const [diff, setDiff] = useState(1);
-  const {
-    searchParams,
-    setSearchParams,
-    appliedCoupon,
-    availability,
-    setAvailability,
-  } = useAppContext();
+  const { searchParams, setSearchParams, appliedCoupon, setAvailability } =
+    useAppContext();
   const [price, setPrice] = useState(lodge.price);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -44,6 +40,8 @@ export default function PirceDetails({
 
   useEffect(() => {
     const days = findDays(date?.from, date?.to);
+    const total = calculatePrices(date, lodge, dataMap);
+    setPrice(total)
     setDiff(days);
   }, [date]);
 
@@ -59,22 +57,10 @@ export default function PirceDetails({
     if (searchParams?.dates) setDate(searchParams.dates);
   }, [isAvailable]);
 
-  useEffect(() => {
-    if (appliedCoupon) {
-      setPrice(
-        diff > 0
-          ? findDiscountAmount(appliedCoupon, lodge.price, diff)
-          : lodge?.price
-      );
-    } else {
-      setPrice(diff > 0 ? lodge?.price * diff : lodge?.price);
-    }
-  }, [diff, appliedCoupon]);
-
   function toLocalDate(dateString: any) {
     const [y, m, d] = dateString.split("-").map(Number);
     return new Date(y, m - 1, d);
-  }
+  } 
 
   // Use local-safe keys
   const dataMap = Object.fromEntries(
@@ -112,26 +98,29 @@ export default function PirceDetails({
   // Define modifiers
   const modifiers = {
     closedArrival: (day: Date) => closedForArrival(day),
-
     closedDeparture: (day: Date) => closedForDeparture(day),
   };
+
   // Disabled days logic
   function getDisabled(day: Date) {
     const key = format(day, "yyyy-MM-dd");
     const data = dataMap[key];
 
+    if(!data) return false
+
     if (!data?.available) return true;
-    if (date?.from && !date?.to && day < date.from) return true;
+    // if (date?.from && !date?.to && day < date.from) return true;
 
     return false;
   }
+
 
   // Style classes
   const modifiersClassNames = {
     unavailable: "text-gray-400 line-through cursor-not-allowed",
     closedArrival: date?.from
       ? "text-black aria-selected:bg-[#007752] aria-selected:text-white" // clickable after check-in
-      : "text-gray-300 aria-selected:bg-emerald-100 aria-selected:text-white", // gray + unclickable before check-in
+      : "text-[#6a6a6a] aria-selected:bg-emerald-100 aria-selected:text-white", // gray + unclickable before check-in
     // closedDeparture: "text-gray-500",
   };
 
@@ -149,7 +138,7 @@ export default function PirceDetails({
             modifiers={modifiers}
             modifiersClassNames={modifiersClassNames}
             showOutsideDays={false}
-            disabled={getDisabled}
+            disabled={[getDisabled, { before: new Date() }]}
             fixedWeeks
             excludeDisabled
             min={lodge?.minStay}
@@ -157,9 +146,6 @@ export default function PirceDetails({
             startMonth={today}
             endMonth={twoYearsLater}
             // Use only onSelect for state updates
-            onDayMouseEnter={(day: Date) => {
-              console.log(day);
-            }}
             onSelect={(dates) => {
               // When selecting check-in
               if (!date?.from && dates?.from && closedForArrival(dates.from)) {

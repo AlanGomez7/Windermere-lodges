@@ -37,7 +37,8 @@ export async function getLodgeDetails(id: string) {
           select: {
             date: true,
             available: true,
-            closed_for_arrival: true
+            closed_for_arrival: true,
+            day_rate: true
           },
         },
       },

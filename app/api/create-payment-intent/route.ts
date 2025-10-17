@@ -26,7 +26,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid body" }, { status: 400 });
     }
 
-    const coupon = await verifyCoupon(appliedCoupon.code);
+    let coupon = null;
+    if (appliedCoupon) {
+      coupon = await verifyCoupon(appliedCoupon?.code);
+    }
 
     const nights = findDays(dates.from, dates.to);
     const property = await getLodgeDetails(lodge?.refNo);
@@ -34,6 +37,7 @@ export async function POST(req: Request) {
     if (!property) throw new Error("Lodge not found");
 
     let amount = 1;
+
     if (coupon) {
       amount =
         findDiscountAmount(appliedCoupon, property?.price, nights) +
@@ -62,9 +66,9 @@ export async function POST(req: Request) {
     await createBooking(
       orderDetails,
       bookingDetails,
-      appliedCoupon ?? null,
+      appliedCoupon?.code ?? null,
       null,
-      paymentIntent.id,
+      paymentIntent?.id,
       amount
     );
 

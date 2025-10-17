@@ -4,15 +4,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "@/components/booking/date-picker";
 import { GuestSelector } from "@/components/booking/guest-selector";
-import { LodgeSelector } from "@/components/booking/lodge-selector";
 import type { DateRange } from "react-day-picker";
 import type { Lodge } from "@/types/lodge";
 import { checkAvailableLodges } from "@/lib/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "@/app/context/context";
-import { data } from "@/data/lodges";
-import { date } from "zod";
 import { format } from "date-fns";
 
 interface SearchParams {

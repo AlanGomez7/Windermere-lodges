@@ -6,10 +6,15 @@ import { fetchAllComments } from "@/lib/api";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Star } from "lucide-react";
+import ReactCookiebot from "react-cookiebot"
+import { Button } from "./ui/button";
+const reactCookiebotId  =  process.env.REACT_COOKIE
 
 export const Testimonials = () => {
   const [comments, setComments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [initialised, setInitialised] = useState(false);
+
   const [err, setErr] = useState("");
   const sliderRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<gsap.core.Tween | null>(null);
@@ -129,6 +134,12 @@ export const Testimonials = () => {
 
   return (
     <section className="py-16 bg-white">
+      <ReactCookiebot domainGroupId={"1c0c7e02-9a13-49ff-b308-bee8474408c9"}/>
+      <Button onClick={()=>{
+        setInitialised(!!document.querySelector("#CookieBot"))
+      }}>click</Button>
+      {initialised && <>akdjfajdfkljad;lfk</>}
+
       <div className="container mx-auto px-4 overflow-hidden">
         <h2 className="text-3xl font-bold text-center mb-8">
           Guest Testimonials

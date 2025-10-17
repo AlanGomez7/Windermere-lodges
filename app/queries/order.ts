@@ -51,7 +51,7 @@ export const createBooking = async (
       pets: bookingDetails.guests.pets,
       message: orderDetails?.specialRequests,
       amount,
-      coupon: coupon.code,
+      coupon: coupon,
       stripeId,
       reason: "",
       timestamp: new Date(),
@@ -273,12 +273,13 @@ export const verifyCoupon = async (code: string): Promise<CouponType> => {
         uses: true,
       },
     });
+    console.log(response)
 
     if (response?.isActive) {
-      
-      if (response.expiresAt && response.expiresAt > now) {
+
+      if (response.expiresAt && response.expiresAt < now) {
         return null;
-      }
+      } 
 
       const existingUse = await prisma.couponUse.findFirst({
         where: {
@@ -287,7 +288,7 @@ export const verifyCoupon = async (code: string): Promise<CouponType> => {
         },
       });
 
-      console.log(existingUse)
+      console.log(existingUse, "KKKKKKK")
       if(existingUse){
         return null
       }

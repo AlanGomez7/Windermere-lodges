@@ -19,7 +19,7 @@ import { useAppContext } from "@/app/context/context";
 import Image from "next/image";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
-import { findDiscountAmount } from "@/lib/utils";
+import { calculatePrices, findDiscountAmount } from "@/lib/utils";
 
 interface ContactInfo {
   firstName: string;
@@ -136,6 +136,8 @@ export function GuestInformation({
     setError("");
     setCurrentStep();
   };
+
+  const total = calculatePrices(bookingDetails?.dates, bookingDetails?.lodge);
 
   return (
     <section
@@ -404,10 +406,7 @@ export function GuestInformation({
               <hr />
               <div className="flex justify-between text-sm">
                 <span>Price for {nights} nights</span>
-                <span className="font-bold">
-                  {" "}
-                  &pound;{nights && bookingDetails?.lodge.price * nights}
-                </span>
+                <span className="font-bold"> &pound;{total}</span>
               </div>
 
               {bookingDetails?.guests.pets > 0 && (
@@ -415,7 +414,9 @@ export function GuestInformation({
                   <span>Pet fee</span>
                   <span className="font-bold">
                     {" "}
-                    &pound;{bookingDetails?.lodge.pets_fee * bookingDetails?.guests.pets}
+                    &pound;
+                    {bookingDetails?.lodge.pets_fee *
+                      bookingDetails?.guests.pets}
                   </span>
                 </div>
               )}
@@ -427,17 +428,12 @@ export function GuestInformation({
                 </span>
               </div>
 
-              {appliedCoupon && nights && (
+              {appliedCoupon && (
                 <div className="flex justify-between text-sm">
                   <span>Discount</span>
                   <span>
                     - &pound;
-                    {bookingDetails.lodge.price * nights -
-                      findDiscountAmount(
-                        appliedCoupon,
-                        bookingDetails.lodge.price,
-                        nights ?? 1
-                      )}
+                    {total - findDiscountAmount(appliedCoupon, total)}
                   </span>
                 </div>
               )}
@@ -450,15 +446,11 @@ export function GuestInformation({
                   <span className="font-bold">
                     &pound;
                     {appliedCoupon
-                      ? findDiscountAmount(
-                          appliedCoupon,
-                          bookingDetails.lodge.price,
-                          nights ?? 1
-                        ) +
+                      ? findDiscountAmount(appliedCoupon, total) +
                         bookingDetails?.lodge?.cleaning_fee +
                         bookingDetails?.guests.pets *
                           bookingDetails?.lodge?.pets_fee
-                      : bookingDetails?.lodge?.price * nights +
+                      : total +
                         bookingDetails?.lodge?.cleaning_fee +
                         bookingDetails?.guests.pets *
                           bookingDetails?.lodge?.pets_fee}

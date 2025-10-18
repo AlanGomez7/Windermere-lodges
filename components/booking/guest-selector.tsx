@@ -21,6 +21,7 @@ interface GuestSelectorProps {
     pets: number;
   }) => void;
   lodge?: any;
+  setPrice: React.Dispatch<any>
 }
 
 export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {

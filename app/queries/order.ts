@@ -259,6 +259,7 @@ export const getRatingInfo = async (lodgeId: string) => {
 export const verifyCoupon = async (code: string): Promise<CouponType> => {
   try {
     const session = await auth();
+
     if (!code) {
       throw new Error("Invalid coupon");
     }
@@ -273,24 +274,26 @@ export const verifyCoupon = async (code: string): Promise<CouponType> => {
         uses: true,
       },
     });
-    console.log(response)
 
     if (response?.isActive) {
-
       if (response.expiresAt && response.expiresAt < now) {
         return null;
-      } 
+      }
+
+
+      if (!session) {
+        return response;
+      }
 
       const existingUse = await prisma.couponUse.findFirst({
         where: {
-          userId: session?.user?.id,
           couponId: response.id,
+          userId: session?.user?.id,
         },
       });
 
-      console.log(existingUse, "KKKKKKK")
-      if(existingUse){
-        return null
+      if (existingUse) {
+        return null;
       }
 
       return response;
@@ -298,7 +301,7 @@ export const verifyCoupon = async (code: string): Promise<CouponType> => {
       return null;
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
     throw err;
   }
 };

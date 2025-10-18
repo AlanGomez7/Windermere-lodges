@@ -12,6 +12,7 @@ export function LodgeList({
   available: string[];
   showBadge: boolean
 }) {
+  
   const lodges: any = use(properties);
 
   if (lodges.length === 0) {

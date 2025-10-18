@@ -29,7 +29,6 @@ const CheckoutPage = ({
   bookingDetails: any;
   orderDetails: any;
 }) => {
-  const session = useSession;
   const { setOrderSuccess, appliedCoupon } = useAppContext();
   const stripe = useStripe();
   const elements = useElements();

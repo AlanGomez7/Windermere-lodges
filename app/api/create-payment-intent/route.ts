@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
     if (coupon) {
       amount =
-        findDiscountAmount(appliedCoupon, property?.price, nights) +
+        findDiscountAmount(appliedCoupon, property?.price) +
         guests.pets * property.pets_fee +
         property?.cleaning_fee;
     } else {

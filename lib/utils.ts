@@ -180,30 +180,35 @@ export function getAmenityIcon(name: string) {
   return amenityIcons[key] || amenityIcons["info"]; // fallback to default if missing
 }
 
-export function findDiscountAmount(
-  appliedCoupon: any,
-  price: number,
-  diff: number
-) {
-  const total = price * diff;
-
+export function findDiscountAmount(appliedCoupon: any, price: number) {
   if (appliedCoupon.discountType === "FIXED") {
-    return total - appliedCoupon.discountValue;
+    return price - appliedCoupon.discountValue;
   } else {
-    const percentValue = Math.ceil((total * appliedCoupon.discountValue) / 100);
-
-    return total - percentValue;
+    const percentValue = Math.ceil((price * appliedCoupon.discountValue) / 100);
+    return price - percentValue;
   }
+}
+
+export function toLocalDate(dateString: any) {
+  const [y, m, d] = dateString.split("-").map(Number);
+  return new Date(y, m - 1, d);
 }
 
 export function calculatePrices(
   dateRange: DateRange | undefined,
-  lodge: any,
-  dataMap: any
+  lodge: any
+  // dataMap: any
 ) {
   if (!dateRange?.from || !dateRange?.to) {
     return lodge?.price;
   }
+
+  const dataMap = Object.fromEntries(
+    lodge.calendar.map((d: any) => [
+      format(toLocalDate(d.date), "yyyy-MM-dd"),
+      d,
+    ])
+  );
 
   const days = eachDayOfInterval({
     start: dateRange?.from,
@@ -215,7 +220,7 @@ export function calculatePrices(
 
   let total = 0;
 
-  for (const day of formattedDays.slice(0, formattedDays.length-1)) {
+  for (const day of formattedDays.slice(0, formattedDays.length - 1)) {
     const data = dataMap[day];
     total = total + data.day_rate;
   }

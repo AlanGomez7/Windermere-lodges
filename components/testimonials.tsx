@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Star } from "lucide-react";
 import ReactCookiebot from "react-cookiebot"
 import { Button } from "./ui/button";
-const reactCookiebotId  =  process.env.REACT_COOKIE
+const reactCookiebotId  =  process.env.REACT_COOKIE || "1c0c7e02-9a13-49ff-b308-bee8474408c9"
 
 export const Testimonials = () => {
   const [comments, setComments] = useState<any[]>([]);
@@ -134,11 +134,7 @@ export const Testimonials = () => {
 
   return (
     <section className="py-16 bg-white">
-      <ReactCookiebot domainGroupId={"1c0c7e02-9a13-49ff-b308-bee8474408c9"}/>
-      <Button onClick={()=>{
-        setInitialised(!!document.querySelector("#CookieBot"))
-      }}>click</Button>
-      {initialised && <>akdjfajdfkljad;lfk</>}
+      <ReactCookiebot domainGroupId={reactCookiebotId} />
 
       <div className="container mx-auto px-4 overflow-hidden">
         <h2 className="text-3xl font-bold text-center mb-8">

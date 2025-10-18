@@ -13,7 +13,7 @@ import Image from "next/image";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./checkout";
-import { findDays, findDiscountAmount } from "@/lib/utils";
+import { calculatePrices, findDays, findDiscountAmount } from "@/lib/utils";
 import { useAppContext } from "@/app/context/context";
 
 interface ContactInfo {
@@ -40,7 +40,7 @@ interface BookingDetails {
 interface GuestInformationProps {
   onContinue?: (contactInfo: ContactInfo) => void;
   onBack?: () => void;
-  auth:any
+  auth: any;
   bookingDetails: BookingDetails;
   isActive: boolean;
   setCurrentStep: () => void;
@@ -56,21 +56,34 @@ export function StripePayment({
 
   const nights = findDays(searchParams?.dates?.from, searchParams?.dates?.to);
 
+  const price = calculatePrices(bookingDetails?.dates, bookingDetails?.lodge);
+
+  const total =
+    price +
+    (bookingDetails?.lodge.cleaning_fee +
+      bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
+
+  let discount = 0;
+
+  if (appliedCoupon) {
+    discount = price - findDiscountAmount(appliedCoupon, price);
+  }
+
   let amount = 1;
 
-  if (nights) {
-    if (appliedCoupon) {
-      amount =
-        findDiscountAmount(appliedCoupon, bookingDetails.lodge.price, nights) +
-        (bookingDetails?.lodge.cleaning_fee +
-          bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
-    } else {
-      amount =
-        bookingDetails.lodge.price * nights +
-        bookingDetails?.lodge.cleaning_fee +
-        bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee;
-    }
+  if (appliedCoupon) {
+    amount =
+      price -
+      discount +
+      (bookingDetails?.lodge.cleaning_fee +
+        bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
+  } else {
+    amount =
+      price +
+      (bookingDetails?.lodge.cleaning_fee +
+        bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
   }
+  console.log(price, total, discount, amount);
 
   if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
     throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
@@ -125,10 +138,7 @@ export function StripePayment({
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between text-sm">
                   <span>{nights} Night</span>
-                  <span>
-                    {" "}
-                    &pound;{nights && bookingDetails.lodge.price * nights}
-                  </span>
+                  <span> &pound;{price}</span>
                 </div>
                 {bookingDetails.guests.pets > 0 && (
                   <div className="flex justify-between text-sm">
@@ -145,18 +155,12 @@ export function StripePayment({
                   <span> &pound; {bookingDetails?.lodge?.cleaning_fee}</span>
                 </div>
 
-                <div className="flex justify-between text-sm">
-                  <span>Discount</span>
-                  <span>
-                    {" "}
-                    - &pound;{" "}
-                    {bookingDetails.lodge.price * nights +
-                      bookingDetails?.lodge.cleaning_fee +
-                      bookingDetails?.guests.pets *
-                        bookingDetails.lodge.pets_fee -
-                      amount}
-                  </span>
-                </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-sm">
+                    <span>Discount</span>
+                    <span> - &pound; {discount}</span>
+                  </div>
+                )}
 
                 <div className="flex justify-between text-md lg:text-lg mt-2">
                   <span>Total Payment</span>

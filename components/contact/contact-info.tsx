@@ -25,9 +25,9 @@ export function ContactInfo() {
                 <br />
                 Manchester, England
               </p>
-              <Button variant="link" className="text-teal-600 h-auto p-0 mt-1">
+              {/* <Button variant="link" className="text-teal-600 h-auto p-0 mt-1">
                 View on map
-              </Button>
+              </Button> */}
             </div>
           </div>
 

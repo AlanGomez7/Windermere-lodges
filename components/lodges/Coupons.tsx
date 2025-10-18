@@ -1,96 +1,100 @@
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { verifyCoupon } from "@/app/queries/order";
 import { useAppContext } from "@/app/context/context";
+import toast from "react-hot-toast";
 
 export default function Coupons() {
-  const [coupon, setCoupon] = useState<any>();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const { setAppliedCoupon, searchParams, appliedCoupon } = useAppContext();
 
-  type CouponType = {
-    id: string;
-    description: string;
-    code: string;
-    discountType: string;
-    discountValue: number;
-    maxUsesPerUser: number;
-    expiresAt: Date | null;
-    isActive: boolean;
-  } | null;
-
-  useEffect(() => {
-    setError(false);
-    setSuccess(false);
-  }, [searchParams]);
-
   const handleSubmit = async () => {
-    setLoading(true);
-    setError(false);
-    setSuccess(false);
+
+    if (!couponCode.trim()) {
+      toast.error("Please enter a coupon code");
+      return;
+    }
+
+    if (!searchParams?.dates?.from || !searchParams?.dates?.to) {
+      toast.error("Please select your trip dates first");
+      return;
+    }
+
     try {
-      const response: CouponType = await verifyCoupon(coupon);
-      console.log(response);
+      setStatus("loading");
+      const response = await verifyCoupon(couponCode);
 
       if (response) {
         setAppliedCoupon(response);
-        setSuccess(true);
-        setCoupon(response);
+        setStatus("success");
+        toast.success(`Coupon ${response.code} applied successfully`);
       } else {
-        setError(true);
+        setStatus("error");
+        toast.error("Invalid or expired coupon");
       }
+
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      setStatus("error");
+      toast.error("Something went wrong");
     } finally {
-      setLoading(false);
+      setStatus("idle");
     }
   };
 
-  return (
-    <>
-      {error && (
-        <p className="text-red-500 text-sm py-3">Invalid Coupon code</p>
-      )}
+  const handleRemove = () => {
+    setAppliedCoupon(null);
+    setCouponCode("");
+    setStatus("idle");
+    toast.error("Coupon removed");
+  };
 
-      {success && (
+  return (
+    <div>
+      {appliedCoupon && (
         <p className="text-green-700 text-sm py-3">
-          Coupon code {coupon.code} applied{" "}
+          Coupon <strong>{appliedCoupon.code}</strong> applied (
+          {appliedCoupon.discountType === "PERCENTAGE"
+            ? `${appliedCoupon.discountValue}% off`
+            : `£${appliedCoupon.discountValue} off`}
+          )
         </p>
       )}
 
-      {!searchParams?.dates?.from &&
-        !searchParams?.dates?.to &&
-        !appliedCoupon && (
-          <p className="text-yellow-500 text-sm py-3">
-            Please select your trip days to apply coupon!
-          </p>
-        )}
+      {/* {!searchParams?.dates?.from && !searchParams?.dates?.to && (
+        <p className="text-yellow-500 text-sm py-3">
+          Please select your trip dates to apply a coupon!
+        </p>
+      )} */}
 
-      <div className="flex gap-5 ">
+      <div className="flex gap-3">
         <input
-          value={appliedCoupon?.code || coupon || ""}
-          className="bg-secondary rounded-md focus:outline-emerald-600 w-3/4 lg:w-2/4 px-3"
-          onChange={(e) => setCoupon(e.target.value)}
-          disabled={
-            (!searchParams?.dates?.from && !searchParams?.dates?.to) ||
-            appliedCoupon?.code
-          }
+          value={appliedCoupon?.code || couponCode}
+          className="bg-secondary rounded-md focus:outline-emerald-600 w-3/4 lg:w-2/4 px-3 py-1"
+          onChange={(e) => setCouponCode(e.target.value)}
+          disabled={!!appliedCoupon}
         />
 
-        <Button
-          className="bg-emerald-600 hover:bg-emerald-500"
-          onClick={handleSubmit}
-          disabled={
-            (!searchParams?.dates?.from && !searchParams?.dates?.to) ||
-            appliedCoupon?.code
-          }
-        >
-          Apply code
-        </Button>
+        {appliedCoupon ? (
+          <Button
+            variant="outline"
+            className="text-red-500 border-red-500 hover:bg-red-50"
+            onClick={handleRemove}
+          >
+            Remove
+          </Button>
+        ) : (
+          <Button
+            className="bg-emerald-600 hover:bg-emerald-500"
+            onClick={handleSubmit}
+            disabled={status === "loading"}
+          >
+            {status === "loading" ? "Applying..." : "Apply Code"}
+          </Button>
+        )}
       </div>
-    </>
+    </div>
   );
 }

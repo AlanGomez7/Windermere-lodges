@@ -38,12 +38,23 @@ export default function PirceDetails({
     router.push("/booking");
   };
 
+
   useEffect(() => {
     const days = findDays(date?.from, date?.to);
-    const total = calculatePrices(date, lodge, dataMap);
-    setPrice(total)
-    setDiff(days);
-  }, [date]);
+    const total = calculatePrices(date, lodge) 
+    const addedFee = lodge?.cleaning_fee + searchParams?.guests?.pets*lodge?.pets_fee
+
+    if (appliedCoupon) {
+      const discountedAmount = findDiscountAmount(appliedCoupon, total);
+      setPrice(discountedAmount + addedFee);
+    }else{
+      // const total = calculatePrices(date, lodge)
+      setPrice(total +addedFee)
+    }
+
+    setDiff(days)
+    
+  }, [diff, appliedCoupon, date, searchParams]);
 
   const params = useSearchParams();
   const value = params.get("available");
@@ -57,10 +68,11 @@ export default function PirceDetails({
     if (searchParams?.dates) setDate(searchParams.dates);
   }, [isAvailable]);
 
+
   function toLocalDate(dateString: any) {
     const [y, m, d] = dateString.split("-").map(Number);
     return new Date(y, m - 1, d);
-  } 
+  }
 
   // Use local-safe keys
   const dataMap = Object.fromEntries(
@@ -106,14 +118,12 @@ export default function PirceDetails({
     const key = format(day, "yyyy-MM-dd");
     const data = dataMap[key];
 
-    if(!data) return false
+    if (!data) return false;
 
     if (!data?.available) return true;
     // if (date?.from && !date?.to && day < date.from) return true;
-
     return false;
   }
-
 
   // Style classes
   const modifiersClassNames = {
@@ -154,6 +164,7 @@ export default function PirceDetails({
                 return;
               }
 
+              // setAppliedCoupon(undefined);
               setDate(dates);
               setAvailability(true);
               setShowBanner(false);
@@ -190,24 +201,14 @@ export default function PirceDetails({
                     for {diff} {diff <= 1 ? "night" : "nights"}
                   </span>
                 </span>
-                <span className="text-sm mt-2 text-gray-400">
-                  Min stay {lodge?.minStay} nights & 14 nights max
-                </span>
+                {/* <span className="text-sm mt-2 text-gray-400">
+                  Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
+                </span> */} 
               </div>
             ) : (
-              <div className="flex flex-col md:flex-row items-baseline gap-2 justify-between">
-                <span>
-                  <span className="text-xl font-bold underline">
-                    &pound;
-                    {price}
-                  </span>
-                  <span className="text-xs"> for 1 night</span>
-                </span>
-                <span className="text-sm mt-2 text-gray-400">
-                  Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
-                </span>
-              </div>
+              <></>
             )}
+
 
             {/* Date buttons */}
             <div className="grid grid-cols-2 gap-2">
@@ -240,6 +241,7 @@ export default function PirceDetails({
               onChange={(guests) =>
                 setSearchParams({ ...searchParams, guests })
               }
+              setPrice={setPrice}
             />
           </div>
         </div>

@@ -10,6 +10,8 @@ import { useAppContext } from "@/app/context/context";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { data } from "@/data/lodges";
+import Coupons from "./Coupons";
+import { X } from "lucide-react";
 
 export default function PirceDetails({
   lodge,
@@ -29,6 +31,7 @@ export default function PirceDetails({
   const { searchParams, setSearchParams, appliedCoupon, setAvailability } =
     useAppContext();
   const [price, setPrice] = useState(lodge.price);
+  const [couponModal, setCouponModal] = useState(false);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -134,152 +137,169 @@ export default function PirceDetails({
   };
 
   return (
-    <Card className="w-full lg:w-96 rounded-md transition-all sticky top-16 self-start">
-      <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
-        <div className="flex-1">
-          <Calendar
-            className="mb-3"
-            mode="range"
-            selected={date}
-            defaultMonth={
-              searchParams.dates ? searchParams?.dates?.from : date?.from
-            }
-            modifiers={modifiers}
-            modifiersClassNames={modifiersClassNames}
-            showOutsideDays={false}
-            disabled={[getDisabled, { before: new Date() }]}
-            fixedWeeks
-            excludeDisabled
-            // min={lodge?.minStay}
-            // max={lodge?.maxStay}
-            startMonth={today}
-            endMonth={twoYearsLater}
-            // Use only onSelect for state updates
-            onSelect={(dates) => {
-              // When selecting check-in
-              if (!date?.from && dates?.from && closedForArrival(dates.from)) {
-                toast.error("Cannot check in on this day");
-                setDate(undefined);
-                return;
+    <>
+      <Card className="w-full lg:w-96 rounded-md transition-all sticky top-16 self-start">
+        <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
+          <div className="flex-1">
+            <Calendar
+              className="mb-3"
+              mode="range"
+              selected={date}
+              defaultMonth={
+                searchParams.dates ? searchParams?.dates?.from : date?.from
               }
-
-              if (date?.from && dates?.to) {
-                const nights = findDays(date.from, dates.to);
-                if (nights < lodge.minStay) {
-                  toast.error(`Minimum stay is ${lodge.minStay} nights`);
+              modifiers={modifiers}
+              modifiersClassNames={modifiersClassNames}
+              showOutsideDays={false}
+              disabled={[getDisabled, { before: new Date() }]}
+              fixedWeeks
+              excludeDisabled
+              // min={lodge?.minStay}
+              // max={lodge?.maxStay}
+              startMonth={today}
+              endMonth={twoYearsLater}
+              // Use only onSelect for state updates
+              onSelect={(dates) => {
+                // When selecting check-in
+                if (
+                  !date?.from &&
+                  dates?.from &&
+                  closedForArrival(dates.from)
+                ) {
+                  toast.error("Cannot check in on this day");
+                  setDate(undefined);
                   return;
                 }
-              }
 
-              // setAppliedCoupon(undefined);
-              setDate(dates);
-              setAvailability(true);
-              setShowBanner(false);
-              setSearchParams({ ...searchParams, dates });
-            }}
-          />
+                if (date?.from && dates?.to) {
+                  const nights = findDays(date.from, dates.to);
+                  if (nights < lodge.minStay) {
+                    toast.error(`Minimum stay is ${lodge.minStay} nights`);
+                    return;
+                  }
+                }
 
-          <div className="relative">
-            <p
-              className="text-sm underline absolute right-0 bottom-3 cursor-pointer"
-              onClick={() => {
-                setSearchParams({ ...searchParams, dates: undefined });
-                setDate(undefined);
+                // setAppliedCoupon(undefined);
+                setDate(dates);
+                setAvailability(true);
+                setShowBanner(false);
+                setSearchParams({ ...searchParams, dates });
               }}
-            >
-              Clear dates
-            </p>
-          </div>
+            />
 
-          <hr className="my-3" />
-
-          <div className="flex flex-col gap-3">
-            {/* Price */}
-
-            {diff ? (
-              <div className="flex flex-col md:flex-row items-baseline gap-2 justify-between">
-                <span>
-                  <span className="text-xl font-bold underline">
-                    &pound;
-                    {price}
-                  </span>
-                  <span className="text-xs">
-                    {" "}
-                    for {diff} {diff <= 1 ? "night" : "nights"}
-                  </span>
-                </span>
-                {/* <span className="text-sm mt-2 text-gray-400">
-                  Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
-                </span> */}
-                {appliedCoupon && (
-                  <p className="text-green-700 text-sm py-3">
-                    Coupon <strong>{appliedCoupon.code}</strong> applied
-                    {/* (
-                  {appliedCoupon.discountType === "PERCENTAGE"
-                    ? `${appliedCoupon.discountValue}% off`
-                    : `£${appliedCoupon.discountValue} off`}
-                  ) */}
-                  </p>
-                )}
-              </div>
-            ) : (
-              <></>
-            )}
-
-            {/* Date buttons */}
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal text-sm py-2",
-                  !date && "text-muted-foreground"
-                )}
+            <div className="relative">
+              <p
+                className="text-sm underline absolute right-0 bottom-3 cursor-pointer"
+                onClick={() => {
+                  setSearchParams({ ...searchParams, dates: undefined });
+                  setDate(undefined);
+                }}
               >
-                {date?.from
-                  ? format(date?.from, "LLL dd, yyyy")
-                  : "Pick a date"}
-              </Button>
-
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal text-sm py-2",
-                  !date?.to && "text-muted-foreground"
-                )}
-              >
-                {date?.to ? format(date?.to, "LLL dd, yyyy") : "Pick a date"}
-              </Button>
+                Clear dates
+              </p>
             </div>
 
-            {/* Guest selector */}
-            <GuestSelector
-              lodge={lodge}
-              onChange={(guests) =>
-                setSearchParams({ ...searchParams, guests })
-              }
-            />
-          </div>
-        </div>
+            <hr className="my-3" />
 
-        {/* Sticky action button */}
+            <div className="flex flex-col gap-3">
+              {/* Price */}
 
-        {diff >= lodge?.minStay && (
-          <div>
-            {((date?.from && !getDisabled(date.from)) ||
-              (date?.to && !getDisabled(date.to))) && (
-              <div className="mt-3">
+              {diff ? (
+                <div className="flex flex-col md:flex-row items-baseline gap-2 justify-between">
+                  <span>
+                    <span className="text-xl font-bold underline">
+                      &pound;
+                      {price}
+                    </span>
+                    <span className="text-xs">
+                      {" "}
+                      for {diff} {diff <= 1 ? "night" : "nights"}
+                    </span>
+                  </span>
+                  {/* <span className="text-sm mt-2 text-gray-400">
+                  Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
+                </span> */}
+                  {!appliedCoupon ? (
+                    <p className="text-green-700 text-sm py-3 hover:underline">
+                      Coupon <strong>{appliedCoupon.code}</strong> applied
+                      {/* (
+                  {appliedCoupon.discountType === "PERCENTAGE"
+                  ? `${appliedCoupon.discountValue}% off`
+                  : `£${appliedCoupon.discountValue} off`}
+                  ) */}
+                      {/* <X /> */}
+                    </p>
+                  ) : (
+                    <Button
+                      className="text-emerald-600
+                    "
+                      variant={"link"}
+                      onClick={() => setCouponModal(true)}
+                    >
+                      Apply coupon !
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <></>
+              )}
+
+              {/* Date buttons */}
+              <div className="grid grid-cols-2 gap-2">
                 <Button
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
-                  disabled={loading}
-                  onClick={handleBooking}
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal text-sm py-2",
+                    !date && "text-muted-foreground"
+                  )}
                 >
-                  Reserve
+                  {date?.from
+                    ? format(date?.from, "LLL dd, yyyy")
+                    : "Pick a date"}
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal text-sm py-2",
+                    !date?.to && "text-muted-foreground"
+                  )}
+                >
+                  {date?.to ? format(date?.to, "LLL dd, yyyy") : "Pick a date"}
                 </Button>
               </div>
-            )}
+
+              {/* Guest selector */}
+              <GuestSelector
+                lodge={lodge}
+                onChange={(guests) =>
+                  setSearchParams({ ...searchParams, guests })
+                }
+              />
+            </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {/* Sticky action button */}
+
+          {diff >= lodge?.minStay && (
+            <div>
+              {((date?.from && !getDisabled(date.from)) ||
+                (date?.to && !getDisabled(date.to))) && (
+                <div className="mt-3">
+                  <Button
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
+                    disabled={loading}
+                    onClick={handleBooking}
+                  >
+                    Reserve
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+      <Coupons setShowDialog={setCouponModal} showDialog={couponModal} />
+    </>
   );
 }

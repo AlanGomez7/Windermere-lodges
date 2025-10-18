@@ -23,7 +23,7 @@ const CheckoutPage = ({
   orderDetails,
 }: {
   amount: number;
-  auth: any
+  auth: any;
   isActive: boolean;
   setCurrentStep: any;
   bookingDetails: any;
@@ -47,7 +47,17 @@ const CheckoutPage = ({
         body: JSON.stringify({ bookingDetails, orderDetails, appliedCoupon }),
       })
         .then((res) => res.json())
-        .then((data) => setClientSecret(data.clientSecret));
+        .then((data) => {
+          if (data?.clientSecret) {
+            setClientSecret(data.clientSecret);
+          } else {
+            toast.error("Unable to initialize payment");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error("Failed to initialize payment");
+        });
     }
   }, [amount, bookingDetails, orderDetails]);
 
@@ -90,9 +100,9 @@ const CheckoutPage = ({
         status: "SUCCESSFUL",
       });
 
-      if (auth) {
-        const response = await updateCouponUse(appliedCoupon, auth.user);
-        if (!response) {
+      if (auth && appliedCoupon) {
+        const couponRes = await updateCouponUse(appliedCoupon, auth.user);
+        if (!couponRes) {
           toast("Invalid Coupon");
           return;
         }
@@ -104,7 +114,6 @@ const CheckoutPage = ({
       }
 
       setOrderSuccess(response);
-
       setCurrentStep();
       setLoading(false);
     }

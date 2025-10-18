@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getLodgeDetails } from "@/app/queries/properties";
-import { findDays, findDiscountAmount } from "@/lib/utils";
+import { calculatePrices, findDays, findDiscountAmount } from "@/lib/utils";
 import { createBooking, verifyCoupon } from "@/app/queries/order";
 
 type booking = {
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
         property?.cleaning_fee;
     } else {
       amount =
-        property?.price * nights +
+        calculatePrices(dates, property) +
         guests.pets * property.pets_fee +
         property?.cleaning_fee;
     }

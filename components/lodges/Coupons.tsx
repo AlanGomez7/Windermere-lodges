@@ -64,7 +64,7 @@ export default function Coupons({setShowDialog, showDialog}:any) {
           sm:inset-0 sm:m-auto sm:max-w-2xl sm:rounded-2xl sm:p-10
           flex flex-col
           "
-            style={{ scrollbarGutter: "stable", transform: "translateY(100%)" }}
+            // style={{ scrollbarGutter: "stable", transform: "translateY(100%)" }}
           >
             <button
               type="button"

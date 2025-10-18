@@ -292,34 +292,42 @@ export function GuestInformation({
 
             <CardFooter className="flex flex-col items-start">
               {!appliedCoupon ? (
-                <span
-                  className="flex justify-between w-full items-center"
+                <div
+                  className="flex flex-col md:flex-row justify-around w-full items-start sm:items-center gap-2 sm:gap-0 cursor-pointer"
                   onClick={() => setCouponModal(true)}
                 >
-                  <p className="flex gap-4 text-emerald-600 cursor-pointer">
-                    <Ticket /> Do you have a coupon? Apply and save upto 50%
+                  <p className="flex items-center gap-2 text-emerald-600 text-sm sm:text-base text-wrap">
+                    <Ticket className="w-4 h-4 sm:w-5 sm:h-5 hidden md:block" />
+                    <span>Do you have a coupon? Apply and save up to 50%</span>
                   </p>
 
-                  <Button variant={"link"} className="text-emerald-600">
+                  <Button
+                    variant="link"
+                    className="text-emerald-600 p-0 sm:p-2 text-sm sm:text-base w-full lg:w-2 mb-3 lg:mb-0"
+                  >
                     Add Coupon
                   </Button>
-                </span>
+                </div>
               ) : (
-                <span
-                  className="flex justify-between w-full items-center"
+                <div
+                  className="flex flex-col sm:flex-row justify-between w-full items-start sm:items-center gap-2 sm:gap-0 cursor-pointer"
                   onClick={() => setCouponModal(true)}
                 >
-                  <p className="text-green-700 text-sm py-3">
+                  <p className="text-green-700 text-sm sm:text-base py-2 sm:py-3">
                     Coupon <strong>{appliedCoupon.code}</strong> applied (
                     {appliedCoupon.discountType === "PERCENTAGE"
                       ? `${appliedCoupon.discountValue}% off`
                       : `£${appliedCoupon.discountValue} off`}
                     )
                   </p>
-                  <Button variant={"link"} className="text-emerald-600">
+
+                  <Button
+                    variant="link"
+                    className="text-emerald-600 p-0 sm:p-2 text-sm sm:text-base"
+                  >
                     Edit Coupon
                   </Button>
-                </span>
+                </div>
               )}
 
               {/* <div className="py-6 w-full">
@@ -493,13 +501,15 @@ export function GuestInformation({
                   </div>
                 )}
 
-                {appliedCoupon && <p className="text-green-700 text-sm py-3">
-                  Coupon <strong>{appliedCoupon.code}</strong> applied (
-                  {appliedCoupon.discountType === "PERCENTAGE"
-                    ? `${appliedCoupon.discountValue}% off`
-                    : `£${appliedCoupon.discountValue} off`}
-                  )
-                </p>}
+                {appliedCoupon && (
+                  <p className="text-green-700 text-sm py-3">
+                    Coupon <strong>{appliedCoupon.code}</strong> applied (
+                    {appliedCoupon.discountType === "PERCENTAGE"
+                      ? `${appliedCoupon.discountValue}% off`
+                      : `£${appliedCoupon.discountValue} off`}
+                    )
+                  </p>
+                )}
                 <hr className="" />
 
                 <div className="flex text-[#007752] justify-between text-md lg:text-xl">

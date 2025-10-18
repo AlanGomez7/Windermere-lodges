@@ -90,21 +90,22 @@ export default function PirceDetails({
     const key = format(day, "yyyy-MM-dd");
     const data = dataMap[key];
 
-    // Disable if it's closed for departure
+    // Disable if the day is closed for departure
     if (data?.closed_for_departure) {
       return true;
     }
 
-    // Disable if the day is less than 3 days after the check-in date
+    // If a check-in date exists, disable any day less than minStay nights after it
     if (date?.from) {
-      const diff = findDays(day, date.from);
-      if (diff < lodge?.minStay - 1) {
+      const daysDiff = findDays(date.from, day); // difference in nights
+      if (daysDiff < lodge?.minStay) {
         return true;
       }
     }
 
     return false;
   };
+
   // Define modifiers
   const modifiers = {
     closedArrival: (day: Date) => closedForArrival(day),
@@ -129,7 +130,7 @@ export default function PirceDetails({
     closedArrival: date?.from
       ? "text-black aria-selected:bg-[#007752] aria-selected:text-white" // clickable after check-in
       : "text-[#6a6a6a] aria-selected:bg-emerald-100 aria-selected:text-white", // gray + unclickable before check-in
-    // closedDeparture: "text-gray-500",
+    closedDeparture: "text-gray-500",
   };
 
   return (
@@ -149,8 +150,8 @@ export default function PirceDetails({
             disabled={[getDisabled, { before: new Date() }]}
             fixedWeeks
             excludeDisabled
-            min={lodge?.minStay}
-            max={lodge?.maxStay}
+            // min={lodge?.minStay}
+            // max={lodge?.maxStay}
             startMonth={today}
             endMonth={twoYearsLater}
             // Use only onSelect for state updates
@@ -160,6 +161,14 @@ export default function PirceDetails({
                 toast.error("Cannot check in on this day");
                 setDate(undefined);
                 return;
+              }
+
+              if (date?.from && dates?.to) {
+                const nights = findDays(date.from, dates.to);
+                if (nights < lodge.minStay) {
+                  toast.error(`Minimum stay is ${lodge.minStay} nights`);
+                  return;
+                }
               }
 
               // setAppliedCoupon(undefined);
@@ -202,14 +211,16 @@ export default function PirceDetails({
                 {/* <span className="text-sm mt-2 text-gray-400">
                   Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
                 </span> */}
-                {appliedCoupon && <p className="text-green-700 text-sm py-3">
-                  Coupon <strong>{appliedCoupon.code}</strong> applied 
-                  {/* (
+                {appliedCoupon && (
+                  <p className="text-green-700 text-sm py-3">
+                    Coupon <strong>{appliedCoupon.code}</strong> applied
+                    {/* (
                   {appliedCoupon.discountType === "PERCENTAGE"
                     ? `${appliedCoupon.discountValue}% off`
                     : `£${appliedCoupon.discountValue} off`}
                   ) */}
-                </p>}
+                  </p>
+                )}
               </div>
             ) : (
               <></>

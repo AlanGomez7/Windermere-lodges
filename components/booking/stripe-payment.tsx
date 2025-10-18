@@ -120,9 +120,9 @@ export function StripePayment({
                   New
                 </Badge>
               )}
-              <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
+              {/* <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
                 £{bookingDetails.lodge.price}/night
-              </div>
+              </div> */}
             </div>
 
             <div className="flex flex-col w-full items-start gap-3 mt-3">
@@ -160,6 +160,16 @@ export function StripePayment({
                     <span>Discount</span>
                     <span> - &pound; {discount}</span>
                   </div>
+                )}
+
+                {appliedCoupon && (
+                  <p className="text-green-700 text-sm py-3">
+                    Coupon <strong>{appliedCoupon.code}</strong> applied (
+                    {appliedCoupon.discountType === "PERCENTAGE"
+                      ? `${appliedCoupon.discountValue}% off`
+                      : `£${appliedCoupon.discountValue} off`}
+                    )
+                  </p>
                 )}
 
                 <div className="flex justify-between text-md lg:text-lg mt-2">

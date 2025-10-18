@@ -114,19 +114,25 @@ export default function LandscapeLodgeCard({
             {/* Price + Button */}
             <div className="pt-3 gap-2 flex md:flex-col md:items-start justify-between">
               <div>
-                <span className="text-xl sm:text-2xl font-bold text-emerald-600">
-                  £{lodge.price}
-                </span>
-                <span className="text-gray-500 text-sm sm:text-lg">
+                <span className="text-gray-500 text-sm ">
                   {" "}
-                  / night
+                  Starting from
+                </span>
+                <span className="text-lg  font-bold text-emerald-600">
+                  {" "}£{lodge.price}
+                </span>
+                <span className="text-gray-500 text-sm ">
+                  {" "}
+                  a night
                 </span>
               </div>
               {needsButton && (
                 <Button
                   onClick={(e) => {
                     e.preventDefault();
-                    router.push(`/our-lodges/${lodge.refNo}?available=${available}&isSearched=${showBadge}`);
+                    router.push(
+                      `/our-lodges/${lodge.refNo}?available=${available}&isSearched=${showBadge}`
+                    );
                   }}
                   className="bg-emerald-600 font-bold hover:bg-emerald-700"
                 >

@@ -310,7 +310,7 @@ export function GuestInformation({
                 </div>
               ) : (
                 <div
-                  className="flex flex-col sm:flex-row justify-between w-full items-start sm:items-center gap-2 sm:gap-0 cursor-pointer"
+                  className="flex flex-col sm:flex-row justify-around w-full items-start sm:items-center gap-2 sm:gap-0 cursor-pointer"
                   onClick={() => setCouponModal(true)}
                 >
                   <p className="text-green-700 text-sm sm:text-base py-2 sm:py-3">
@@ -323,7 +323,7 @@ export function GuestInformation({
 
                   <Button
                     variant="link"
-                    className="text-emerald-600 p-0 sm:p-2 text-sm sm:text-base"
+                    className="text-emerald-600 p-0 sm:p-2 text-sm sm:text-base w-full lg:w-2 mb-3 lg:mb-0"
                   >
                     Edit Coupon
                   </Button>
@@ -376,9 +376,9 @@ export function GuestInformation({
                     New
                   </Badge>
                 )}
-                <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
+                {/* <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
                   £{bookingDetails?.lodge.price}/night
-                </div>
+                </div> */}
               </div>
 
               <CardHeader className="px-0">

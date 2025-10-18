@@ -20,6 +20,8 @@ import Image from "next/image";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { calculatePrices, findDiscountAmount } from "@/lib/utils";
+import { Ticket } from "lucide-react";
+import Coupons from "../lodges/Coupons";
 
 interface ContactInfo {
   firstName: string;
@@ -98,6 +100,7 @@ export function GuestInformation({
   });
 
   const [error, setError] = useState("");
+  const [couponModal, setCouponModal] = useState(false);
   // const [marketing, setMarketing] = useState(false);
 
   const handleInputChange = (
@@ -140,327 +143,387 @@ export function GuestInformation({
   const total = calculatePrices(bookingDetails?.dates, bookingDetails?.lodge);
 
   return (
-    <section
-      className={`p-2 lg:px-28 mb-5 min-h-screen flex justify-center ${
-        isActive ? "block" : "hidden"
-      }`}
-    >
-      <div className="container flex gap-8 flex-col lg:flex-row self-start">
-        <div>
-          <Card className="">
-            <CardHeader className="items-start">
-              <CardTitle className="text-3xl font-semibold">
-                Guest Information
-              </CardTitle>
-            </CardHeader>
+    <>
+      <Coupons showDialog={couponModal} setShowDialog={setCouponModal} />
 
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <section
+        className={`p-2 lg:px-28 mb-5 min-h-screen flex justify-center ${
+          isActive ? "block" : "hidden"
+        }`}
+      >
+        <div className="container flex gap-8 flex-col lg:flex-row self-start">
+          <div>
+            <Card className="">
+              <CardHeader className="items-start">
+                <CardTitle className="text-3xl font-semibold">
+                  Guest Information
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">
+                      First Name <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="firstName"
+                      name="firstName"
+                      value={contactInfo?.firstName}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">
+                      Last Name <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="lastName"
+                      name="lastName"
+                      value={contactInfo?.lastName}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">
+                      Email <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={contactInfo?.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">
+                      Phone Number <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      value={contactInfo?.phone}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">
-                    First Name <span className="text-red-500">*</span>
-                  </Label>
+                  <Label htmlFor="address">Address</Label>
                   <Input
-                    id="firstName"
-                    name="firstName"
-                    value={contactInfo?.firstName}
+                    id="address"
+                    name="address"
+                    value={contactInfo?.address}
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="col-span-2 space-y-2">
+                    <Label htmlFor="city">City/Town</Label>
+                    <Input
+                      id="city"
+                      name="city"
+                      value={contactInfo?.city}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="postalCode">Postal Code</Label>
+                    <Input
+                      id="postalCode"
+                      name="postalCode"
+                      value={contactInfo?.postalCode}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="country">Country</Label>
+                    <Input
+                      id="country"
+                      name="country"
+                      value={contactInfo?.country}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">
-                    Last Name <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="lastName"
-                    name="lastName"
-                    value={contactInfo?.lastName}
+                  <Label htmlFor="specialRequests">Special Requests</Label>
+                  <Textarea
+                    id="specialRequests"
+                    name="specialRequests"
+                    value={contactInfo?.specialRequests}
                     onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">
-                    Email <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={contactInfo?.email}
-                    onChange={handleInputChange}
-                    required
+                    placeholder="Let us know if you have any special requirements or requests"
+                    className="h-32"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="phone">
-                    Phone Number <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    value={contactInfo?.phone}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
-                <Input
-                  id="address"
-                  name="address"
-                  value={contactInfo?.address}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="col-span-2 space-y-2">
-                  <Label htmlFor="city">City/Town</Label>
-                  <Input
-                    id="city"
-                    name="city"
-                    value={contactInfo?.city}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="postalCode">Postal Code</Label>
-                  <Input
-                    id="postalCode"
-                    name="postalCode"
-                    value={contactInfo?.postalCode}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="country">Country</Label>
-                  <Input
-                    id="country"
-                    name="country"
-                    value={contactInfo?.country}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="specialRequests">Special Requests</Label>
-                <Textarea
-                  id="specialRequests"
-                  name="specialRequests"
-                  value={contactInfo?.specialRequests}
-                  onChange={handleInputChange}
-                  placeholder="Let us know if you have any special requirements or requests"
-                  className="h-32"
-                />
-              </div>
-
-              {/* <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="marketing"
-                  checked={marketing}
+                id="marketing"
+                checked={marketing}
                   onCheckedChange={(checked) =>
-                    setMarketing(checked as boolean)
+                  setMarketing(checked as boolean)
                   }
-                />
-                <Label
+                  />
+                  <Label
                   htmlFor="marketing"
                   className="text-sm font-normal cursor-pointer"
-                >
+                  >
                   I would like to receive special offers and updates from
                   Windermere Lodges
-                </Label>
+                  </Label>
               </div> */}
-            </CardContent>
-          </Card>
-          <CardFooter>
-            <Button
-              onClick={handleContinue}
-              className="bg-emerald-600 hover:bg-emerald-700 w-full space-y-2 lg:mt-10"
-            >
-              PROCEED TO PAYMENT
-            </Button>
-          </CardFooter>
+              </CardContent>
+            </Card>
 
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600">
-              {error}
-            </div>
-          )}
-        </div>
-        <div className="basis-3/6">
-          <CardHeader className="flex items-start">
-            <CardTitle className="text-3xl font-semibold">
-              Your Booking
-            </CardTitle>
-          </CardHeader>
-          <Card className=" bg-[#EDF6F4] p-4">
-            <div className="relative h-64 w-100">
-              <Image
-                src={bookingDetails?.lodge.images[0] || "/placeholder.svg"}
-                alt={bookingDetails?.lodge.name}
-                fill
-                className="object-cover rounded-md"
-                priority
-              />
-              {bookingDetails?.lodge.isNew && (
-                <Badge className="absolute top-4 left-4 bg-emerald-600 hover:bg-emerald-700">
-                  New
-                </Badge>
+            {/* Coupons */}
+
+            <CardFooter className="flex flex-col items-start">
+              {!appliedCoupon ? (
+                <span
+                  className="flex justify-between w-full items-center"
+                  onClick={() => setCouponModal(true)}
+                >
+                  <p className="flex gap-4 text-emerald-600 cursor-pointer">
+                    <Ticket /> Do you have a coupon? Apply and save upto 50%
+                  </p>
+
+                  <Button variant={"link"} className="text-emerald-600">
+                    Add Coupon
+                  </Button>
+                </span>
+              ) : (
+                <span
+                  className="flex justify-between w-full items-center"
+                  onClick={() => setCouponModal(true)}
+                >
+                  <p className="text-green-700 text-sm py-3">
+                    Coupon <strong>{appliedCoupon.code}</strong> applied (
+                    {appliedCoupon.discountType === "PERCENTAGE"
+                      ? `${appliedCoupon.discountValue}% off`
+                      : `£${appliedCoupon.discountValue} off`}
+                    )
+                  </p>
+                  <Button variant={"link"} className="text-emerald-600">
+                    Edit Coupon
+                  </Button>
+                </span>
               )}
-              <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
-                £{bookingDetails?.lodge.price}/night
-              </div>
-            </div>
 
-            <CardHeader className="px-0">
-              <div className="flex flex-col w-full items-start gap-3">
-                <CardTitle className="text-lg lg:text-xl font-bold">
-                  {bookingDetails?.lodge.nickname}
-                </CardTitle>
-                <CardDescription className="">
-                  {bookingDetails?.lodge.address}
-                </CardDescription>
+              {/* <div className="py-6 w-full">
+              <div className="flex gap-4">
+                <div className="rounded-full p-2">
+                  <Ticket className="text-emerald-600 w-6 h-6" />
+                </div>
+                <p className="text-2xl ">Apply coupon</p>
               </div>
+
+              <div className="py-6 flex-grow">
+              </div>
+              </div> */}
+
+              <Button
+                onClick={handleContinue}
+                className="bg-emerald-600 hover:bg-emerald-700 w-full space-y-2 lg:mt-10"
+              >
+                PROCEED TO PAYMENT
+              </Button>
+            </CardFooter>
+
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600">
+                {error}
+              </div>
+            )}
+          </div>
+          <div className="basis-3/6">
+            <CardHeader className="flex items-start">
+              <CardTitle className="text-3xl font-semibold">
+                Your Booking
+              </CardTitle>
             </CardHeader>
-
-            <CardContent className="p-0 flex flex-col gap-3">
-              <div className="flex justify-between text-sm">
-                <span>Check In</span>
-                <span className="font-bold">
-                  {" "}
-                  {format(new Date(bookingDetails?.dates.from), "dd MMM yyyy")}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Check Out</span>
-                <span className="font-bold">
-                  {format(new Date(bookingDetails?.dates.to), "dd MMM yyyy")}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Total Nights</span>
-                <span className="font-bold">
-                  {" "}
-                  {/* &pound; */}
-                  {nights}
-                </span>
-              </div>
-              {bookingDetails?.guests.adults > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span>No. of Adults</span>
-                  <span className="font-bold">
-                    {" "}
-                    {bookingDetails?.guests.adults}
-                  </span>
-                </div>
-              )}
-
-              {bookingDetails?.guests.children > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span>No. of Children</span>
-                  <span className="font-bold">
-                    {bookingDetails?.guests.children}
-                  </span>
-                </div>
-              )}
-
-              {bookingDetails?.guests.teens > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span>No. of Teenagers</span>
-                  <span className="font-bold">
-                    {" "}
-                    {bookingDetails?.guests.teens}
-                  </span>
-                </div>
-              )}
-
-              {bookingDetails?.guests.infants > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span>No. of Infants</span>
-                  <span className="font-bold">
-                    {" "}
-                    {bookingDetails?.guests.infants}
-                  </span>
-                </div>
-              )}
-
-              {bookingDetails?.guests?.pets > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span>No. of Pets</span>
-                  <span className="font-bold">
-                    {/* &pound; */}
-                    {bookingDetails?.guests.pets}
-                  </span>
-                </div>
-              )}
-
-              <hr />
-              <div className="flex justify-between text-sm">
-                <span>Price for {nights} nights</span>
-                <span className="font-bold"> &pound;{total}</span>
-              </div>
-
-              {bookingDetails?.guests.pets > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span>Pet fee</span>
-                  <span className="font-bold">
-                    {" "}
-                    &pound;
-                    {bookingDetails?.lodge.pets_fee *
-                      bookingDetails?.guests.pets}
-                  </span>
-                </div>
-              )}
-              <div className="flex justify-between text-sm">
-                <span>Cleaning fee</span>
-                <span className="font-bold">
-                  {" "}
-                  &pound;{bookingDetails?.lodge.cleaning_fee}
-                </span>
-              </div>
-
-              {appliedCoupon && (
-                <div className="flex justify-between text-sm">
-                  <span>Discount</span>
-                  <span>
-                    - &pound;
-                    {total - findDiscountAmount(appliedCoupon, total)}
-                  </span>
-                </div>
-              )}
-
-              <hr className="" />
-
-              <div className="flex text-[#007752] justify-between text-md lg:text-xl">
-                <span>Total Payment</span>
-                {nights && (
-                  <span className="font-bold">
-                    &pound;
-                    {appliedCoupon
-                      ? findDiscountAmount(appliedCoupon, total) +
-                        bookingDetails?.lodge?.cleaning_fee +
-                        bookingDetails?.guests.pets *
-                          bookingDetails?.lodge?.pets_fee
-                      : total +
-                        bookingDetails?.lodge?.cleaning_fee +
-                        bookingDetails?.guests.pets *
-                          bookingDetails?.lodge?.pets_fee}
-                  </span>
+            <Card className=" bg-[#EDF6F4] p-4">
+              <div className="relative h-64 w-100">
+                <Image
+                  src={bookingDetails?.lodge.images[0] || "/placeholder.svg"}
+                  alt={bookingDetails?.lodge.name}
+                  fill
+                  className="object-cover rounded-md"
+                  priority
+                />
+                {bookingDetails?.lodge.isNew && (
+                  <Badge className="absolute top-4 left-4 bg-emerald-600 hover:bg-emerald-700">
+                    New
+                  </Badge>
                 )}
+                <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
+                  £{bookingDetails?.lodge.price}/night
+                </div>
               </div>
-            </CardContent>
-          </Card>
+
+              <CardHeader className="px-0">
+                <div className="flex flex-col w-full items-start gap-3">
+                  <CardTitle className="text-lg lg:text-xl font-bold">
+                    {bookingDetails?.lodge.nickname}
+                  </CardTitle>
+                  <CardDescription className="">
+                    {bookingDetails?.lodge.address}
+                  </CardDescription>
+                </div>
+              </CardHeader>
+
+              <CardContent className="p-0 flex flex-col gap-3">
+                <div className="flex justify-between text-sm">
+                  <span>Check In</span>
+                  <span className="font-bold">
+                    {" "}
+                    {format(
+                      new Date(bookingDetails?.dates.from),
+                      "dd MMM yyyy"
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Check Out</span>
+                  <span className="font-bold">
+                    {format(new Date(bookingDetails?.dates.to), "dd MMM yyyy")}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Total Nights</span>
+                  <span className="font-bold">
+                    {" "}
+                    {/*  */}
+                    {nights}
+                  </span>
+                </div>
+                {bookingDetails?.guests.adults > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>No. of Adults</span>
+                    <span className="font-bold">
+                      {" "}
+                      {bookingDetails?.guests.adults}
+                    </span>
+                  </div>
+                )}
+
+                {bookingDetails?.guests.children > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>No. of Children</span>
+                    <span className="font-bold">
+                      {bookingDetails?.guests.children}
+                    </span>
+                  </div>
+                )}
+
+                {bookingDetails?.guests.teens > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>No. of Teenagers</span>
+                    <span className="font-bold">
+                      {" "}
+                      {bookingDetails?.guests.teens}
+                    </span>
+                  </div>
+                )}
+
+                {bookingDetails?.guests.infants > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>No. of Infants</span>
+                    <span className="font-bold">
+                      {" "}
+                      {bookingDetails?.guests.infants}
+                    </span>
+                  </div>
+                )}
+
+                {bookingDetails?.guests?.pets > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>No. of Pets</span>
+                    <span className="font-bold">
+                      {/* &pound; */}
+                      {bookingDetails?.guests.pets}
+                    </span>
+                  </div>
+                )}
+
+                <hr />
+                <div className="flex justify-between text-sm">
+                  <span>Price for {nights} nights</span>
+                  <span className="font-bold"> &pound;{total}</span>
+                </div>
+
+                {bookingDetails?.guests.pets > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>Pet fee</span>
+                    <span className="font-bold">
+                      {" "}
+                      &pound;
+                      {bookingDetails?.lodge.pets_fee *
+                        bookingDetails?.guests.pets}
+                    </span>
+                  </div>
+                )}
+                <div className="flex justify-between text-sm">
+                  <span>Cleaning fee</span>
+                  <span className="font-bold">
+                    {" "}
+                    &pound;{bookingDetails?.lodge.cleaning_fee}
+                  </span>
+                </div>
+
+                {appliedCoupon && (
+                  <div className="flex justify-between text-sm">
+                    <span>Discount</span>
+                    <span>
+                      - &pound;
+                      {total - findDiscountAmount(appliedCoupon, total)}
+                    </span>
+                  </div>
+                )}
+
+                {appliedCoupon && <p className="text-green-700 text-sm py-3">
+                  Coupon <strong>{appliedCoupon.code}</strong> applied (
+                  {appliedCoupon.discountType === "PERCENTAGE"
+                    ? `${appliedCoupon.discountValue}% off`
+                    : `£${appliedCoupon.discountValue} off`}
+                  )
+                </p>}
+                <hr className="" />
+
+                <div className="flex text-[#007752] justify-between text-md lg:text-xl">
+                  <span>Total Payment</span>
+                  {nights && (
+                    <span className="font-bold">
+                      &pound;
+                      {appliedCoupon
+                        ? findDiscountAmount(appliedCoupon, total) +
+                          bookingDetails?.lodge?.cleaning_fee +
+                          bookingDetails?.guests.pets *
+                            bookingDetails?.lodge?.pets_fee
+                        : total +
+                          bookingDetails?.lodge?.cleaning_fee +
+                          bookingDetails?.guests.pets *
+                            bookingDetails?.lodge?.pets_fee}
+                    </span>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

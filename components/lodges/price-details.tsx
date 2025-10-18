@@ -38,22 +38,21 @@ export default function PirceDetails({
     router.push("/booking");
   };
 
-
   useEffect(() => {
     const days = findDays(date?.from, date?.to);
-    const total = calculatePrices(date, lodge) 
-    const addedFee = lodge?.cleaning_fee + searchParams?.guests?.pets*lodge?.pets_fee
+    const total = calculatePrices(date, lodge);
+    const addedFee =
+      lodge?.cleaning_fee + searchParams?.guests?.pets * lodge?.pets_fee;
 
     if (appliedCoupon) {
       const discountedAmount = findDiscountAmount(appliedCoupon, total);
       setPrice(discountedAmount + addedFee);
-    }else{
+    } else {
       // const total = calculatePrices(date, lodge)
-      setPrice(total +addedFee)
+      setPrice(total + addedFee);
     }
 
-    setDiff(days)
-    
+    setDiff(days);
   }, [diff, appliedCoupon, date, searchParams]);
 
   const params = useSearchParams();
@@ -67,7 +66,6 @@ export default function PirceDetails({
   useEffect(() => {
     if (searchParams?.dates) setDate(searchParams.dates);
   }, [isAvailable]);
-
 
   function toLocalDate(dateString: any) {
     const [y, m, d] = dateString.split("-").map(Number);
@@ -203,12 +201,19 @@ export default function PirceDetails({
                 </span>
                 {/* <span className="text-sm mt-2 text-gray-400">
                   Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
-                </span> */} 
+                </span> */}
+                {appliedCoupon && <p className="text-green-700 text-sm py-3">
+                  Coupon <strong>{appliedCoupon.code}</strong> applied 
+                  {/* (
+                  {appliedCoupon.discountType === "PERCENTAGE"
+                    ? `${appliedCoupon.discountValue}% off`
+                    : `£${appliedCoupon.discountValue} off`}
+                  ) */}
+                </p>}
               </div>
             ) : (
               <></>
             )}
-
 
             {/* Date buttons */}
             <div className="grid grid-cols-2 gap-2">
@@ -241,7 +246,6 @@ export default function PirceDetails({
               onChange={(guests) =>
                 setSearchParams({ ...searchParams, guests })
               }
-              setPrice={setPrice}
             />
           </div>
         </div>

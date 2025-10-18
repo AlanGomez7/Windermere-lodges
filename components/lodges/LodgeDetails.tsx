@@ -207,20 +207,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                 value={[{ title: "Amenities", data: lodge.features }]}
               />
 
-              {/* Coupons */}
-
-              <div className="py-6">
-                <div className="flex gap-4">
-                  <div className="border border-emerald-600 rounded-full p-2">
-                    <Ticket className="text-emerald-600 w-6 h-6" />
-                  </div>
-                  <p className="text-2xl ">Apply coupon</p>
-                </div>
-
-                <div className="py-6">
-                  <Coupons/>
-                </div>
-              </div>
+ 
 
               {/* Rating & Review */}
 

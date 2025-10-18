@@ -20,7 +20,6 @@ export default function ReviewListModal({
   selectedId: string;
   reviews: any[];
 }) {
-  console.log(selectedId);
   const sheetRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<{ [key: string]: HTMLDivElement | null }>({});

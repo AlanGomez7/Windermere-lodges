@@ -28,7 +28,6 @@ export default function DropDown({
       .join("")
       .toUpperCase();
 
-    console.log(initials);
     return initials;
   };
 
@@ -45,7 +44,6 @@ export default function DropDown({
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  console.log(user.avatar);
 
   return (
     <DropdownMenu>

@@ -219,8 +219,11 @@ export default function PirceDetails({
                   {/* <span className="text-sm mt-2 text-gray-400">
                   Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
                 </span> */}
-                  {!appliedCoupon ? (
-                    <p className="text-green-700 text-sm py-3 hover:underline">
+                  {appliedCoupon ? (
+                    <p
+                      className="text-green-700 text-sm py-3 hover:underline cursor-pointer"
+                      onClick={() => setCouponModal(true)}
+                    >
                       Coupon <strong>{appliedCoupon.code}</strong> applied
                       {/* (
                   {appliedCoupon.discountType === "PERCENTAGE"

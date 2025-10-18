@@ -17,7 +17,6 @@ export default async function OurLodgesPage({
   lodges = fetchProperties();
 
   const res = await lodges;
-  console.log(res);
 
   return (
     <main className="min-h-screen bg-white">

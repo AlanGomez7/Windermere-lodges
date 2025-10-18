@@ -50,7 +50,6 @@ export function BookingConfirmation({
 
   // }, []);
 
-  console.log(orderSuccess)
 
   return (
     <section

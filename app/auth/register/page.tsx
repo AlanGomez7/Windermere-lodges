@@ -1,4 +1,3 @@
-"use client"
 import Link from "next/link"
 import Footer from "@/components/footer"
 import { PageHeader } from "@/components/page-header"
@@ -7,7 +6,7 @@ import { ChatbotButton } from "@/components/chatbot/chatbot-button"
 import { RegisterForm } from "@/components/auth/register-form"
 
 
-export default function RegisterPage() {
+export default  async function RegisterPage() {
 
   return (
     <main className="min-h-screen bg-white">

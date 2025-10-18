@@ -83,7 +83,6 @@ export function StripePayment({
       (bookingDetails?.lodge.cleaning_fee +
         bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
   }
-  console.log(price, total, discount, amount);
 
   if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
     throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");

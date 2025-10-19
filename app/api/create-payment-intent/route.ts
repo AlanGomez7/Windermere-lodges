@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getLodgeDetails } from "@/app/queries/properties";
 import { calculatePrices, findDays, findDiscountAmount } from "@/lib/utils";
-import { createBooking, verifyCoupon } from "@/app/queries/order";
+import { createBooking, findLodgePriceForDays, verifyCoupon } from "@/app/queries/order";
 
 type booking = {
   id: string;
@@ -27,12 +27,21 @@ export async function POST(req: Request) {
     }
 
     let coupon = null;
+
     if (appliedCoupon) {
       coupon = await verifyCoupon(appliedCoupon?.code);
     }
 
     const nights = findDays(dates.from, dates.to);
     const property = await getLodgeDetails(lodge?.refNo);
+    // const availability = await findLodgePriceForDays(dates?.from, dates?.to, property?.refNo);
+
+
+    // if(availability ){
+    //   availability.map(()=>{
+        
+    //   })
+    // }
 
     if (!property) throw new Error("Lodge not found");
 

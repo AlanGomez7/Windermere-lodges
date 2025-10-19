@@ -25,9 +25,9 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
     { id: "interior", name: "Interior" },
     { id: "exterior", name: "Exterior" },
     { id: "surroundings", name: "Surroundings" },
-    { id: "bedrooms", name: "Bedrooms" },
-    { id: "bathrooms", name: "Bathrooms" },
-    { id: "lounge", name: "Lounge" },
+    { id: "Bedrooms", name: "Bedrooms" },
+    { id: "Bathrooms", name: "Bathrooms" },
+    { id: "Lounge", name: "Lounge" },
   ];
 
   const galleryImages = images || [];

@@ -208,6 +208,33 @@ export const updateCouponUse = async (coupon: any, user: any) => {
   }
 };
 
+export const findLodgePriceForDays = async (
+  from: string,
+  to: string,
+  id: string | undefined
+) => {
+  try{
+    if(!from || !to || !id){
+      throw new Error('Invalid details');
+    }
+
+    const response = await prisma.calendar.findMany({
+      where: {
+        refNo:id,
+        date:{
+          gte:from,
+          lte:to
+        }
+
+      }
+    })
+
+    return response
+  }catch(err){
+    throw err;
+  }
+};
+
 export const updateAvailability = async (
   checkIn: string,
   checkOut: string,
@@ -279,7 +306,6 @@ export const verifyCoupon = async (code: string): Promise<CouponType> => {
       if (response.expiresAt && response.expiresAt < now) {
         return null;
       }
-
 
       if (!session) {
         return response;

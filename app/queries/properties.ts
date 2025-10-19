@@ -49,6 +49,10 @@ export async function getLodgeDetails(id: string) {
   }
 }
 
+
+
+
+
 export async function getAllLodgeComments() {
   try {
     const response = await prisma.comment.findMany({

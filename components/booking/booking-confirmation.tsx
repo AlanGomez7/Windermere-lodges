@@ -46,10 +46,6 @@ export function BookingConfirmation({
     router.replace("/");
   };
 
-  // useEffect(() => {
-
-  // }, []);
-
 
   return (
     <section

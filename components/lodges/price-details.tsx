@@ -3,7 +3,13 @@ import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { Card, CardContent } from "../ui/card";
 import { DateRange } from "react-day-picker";
-import { calculatePrices, cn, findDays, findDiscountAmount } from "@/lib/utils";
+import {
+  calculatePrices,
+  cn,
+  findDays,
+  findDiscountAmount,
+  findDiscountValue,
+} from "@/lib/utils";
 import { addDays, format, eachDayOfInterval } from "date-fns";
 import { GuestSelector } from "../booking/guest-selector";
 import { useAppContext } from "@/app/context/context";
@@ -28,6 +34,7 @@ export default function PirceDetails({
 
   const [date, setDate] = useState<DateRange | undefined>();
   const [diff, setDiff] = useState(1);
+  const [total, setTotal] = useState(0);
   const { searchParams, setSearchParams, appliedCoupon, setAvailability } =
     useAppContext();
   const [price, setPrice] = useState(lodge.price);
@@ -43,7 +50,8 @@ export default function PirceDetails({
 
   useEffect(() => {
     const days = findDays(date?.from, date?.to);
-    const total = calculatePrices(date, lodge);
+    setTotal(calculatePrices(date, lodge));
+
     const addedFee =
       lodge?.cleaning_fee + searchParams?.guests?.pets * lodge?.pets_fee;
 
@@ -138,7 +146,7 @@ export default function PirceDetails({
 
   return (
     <>
-      <Card className="w-full lg:w-96 rounded-md transition-all sticky top-16 self-start">
+      <Card className="w-full lg:w-96 rounded-md transition-all top-16 self-start">
         <CardContent className="p-4 bg-[#EEF6F4] flex flex-col rounded-2xl">
           <div className="flex-1">
             <Calendar
@@ -205,7 +213,7 @@ export default function PirceDetails({
               {/* Price */}
 
               {diff ? (
-                <div className="flex flex-col md:flex-row items-baseline gap-2 justify-between">
+                <div className="flex items-baseline gap-2 justify-between">
                   <span>
                     <span className="text-xl font-bold underline">
                       &pound;
@@ -216,23 +224,11 @@ export default function PirceDetails({
                       for {diff} {diff <= 1 ? "night" : "nights"}
                     </span>
                   </span>
+
                   {/* <span className="text-sm mt-2 text-gray-400">
                   Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
                 </span> */}
-                  {appliedCoupon ? (
-                    <p
-                      className="text-green-700 text-sm py-3 hover:underline cursor-pointer"
-                      onClick={() => setCouponModal(true)}
-                    >
-                      Coupon <strong>{appliedCoupon.code}</strong> applied
-                      {/* (
-                  {appliedCoupon.discountType === "PERCENTAGE"
-                  ? `${appliedCoupon.discountValue}% off`
-                  : `£${appliedCoupon.discountValue} off`}
-                  ) */}
-                      {/* <X /> */}
-                    </p>
-                  ) : (
+                  {!appliedCoupon && (
                     <Button
                       className="text-emerald-600
                     "
@@ -279,6 +275,64 @@ export default function PirceDetails({
                   setSearchParams({ ...searchParams, guests })
                 }
               />
+            </div>
+            <div className="flex flex-col gap-3 mt-3">
+              {appliedCoupon && (
+                <p
+                  className="text-green-700 text-sm py-3 hover:underline cursor-pointer"
+                  onClick={() => setCouponModal(true)}
+                >
+                  Coupon <strong>{appliedCoupon.code}</strong> applied
+                </p>
+              )}
+              {date?.from && (
+                <div className="flex justify-between text-sm">
+                  <span>Check In</span>
+                  <span className="font-bold">
+                    {" "}
+                    {format(new Date(date?.from), "dd MMM yyyy")}
+                  </span>
+                </div>
+              )}
+
+              {date?.to && (
+                <div className="flex justify-between text-sm">
+                  <span>Check Out</span>
+                  <span className="font-bold">
+                    {" "}
+                    {format(new Date(date?.to), "dd MMM yyyy")}
+                  </span>
+                </div>
+              )}
+
+              {searchParams?.guests?.pets > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>Pets</span>
+                  <span className="font-bold">
+                    {" "}
+                    &pound;{searchParams?.guests?.pets * lodge?.pets_fee}
+                  </span>
+                </div>
+              )}
+
+              {searchParams?.guests?.pets > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>Service fee</span>
+                  <span className="font-bold">
+                    {" "}
+                    &pound;{lodge?.cleaning_fee}
+                  </span>
+                </div>
+              )}
+
+              {appliedCoupon && date && (
+                <div className="flex justify-between text-sm text-emerald-600">
+                  <span>Discount</span>
+                  <span className="font-bold">
+                    - &pound;{findDiscountValue(appliedCoupon, total)}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 

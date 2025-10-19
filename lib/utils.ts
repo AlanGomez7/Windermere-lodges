@@ -189,6 +189,16 @@ export function findDiscountAmount(appliedCoupon: any, price: number) {
   }
 }
 
+export function findDiscountValue(appliedCoupon: any, price: number) {
+  if (appliedCoupon.discountType === "FIXED") {
+    return price - appliedCoupon.discountValue;
+  } else {
+    const percentValue = Math.ceil((price * appliedCoupon.discountValue) / 100);
+
+    return percentValue;
+  }
+}
+
 export function toLocalDate(dateString: any) {
   const [y, m, d] = dateString.split("-").map(Number);
   return new Date(y, m - 1, d);

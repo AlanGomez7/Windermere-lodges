@@ -93,6 +93,7 @@ const CheckoutPage = ({
     if (error) {
       setErrorModal(true);
     } else {
+      
       const response = await updateOrderPayment({
         orderDetails,
         bookingDetails,

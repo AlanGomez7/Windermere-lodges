@@ -214,7 +214,7 @@ export default function PirceDetails({
 
               {diff ? (
                 <div className="flex items-baseline gap-2 justify-between">
-                  <span>
+                  {/* <span>
                     <span className="text-xl font-bold underline">
                       &pound;
                       {price}
@@ -223,7 +223,7 @@ export default function PirceDetails({
                       {" "}
                       for {diff} {diff <= 1 ? "night" : "nights"}
                     </span>
-                  </span>
+                  </span> */}
 
                   {/* <span className="text-sm mt-2 text-gray-400">
                   Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
@@ -315,7 +315,7 @@ export default function PirceDetails({
                 </div>
               )}
 
-              {searchParams?.guests?.pets > 0 && (
+              {date?.from && date?.to && (
                 <div className="flex justify-between text-sm">
                   <span>Service fee</span>
                   <span className="font-bold">
@@ -330,6 +330,17 @@ export default function PirceDetails({
                   <span>Discount</span>
                   <span className="font-bold">
                     - &pound;{findDiscountValue(appliedCoupon, total)}
+                  </span>
+                </div>
+              )}
+            <hr className="my-3" />
+
+              {date?.from !== date?.to && (
+                <div className="flex justify-between text-lg text-emerald-600">
+                  <span>Total Payment</span>
+                  <span className="font-bold">
+                    {" "}
+                    &pound;{price}
                   </span>
                 </div>
               )}

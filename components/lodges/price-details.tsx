@@ -246,26 +246,46 @@ export default function PirceDetails({
               />
             </div>
             <div className="flex flex-col gap-3 mt-3">
+              {/* coupon */}
               {diff ? (
                 <div className="">
                   <hr className="my-2" />
-                  {!appliedCoupon && (
-                    <Button
-                      className="text-emerald-600
+                  {
+                    <div className="flex justify-between text-sm">
+                      <span className="mt-2">
+                        {!appliedCoupon ? (
+                          "Got a coupon?"
+                        ) : (
+                          <p className="text-green-700 text-sm">
+                            Coupon <strong>{appliedCoupon.code}</strong> applied
+                            (
+                            {appliedCoupon.discountType === "PERCENTAGE"
+                              ? `${appliedCoupon.discountValue}% off`
+                              : `£${appliedCoupon.discountValue} off`}
+                            )
+                          </p>
+                        )}
+                      </span>
+                      <Button
+                        className="text-emerald-600
                     "
-                      variant={"link"}
-                      onClick={() => setCouponModal(true)}
-                    >
-                      Got a coupon? Redeem it now for instant savings.
-                    </Button>
-                  )}
+                        variant={"link"}
+                        onClick={() => setCouponModal(!couponModal)}
+                      >
+                        {couponModal
+                          ? "Hide"
+                          : appliedCoupon
+                          ? "Show"
+                          : "Apply"}
+                      </Button>
+                    </div>
+                  }
+
+                  {couponModal && <Coupons />}
                 </div>
               ) : (
                 <></>
               )}
-              <div hidden={!couponModal}>
-                <Coupons />
-              </div>
               <hr className="my-2" />
 
               {date?.from && date?.to && date?.from !== date?.to && (

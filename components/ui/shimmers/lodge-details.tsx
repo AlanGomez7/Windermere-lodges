@@ -20,7 +20,7 @@ export default function LodgeDetailsSkeleton() {
           <SkeletonBox className="h-5 w-96 mx-auto" />
         </div>
       </div>
-      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 mt-18">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 mt-18">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
           <div className="flex items-center gap-4">

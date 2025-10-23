@@ -55,15 +55,9 @@ export default function Coupons() {
   return (
     <>
       <div>
-        {appliedCoupon && (
-          <p className="text-green-700 text-sm py-3">
-            Coupon <strong>{appliedCoupon.code}</strong> applied (
-            {appliedCoupon.discountType === "PERCENTAGE"
-              ? `${appliedCoupon.discountValue}% off`
-              : `£${appliedCoupon.discountValue} off`}
-            )
-          </p>
-        )}
+        {/* {appliedCoupon && (
+
+        )} */}
 
         <div className="flex gap-3 w-full">
           <input

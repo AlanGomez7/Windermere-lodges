@@ -212,37 +212,6 @@ export default function PirceDetails({
             <div className="flex flex-col gap-3">
               {/* Price */}
 
-              {diff ? (
-                <div className="flex items-baseline gap-2 justify-between">
-                  {/* <span>
-                    <span className="text-xl font-bold underline">
-                      &pound;
-                      {price}
-                    </span>
-                    <span className="text-xs">
-                      {" "}
-                      for {diff} {diff <= 1 ? "night" : "nights"}
-                    </span>
-                  </span> */}
-
-                  {/* <span className="text-sm mt-2 text-gray-400">
-                  Min stay {lodge?.minStay} nights & {lodge?.maxStay} nights max
-                </span> */}
-                  {!appliedCoupon && (
-                    <Button
-                      className="text-emerald-600
-                    "
-                      variant={"link"}
-                      onClick={() => setCouponModal(true)}
-                    >
-                      Apply coupon !
-                    </Button>
-                  )}
-                </div>
-              ) : (
-                <></>
-              )}
-
               {/* Date buttons */}
               <div className="grid grid-cols-2 gap-2">
                 <Button
@@ -277,32 +246,46 @@ export default function PirceDetails({
               />
             </div>
             <div className="flex flex-col gap-3 mt-3">
-              {appliedCoupon && (
-                <p
-                  className="text-green-700 text-sm py-3 hover:underline cursor-pointer"
-                  onClick={() => setCouponModal(true)}
-                >
-                  Coupon <strong>{appliedCoupon.code}</strong> applied
-                </p>
-              )}
-              {date?.from && (
-                <div className="flex justify-between text-sm">
-                  <span>Check In</span>
-                  <span className="font-bold">
-                    {" "}
-                    {format(new Date(date?.from), "dd MMM yyyy")}
-                  </span>
+              {diff ? (
+                <div className="">
+                  <hr className="my-2" />
+                  {!appliedCoupon && (
+                    <Button
+                      className="text-emerald-600
+                    "
+                      variant={"link"}
+                      onClick={() => setCouponModal(true)}
+                    >
+                      Got a coupon? Redeem it now for instant savings.
+                    </Button>
+                  )}
                 </div>
+              ) : (
+                <></>
               )}
+              <div hidden={!couponModal}>
+                <Coupons />
+              </div>
+              <hr className="my-2" />
 
-              {date?.to && (
-                <div className="flex justify-between text-sm">
-                  <span>Check Out</span>
-                  <span className="font-bold">
-                    {" "}
-                    {format(new Date(date?.to), "dd MMM yyyy")}
-                  </span>
-                </div>
+              {date?.from && date?.to && date?.from !== date?.to && (
+                <>
+                  <div className="flex justify-between text-sm">
+                    <span>Check In</span>
+                    <span className="font-bold">
+                      {" "}
+                      {format(new Date(date?.from), "dd MMM yyyy")}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between text-sm">
+                    <span>Check Out</span>
+                    <span className="font-bold">
+                      {" "}
+                      {format(new Date(date?.to), "dd MMM yyyy")}
+                    </span>
+                  </div>
+                </>
               )}
 
               {searchParams?.guests?.pets > 0 && (
@@ -315,7 +298,7 @@ export default function PirceDetails({
                 </div>
               )}
 
-              {date?.from && date?.to && (
+              {date?.from !== date?.to && (
                 <div className="flex justify-between text-sm">
                   <span>Service fee</span>
                   <span className="font-bold">
@@ -333,16 +316,15 @@ export default function PirceDetails({
                   </span>
                 </div>
               )}
-            <hr className="my-3" />
 
               {date?.from !== date?.to && (
-                <div className="flex justify-between text-lg text-emerald-600">
-                  <span>Total Payment</span>
-                  <span className="font-bold">
-                    {" "}
-                    &pound;{price}
-                  </span>
-                </div>
+                <>
+                  <hr className="my-3" />
+                  <div className="flex justify-between text-lg text-emerald-600">
+                    <span>Total Payment</span>
+                    <span className="font-bold"> &pound;{price}</span>
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -367,7 +349,6 @@ export default function PirceDetails({
           )}
         </CardContent>
       </Card>
-      <Coupons setShowDialog={setCouponModal} showDialog={couponModal} />
     </>
   );
 }

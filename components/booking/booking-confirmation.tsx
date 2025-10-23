@@ -27,6 +27,7 @@ export function BookingConfirmation({
   const { orderSuccess, setSearchParams } = useAppContext();
 
   const router = useRouter();
+  
   const [bookingNumber, setBookingNumber] = useState<string>("");
   const nights = findDays(
     bookingDetails?.dates?.from,

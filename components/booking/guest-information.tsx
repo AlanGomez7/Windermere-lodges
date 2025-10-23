@@ -100,7 +100,7 @@ export function GuestInformation({
   });
 
   const [error, setError] = useState("");
-  const [couponModal, setCouponModal] = useState(false);
+  // const [couponModal, setCouponModal] = useState(false);
   // const [marketing, setMarketing] = useState(false);
 
   const handleInputChange = (
@@ -144,7 +144,7 @@ export function GuestInformation({
 
   return (
     <>
-      <Coupons showDialog={couponModal} setShowDialog={setCouponModal} />
+      {/* <Coupons showDialog={couponModal} setShowDialog={setCouponModal} /> */}
 
       <section
         className={`p-2 lg:px-28 mb-5 min-h-screen flex justify-center ${
@@ -291,7 +291,7 @@ export function GuestInformation({
             {/* Coupons */}
 
             <CardFooter className="flex flex-col items-start">
-              {!appliedCoupon ? (
+              {/* {!appliedCoupon ? (
                 <div
                   className="flex flex-col md:flex-row justify-around w-full items-start sm:items-center gap-2 sm:gap-0 cursor-pointer"
                   onClick={() => setCouponModal(true)}
@@ -328,7 +328,7 @@ export function GuestInformation({
                     Edit Coupon
                   </Button>
                 </div>
-              )}
+              )} */}
 
               {/* <div className="py-6 w-full">
               <div className="flex gap-4">

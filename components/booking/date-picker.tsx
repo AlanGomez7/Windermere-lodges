@@ -30,34 +30,29 @@ export function DateRangePicker({
   const [showDialog, setShowDialog] = React.useState<boolean>(false);
   const popoverRef = React.useRef<HTMLDivElement>(null);
 
+  // Update date and notify parent
   const handleSelect = (newDate: DateRange | undefined) => {
     if (!newDate) return;
     setDate(newDate);
     onChange?.(newDate);
   };
 
-  // Close on scroll up
+  // Close popover on scroll
   React.useEffect(() => {
     const handleScroll = () => setOpen(false);
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close on clicking outside
+  // Close on click outside
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (
-        popoverRef.current &&
-        !popoverRef.current.contains(event.target as Node)
-      ) {
+      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("touchstart", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
@@ -67,20 +62,12 @@ export function DateRangePicker({
   // Close on back button
   React.useEffect(() => {
     if (!open) return;
-
     window.history.pushState({ calendarOpen: true }, "");
-
-    const handlePopState = () => {
-      setOpen(false);
-    };
-
+    const handlePopState = () => setOpen(false);
     window.addEventListener("popstate", handlePopState);
-
     return () => {
       window.removeEventListener("popstate", handlePopState);
-      if (window.history.state?.calendarOpen) {
-        window.history.back();
-      }
+      if (window.history.state?.calendarOpen) window.history.back();
     };
   }, [open]);
 
@@ -90,34 +77,27 @@ export function DateRangePicker({
 
   return (
     <>
+      {/* Desktop popover */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <div className="hidden md:flex w-full gap-6">
             <Button
-              id="date"
-              variant={"outline"}
-              className={cn(
-                "w-full justify-start text-left font-normal flex-1",
-                !date && "text-muted-foreground"
-              )}
+              id="checkin"
+              variant="outline"
+              aria-label={date?.from ? `Check-in date ${format(date.from, "LLL dd, y")}` : "Select check-in date"}
+              className={cn("w-full justify-start text-left font-normal flex-1", !date?.from && "text-muted-foreground")}
               disabled={disabled}
               onClick={() => setOpen(!open)}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {date?.from ? (
-                format(date.from, "LLL dd, y")
-              ) : (
-                <span>Check in</span>
-              )}
+              {date?.from ? format(date.from, "LLL dd, y") : <span>Check in</span>}
             </Button>
 
             <Button
-              id="date"
-              variant={"outline"}
-              className={cn(
-                "w-full justify-start text-left font-normal flex-1",
-                !date && "text-muted-foreground"
-              )}
+              id="checkout"
+              variant="outline"
+              aria-label={date?.to ? `Check-out date ${format(date.to, "LLL dd, y")}` : "Select check-out date"}
+              className={cn("w-full justify-start text-left font-normal flex-1", !date?.to && "text-muted-foreground")}
               disabled={disabled}
               onClick={() => setOpen(!open)}
             >
@@ -132,7 +112,11 @@ export function DateRangePicker({
           className="w-auto p-0 m-5"
           side="bottom"
           align="start"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="calendar-heading"
         >
+          <h2 id="calendar-heading" className="sr-only">Select Check-in and Check-out Dates</h2>
           <div className="py-12 px-6">
             <Calendar
               startMonth={today}
@@ -145,25 +129,23 @@ export function DateRangePicker({
               onSelect={handleSelect}
               numberOfMonths={2}
               classNames={{
-                months:
-                  "flex flex-col relative sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 relative",
                 week: "flex gap-2",
                 month_grid: "space-y-2",
               }}
-              disabled={{ before: new Date() }}
+              disabled={{ before: today }}
             />
           </div>
         </PopoverContent>
       </Popover>
 
+      {/* Mobile modal */}
       <div className="flex flex-col gap-6 w-full md:hidden">
         <Button
-          id="date"
-          variant={"outline"}
-          className={cn(
-            "w-full justify-start text-left font-normal flex-1",
-            !date && "text-muted-foreground"
-          )}
+          id="checkin-mobile"
+          variant="outline"
+          aria-label={date?.from ? `Check-in date ${format(date.from, "LLL dd, y")}` : "Select check-in date"}
+          className={cn("w-full justify-start text-left font-normal flex-1", !date?.from && "text-muted-foreground")}
           disabled={disabled}
           onClick={() => setShowDialog(!showDialog)}
         >
@@ -172,12 +154,10 @@ export function DateRangePicker({
         </Button>
 
         <Button
-          id="date"
-          variant={"outline"}
-          className={cn(
-            "w-full justify-start text-left font-normal flex-1",
-            !date && "text-muted-foreground"
-          )}
+          id="checkout-mobile"
+          variant="outline"
+          aria-label={date?.to ? `Check-out date ${format(date.to, "LLL dd, y")}` : "Select check-out date"}
+          className={cn("w-full justify-start text-left font-normal flex-1", !date?.to && "text-muted-foreground")}
           disabled={disabled}
           onClick={() => setShowDialog(!showDialog)}
         >

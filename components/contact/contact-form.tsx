@@ -92,7 +92,7 @@ export function ContactForm({ email, name }: { email: string; name: string }) {
   return (
     <Card>
       <CardHeader className="items-start text-left">
-        <CardTitle className="text-xl">Send Us a Message</CardTitle>
+        <CardTitle className="text-2xl font-semibold">Send Us a Message</CardTitle>
         <CardDescription>
           We'd love to hear from you. Fill out the form below and we'll get back
           to you as soon as possible.

@@ -11,8 +11,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Download } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { jsPDF } from "jspdf";
 // import { GalleryImage } from "./gallery-data";
 
 export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
@@ -21,13 +22,12 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
   const [visibleCount, setVisibleCount] = useState(8);
 
   const galleryCategories = [
-    { id: "all", name: "All Photos" },
+    { id: "all", name: "All" },
     { id: "interior", name: "Interior" },
     { id: "exterior", name: "Exterior" },
     { id: "surroundings", name: "Surroundings" },
     { id: "Bedrooms", name: "Bedrooms" },
     { id: "Bathrooms", name: "Bathrooms" },
-    { id: "Lounge", name: "Lounge" },
   ];
 
   const galleryImages = images || [];
@@ -52,16 +52,47 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
     );
   };
 
+  const downloadImageAsPDF = async (url: string, tag?: string) => {
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous"; // allow CORS for remote images
+      img.src = url;
+
+      img.onload = () => {
+        const pdf = new jsPDF({
+          orientation: img.width > img.height ? "landscape" : "portrait",
+          unit: "px",
+          format: [img.width, img.height],
+        });
+
+        pdf.addImage(img, "PNG", 0, 0, img.width, img.height);
+
+        const filename =
+          (tag || url.split("/").pop()?.split(".")[0] || "image") + ".pdf";
+        pdf.save(filename);
+      };
+
+      img.onerror = () => {
+        console.error("Failed to load image for PDF download");
+      };
+    } catch (err) {
+      console.error("Error generating PDF:", err);
+    }
+  };
+
   return (
     <div className="bg-white">
       <div className="flex justify-center flex-nowrap whitespace-nowrap mb-8 overflow-x-auto scrollbar-hide">
         <Tabs defaultValue="all" onValueChange={setCategory}>
-          <TabsList className="flex flex-nowrap space-x-2 px-2">
+          <TabsList
+            className="flex flex-nowrap space-x-2 px-2"
+            aria-label="show images"
+          >
             {galleryCategories.map((cat) => (
               <TabsTrigger
                 key={cat.id}
                 value={cat.id}
-                className="whitespace-nowrap px-4 py-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-black"
+                className="whitespace-nowrap px-4 py-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-600"
               >
                 {cat.name}
               </TabsTrigger>
@@ -101,14 +132,6 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
               There aren’t any images for this property yet.Try selecting
               another property.
             </p>
-
-            {/* <!-- Action buttons --> */}
-            {/* <div className="mt-4 flex gap-3">
-    <button className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            type="button">Upload images</button>
-    <button className="px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none"
-            type="button">Try again</button>
-  </div> */}
           </div>
         </>
       )}
@@ -184,6 +207,7 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
           <Button
             className="bg-emerald-600 hover:bg-emerald-700 text-white"
             onClick={() => setVisibleCount(visibleCount + 8)}
+            aria-label="Load more images"
           >
             Load More
           </Button>
@@ -203,18 +227,33 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
                 navigation controls.
               </DialogDescription>
             </VisuallyHidden>
+
             <div className="relative">
               <img
                 src={filteredImages[selectedImage].url || "/placeholder.svg"}
                 alt={filteredImages[selectedImage].tag}
                 className="w-full max-h-[80vh] object-contain"
               />
+
+              {/* Close button */}
               <button
                 className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 transition-colors"
                 onClick={() => setSelectedImage(null)}
               >
                 <X className="h-6 w-6" />
               </button>
+
+              {/* Download button */}
+              <button
+                onClick={() => downloadImageAsPDF(filteredImages[selectedImage].url, filteredImages[selectedImage].tag)}
+                // href={filteredImages[selectedImage].url || "/placeholder.svg"}
+                className="absolute top-2 right-12 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 transition-colors"
+                aria-label="Download image"
+              >
+                <Download />
+              </button>
+
+              {/* Previous */}
               <button
                 className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/60 text-white rounded-full p-2 hover:bg-black/80 transition-colors"
                 onClick={(e) => {
@@ -224,6 +263,8 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
+
+              {/* Next */}
               <button
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/60 text-white rounded-full p-2 hover:bg-black/80 transition-colors"
                 onClick={(e) => {

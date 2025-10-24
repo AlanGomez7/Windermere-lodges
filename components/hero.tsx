@@ -128,7 +128,7 @@ export const Hero = () => {
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+      {/* <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2 z-20">
         {sliderImages.map((_, idx) => (
           <button
             key={idx}
@@ -139,7 +139,7 @@ export const Hero = () => {
             aria-label={`Go to slide ${idx + 1}`}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

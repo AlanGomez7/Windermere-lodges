@@ -196,15 +196,18 @@ export default function PirceDetails({
             />
 
             <div className="relative">
-              <p
-                className="text-sm underline absolute right-0 bottom-3 cursor-pointer"
+              {/* underline absolute right-0 bottom-3 cursor-pointer */}
+              <Button
+                variant="link"
+                aria-label="Clear selected dates"
+                className="text-sm absolute right-0 bottom-3"
                 onClick={() => {
                   setSearchParams({ ...searchParams, dates: undefined });
                   setDate(undefined);
                 }}
               >
                 Clear dates
-              </p>
+              </Button>
             </div>
 
             <hr className="my-3" />

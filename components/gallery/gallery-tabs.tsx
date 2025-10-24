@@ -29,6 +29,7 @@ export function GalleryTabs({ lodgeIds }: { lodgeIds: any }) {
   }
 
   const [activeTab, setActiveTab] = useState(lodgeId ?? lodgeIds[0].id);
+  
   const [images, setImages] = useState<
     {
       id: string;
@@ -51,9 +52,9 @@ export function GalleryTabs({ lodgeIds }: { lodgeIds: any }) {
     >
       <div className="mb-6 sm:mb-8">
         <div className="w-full overflow-x-auto px-4 [-ms-overflow-style:none] [scrollbar-width:none]">
-          <TabsList className="flex w-max gap-2 sm:w-auto sm:grid sm:grid-cols-3 sm:gap-0 sm:mx-auto">
+          <TabsList className="flex w-max gap-2 sm:w-auto sm:grid sm:grid-cols-3 sm:gap-0 sm:mx-auto" >
             {lodgeIds.map((l: any) => (
-              <TabsTrigger value={l.id} key={l.id} className="shrink-0">
+              <TabsTrigger value={l.id} key={l.id} className="shrink-0" aria-label={`images for ${l?.nickname}`}>
                 {l.nickname}
               </TabsTrigger>
             ))}

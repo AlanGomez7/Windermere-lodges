@@ -6,17 +6,19 @@ import Link from "next/link"
 export function ContactInfo() {
   return (
     <div className="space-y-6">
+      {/* Contact Information Card */}
       <Card>
         <CardHeader className="items-start text-left">
-          <CardTitle className="text-xl">Contact Information</CardTitle>
+          <CardTitle className="text-2xl font-semibold">Contact Information</CardTitle>
           <CardDescription>Get in touch with our friendly team</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Address */}
           <div className="flex items-start">
-            <MapPin className="h-5 w-5 text-teal-600 mt-1 mr-3" />
+            <MapPin className="h-5 w-5 text-teal-600 mt-1 mr-3" aria-hidden="true" />
             <div>
-              <h4 className="font-medium">Our Address</h4>
-              <p className="text-gray-600 mt-1">
+              <h1 className="font-medium text-xl text-gray-900">Our Address</h1>
+              <p className="text-gray-800 mt-1 leading-relaxed">
                 Windermere Lodges,
                 <br />
                 Bartle House,
@@ -25,31 +27,33 @@ export function ContactInfo() {
                 <br />
                 Manchester, England
               </p>
-              {/* <Button variant="link" className="text-teal-600 h-auto p-0 mt-1">
-                View on map
-              </Button> */}
             </div>
           </div>
 
+          {/* Email */}
           <div className="flex items-start">
-            <Mail className="h-5 w-5 text-teal-600 mt-1 mr-3" />
+            <Mail className="h-5 w-5 text-teal-600 mt-1 mr-3" aria-hidden="true" />
             <div>
-              <h4 className="font-medium">Email</h4>
-              <p className="text-gray-600 mt-1">
-                <Link href="info@lodgelets.co.uk" className="hover:text-teal-600">
+              <h3 className="font-medium text-xl text-gray-900">Email</h3>
+              <p className="text-gray-800 mt-1">
+                <Link
+                  href="mailto:info@lodgelets.co.uk"
+                  className="hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600 rounded"
+                  aria-label="Send email to info@lodgelets.co.uk"
+                >
                   info@lodgelets.co.uk
-                    
                 </Link>
               </p>
-              <p className="text-sm text-gray-500 mt-1">We aim to respond within 24 hours</p>
+              <p className="text-gray-700 text-sm mt-1">We aim to respond within 24 hours</p>
             </div>
           </div>
 
+          {/* Operating Hours */}
           <div className="flex items-start">
-            <Clock className="h-5 w-5 text-teal-600 mt-1 mr-3" />
+            <Clock className="h-5 w-5 text-teal-600 mt-1 mr-3" aria-hidden="true" />
             <div>
-              <h4 className="font-medium">Operating Hours</h4>
-              <div className="text-gray-600 mt-1 space-y-1">
+              <h3 className="font-medium text-xl text-gray-900">Operating Hours</h3>
+              <div className="text-gray-800 mt-1 space-y-1 leading-relaxed">
                 <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
                 <p>Saturday: 10:00 AM - 4:00 PM</p>
                 <p>Sunday: Closed (Emergency contact only)</p>
@@ -59,6 +63,7 @@ export function ContactInfo() {
         </CardContent>
       </Card>
 
+      {/* Social Media Card */}
       <Card>
         <CardHeader className="items-start text-left">
           <CardTitle className="text-xl">Connect With Us</CardTitle>
@@ -66,8 +71,13 @@ export function ContactInfo() {
         </CardHeader>
         <CardContent>
           <div className="flex space-x-4">
-            <Link href="https://www.facebook.com/windermerelodges" target="_blank" className="bg-gray-100 hover:bg-teal-100 text-teal-600 p-3 rounded-full transition-colors">
-              <Facebook className="h-5 w-5" />
+            <Link
+              href="https://www.facebook.com/windermerelodges"
+              target="_blank"
+              className="bg-gray-100 hover:bg-teal-100 text-teal-600 p-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-600"
+              aria-label="Visit our Facebook page"
+            >
+              <Facebook className="h-5 w-5" aria-hidden="true" />
               <span className="sr-only">Facebook</span>
             </Link>
           </div>
@@ -76,4 +86,3 @@ export function ContactInfo() {
     </div>
   )
 }
-

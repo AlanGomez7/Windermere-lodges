@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Star } from "lucide-react";
 import ReactCookiebot from "react-cookiebot"
-const reactCookiebotId  =  process.env.REACT_COOKIE || "1c0c7e02-9a13-49ff-b308-bee8474408c9"
+const reactCookiebotId  =  process.env.NEXT_PUBLIC_REACT_COOKIE
 console.log(reactCookiebotId)
 
 export const Testimonials = () => {

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { MapPin } from "lucide-react";
 
-export default function BookingWrapper({auth}:{auth:any}) {
+export default function BookingWrapper({ auth }: { auth: any }) {
   const { searchParams } = useAppContext();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
@@ -79,9 +79,11 @@ export default function BookingWrapper({auth}:{auth:any}) {
               size="icon"
               className="h-10 w-10 bg-white"
               onClick={() => router.push("/our-lodges")}
+              aria-label="Go back to our lodges"
             >
               <Icons.chevronLeft className="h-6 w-6" />
             </Button>
+
             <div>
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl text-gray-800">
                 {orderDetails?.lodge.nickname}

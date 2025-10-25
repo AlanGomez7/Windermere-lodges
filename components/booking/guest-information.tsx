@@ -269,78 +269,12 @@ export function GuestInformation({
                   />
                 </div>
 
-                {/* <div className="flex items-center space-x-2">
-                <Checkbox
-                id="marketing"
-                checked={marketing}
-                  onCheckedChange={(checked) =>
-                  setMarketing(checked as boolean)
-                  }
-                  />
-                  <Label
-                  htmlFor="marketing"
-                  className="text-sm font-normal cursor-pointer"
-                  >
-                  I would like to receive special offers and updates from
-                  Windermere Lodges
-                  </Label>
-              </div> */}
               </CardContent>
             </Card>
 
             {/* Coupons */}
 
             <CardFooter className="flex flex-col items-start">
-              {/* {!appliedCoupon ? (
-                <div
-                  className="flex flex-col md:flex-row justify-around w-full items-start sm:items-center gap-2 sm:gap-0 cursor-pointer"
-                  onClick={() => setCouponModal(true)}
-                >
-                  <p className="flex items-center gap-2 text-emerald-600 text-sm sm:text-base text-wrap">
-                    <Ticket className="w-4 h-4 sm:w-5 sm:h-5 hidden md:block" />
-                    <span>Do you have a coupon? Apply and save up to 50%</span>
-                  </p>
-
-                  <Button
-                    variant="link"
-                    className="text-emerald-600 p-0 sm:p-2 text-sm sm:text-base w-full lg:w-2 mb-3 lg:mb-0"
-                  >
-                    Add Coupon
-                  </Button>
-                </div>
-              ) : (
-                <div
-                  className="flex flex-col sm:flex-row justify-around w-full items-start sm:items-center gap-2 sm:gap-0 cursor-pointer"
-                  onClick={() => setCouponModal(true)}
-                >
-                  <p className="text-green-700 text-sm sm:text-base py-2 sm:py-3">
-                    Coupon <strong>{appliedCoupon.code}</strong> applied (
-                    {appliedCoupon.discountType === "PERCENTAGE"
-                      ? `${appliedCoupon.discountValue}% off`
-                      : `£${appliedCoupon.discountValue} off`}
-                    )
-                  </p>
-
-                  <Button
-                    variant="link"
-                    className="text-emerald-600 p-0 sm:p-2 text-sm sm:text-base w-full lg:w-2 mb-3 lg:mb-0"
-                  >
-                    Edit Coupon
-                  </Button>
-                </div>
-              )} */}
-
-              {/* <div className="py-6 w-full">
-              <div className="flex gap-4">
-                <div className="rounded-full p-2">
-                  <Ticket className="text-emerald-600 w-6 h-6" />
-                </div>
-                <p className="text-2xl ">Apply coupon</p>
-              </div>
-
-              <div className="py-6 flex-grow">
-              </div>
-              </div> */}
 
               <Button
                 onClick={handleContinue}

@@ -10,11 +10,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ChevronLeft, ChevronRight, X, Download } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { jsPDF } from "jspdf";
-// import { GalleryImage } from "./gallery-data";
 
 export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -26,8 +25,8 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
     { id: "interior", name: "Interior" },
     { id: "exterior", name: "Exterior" },
     { id: "surroundings", name: "Surroundings" },
-    { id: "Bedrooms", name: "Bedrooms" },
-    { id: "Bathrooms", name: "Bathrooms" },
+    { id: "bedrooms", name: "Bedrooms" },
+    { id: "bathrooms", name: "Bathrooms" },
   ];
 
   const galleryImages = images || [];
@@ -55,7 +54,7 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
   const downloadImageAsPDF = async (url: string, tag?: string) => {
     try {
       const img = new Image();
-      img.crossOrigin = "anonymous"; // allow CORS for remote images
+      img.crossOrigin = "anonymous";
       img.src = url;
 
       img.onload = () => {
@@ -71,10 +70,6 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
           (tag || url.split("/").pop()?.split(".")[0] || "image") + ".pdf";
         pdf.save(filename);
       };
-
-      img.onerror = () => {
-        console.error("Failed to load image for PDF download");
-      };
     } catch (err) {
       console.error("Error generating PDF:", err);
     }
@@ -82,73 +77,83 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
 
   return (
     <div className="bg-white">
+      {/* Category Tabs */}
       <div className="flex justify-center flex-nowrap whitespace-nowrap mb-8 overflow-x-auto scrollbar-hide">
         <Tabs defaultValue="all" onValueChange={setCategory}>
           <TabsList
             className="flex flex-nowrap space-x-2 px-2"
-            aria-label="show images"
+            aria-label="Image categories"
           >
             {galleryCategories.map((cat) => (
               <TabsTrigger
                 key={cat.id}
                 value={cat.id}
+                id={`tab-${cat.id}`}
+                aria-controls={`tabpanel-${cat.id}`}
+                aria-selected={category === cat.id}
+                aria-label={`Show ${cat.name} images`}
                 className="whitespace-nowrap px-4 py-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-600"
               >
                 {cat.name}
               </TabsTrigger>
             ))}
           </TabsList>
+
+          {galleryCategories.map((cat) => (
+            <TabsContent
+              key={cat.id}
+              value={cat.id}
+              id={`tabpanel-${cat.id}`}
+              role="tabpanel"
+              aria-labelledby={`tab-${cat.id}`}
+            ></TabsContent>
+          ))}
         </Tabs>
       </div>
 
+      {/* Empty State */}
       {filteredImages.length === 0 && (
-        <>
-          {/* <!-- Plain HTML + Tailwind --> */}
-          <div className="flex flex-col items-center justify-center p-8 rounded-2xl bg-white/60">
-            {/* <!-- Icon --> */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M3 7.5A2.5 2.5 0 015.5 5h13A2.5 2.5 0 0121 7.5v9A2.5 2.5 0 0118.5 19h-13A2.5 2.5 0 013 16.5v-9zM8 11l2 2 3-3 4 4"
-              />
-            </svg>
-
-            {/* <!-- Title --> */}
-            <h3 className="text-lg font-semibold text-gray-800">
-              No images to show
-            </h3>
-
-            {/* <!-- Description --> */}
-            <p className="text-sm text-gray-500 mt-2 text-center max-w-xs">
-              There aren’t any images for this property yet.Try selecting
-              another property.
-            </p>
-          </div>
-        </>
+        <div className="flex flex-col items-center justify-center p-8 rounded-2xl bg-white/60">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-16 w-16 mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.5"
+              d="M3 7.5A2.5 2.5 0 015.5 5h13A2.5 2.5 0 0121 7.5v9A2.5 2.5 0 0118.5 19h-13A2.5 2.5 0 013 16.5v-9zM8 11l2 2 3-3 4 4"
+            />
+          </svg>
+          <h3 className="text-lg font-semibold text-gray-800">
+            No images to show
+          </h3>
+          <p className="text-sm text-gray-500 mt-2 text-center max-w-xs">
+            There aren’t any images for this property yet. Try selecting another
+            category.
+          </p>
+        </div>
       )}
 
-      {category === "all" && (
+      {/* Featured Images */}
+      {category === "all" && featuredImages.length > 0 && (
         <div className="mb-12 bg-white">
-          {/* <h3 className="text-2xl font-bold mb-6 text-center">Featured Images</h3> */}
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {featuredImages.map((image: any, index: number) => (
               <Dialog key={index}>
                 <DialogTrigger asChild>
-                  <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300">
+                  <Card
+                    className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
+                    aria-label={`Open featured image ${image.tag || index + 1}`}
+                  >
                     <div className="relative aspect-[4/3] overflow-hidden">
                       <img
                         src={image.url || "/placeholder.svg"}
-                        alt={image.tag}
+                        alt={image.tag || "Featured lodge image"}
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                       />
                     </div>
@@ -164,11 +169,12 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
                   <div className="relative">
                     <img
                       src={image.url || "/placeholder.svg"}
-                      alt={image.tag}
+                      alt={image.tag || "Lodge image"}
                       className="w-full max-h-[80vh] object-contain"
                     />
                     <button
                       className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 transition-colors"
+                      aria-label="Close image viewer"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <X className="h-6 w-6" />
@@ -181,6 +187,7 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
         </div>
       )}
 
+      {/* Gallery Grid */}
       <div className="relative">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {visibleImages.map((image: any, index: number) => (
@@ -188,20 +195,21 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
               key={index}
               className="overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
               onClick={() => setSelectedImage(index)}
+              aria-label={`Open image ${image.tag || index + 1}`}
             >
               <div className="relative aspect-[6/3] overflow-hidden">
                 <img
                   src={image.url || "/placeholder.svg"}
-                  alt={image.tag}
+                  alt={image.tag || "Lodge image"}
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 />
               </div>
             </Card>
           ))}
         </div>
-        {/* Subtle gradient overlay at the bottom for 'hidden' look */}
-        {/* <div className="pointer-events-none absolute left-0 right-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent z-10 shadow-6xl" /> */}
       </div>
+
+      {/* Load More Button */}
       {visibleCount < filteredImages.length && (
         <div className="flex justify-center mt-6">
           <Button
@@ -214,6 +222,7 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
         </div>
       )}
 
+      {/* Image Viewer Modal */}
       {selectedImage !== null && (
         <Dialog
           open={selectedImage !== null}
@@ -231,24 +240,29 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
             <div className="relative">
               <img
                 src={filteredImages[selectedImage].url || "/placeholder.svg"}
-                alt={filteredImages[selectedImage].tag}
+                alt={filteredImages[selectedImage].tag || "Lodge image"}
                 className="w-full max-h-[80vh] object-contain"
               />
 
-              {/* Close button */}
+              {/* Close */}
               <button
                 className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 transition-colors"
+                aria-label="Close image viewer"
                 onClick={() => setSelectedImage(null)}
               >
                 <X className="h-6 w-6" />
               </button>
 
-              {/* Download button */}
+              {/* Download */}
               <button
-                onClick={() => downloadImageAsPDF(filteredImages[selectedImage].url, filteredImages[selectedImage].tag)}
-                // href={filteredImages[selectedImage].url || "/placeholder.svg"}
+                onClick={() =>
+                  downloadImageAsPDF(
+                    filteredImages[selectedImage].url,
+                    filteredImages[selectedImage].tag
+                  )
+                }
                 className="absolute top-2 right-12 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 transition-colors"
-                aria-label="Download image"
+                aria-label={`Download ${filteredImages[selectedImage]?.tag || "image"}`}
               >
                 <Download />
               </button>
@@ -256,6 +270,7 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
               {/* Previous */}
               <button
                 className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/60 text-white rounded-full p-2 hover:bg-black/80 transition-colors"
+                aria-label="Previous image"
                 onClick={(e) => {
                   e.stopPropagation();
                   prevImage();
@@ -267,6 +282,7 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
               {/* Next */}
               <button
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/60 text-white rounded-full p-2 hover:bg-black/80 transition-colors"
+                aria-label="Next image"
                 onClick={(e) => {
                   e.stopPropagation();
                   nextImage();
@@ -278,12 +294,6 @@ export function ImageGallery({ images }: { lodgeKey: string; images: any }) {
           </DialogContent>
         </Dialog>
       )}
-
-      {/* <div className="text-center mt-8">
-        <Button variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50">
-          Load More
-        </Button>
-      </div> */}
     </div>
   );
 }

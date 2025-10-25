@@ -113,10 +113,12 @@ export function GuestInformation({
   const handleContinue = () => {
     // Validate required fields
     const requiredFields = ["firstName", "lastName", "email", "phone"] as const;
+
     if (contactInfo) {
       const missingFields = requiredFields.filter(
         (field) => !contactInfo[field]
       );
+      
       if (missingFields.length > 0) {
         setError(
           `Please fill in the following fields: ${missingFields.join(", ")}`

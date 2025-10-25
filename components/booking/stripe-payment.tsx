@@ -58,10 +58,6 @@ export function StripePayment({
 
   const price = calculatePrices(bookingDetails?.dates, bookingDetails?.lodge);
 
-  const total =
-    price +
-    (bookingDetails?.lodge.cleaning_fee +
-      bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
 
   let discount = 0;
 

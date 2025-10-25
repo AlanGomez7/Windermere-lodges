@@ -7,14 +7,12 @@ import { Card, CardContent, CardHeader } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Star } from "lucide-react";
 import ReactCookiebot from "react-cookiebot"
-import { Button } from "./ui/button";
 const reactCookiebotId  =  process.env.REACT_COOKIE || "1c0c7e02-9a13-49ff-b308-bee8474408c9"
+console.log(reactCookiebotId)
 
 export const Testimonials = () => {
   const [comments, setComments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [initialised, setInitialised] = useState(false);
-
   const [err, setErr] = useState("");
   const sliderRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<gsap.core.Tween | null>(null);

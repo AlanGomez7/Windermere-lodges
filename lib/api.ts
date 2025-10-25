@@ -181,33 +181,6 @@ export const checkAvailableLodges = async (
       params?.guests.infants +
       params?.guests.children;
 
-    // const diffTime = checkOut.getTime() - checkIn.getTime(); // milliseconds
-    // const diffDays = diffTime / (1000 * 60 * 60 * 24); // convert ms → days
-
-    // if (diffDays < minStay) {
-    //   return {
-    //     data: [],
-    //     included: [],
-    //     message:
-    //       "Your stay must be at least " +
-    //       minStay +
-    //       " nights. Please choose a longer stay.",
-    //     ok: false,
-    //   };
-    // }
-
-    // if (diffDays > maxStay) {
-    //   return {
-    //     data: [],
-    //     included: [],
-    //     message:
-    //       "Your stay cannot be longer than " +
-    //       maxStay +
-    //       " nights. Please choose a shorter stay.",
-    //     ok: false,
-    //   };
-    // }
-
     if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
       return {
         data: [],

@@ -10,14 +10,12 @@ import {
   findDiscountAmount,
   findDiscountValue,
 } from "@/lib/utils";
-import { addDays, format, eachDayOfInterval } from "date-fns";
+import { format } from "date-fns";
 import { GuestSelector } from "../booking/guest-selector";
 import { useAppContext } from "@/app/context/context";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
-import { data } from "@/data/lodges";
 import Coupons from "./Coupons";
-import { X } from "lucide-react";
 
 export default function PirceDetails({
   lodge,

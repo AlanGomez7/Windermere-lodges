@@ -49,6 +49,7 @@ const CheckoutPage = ({
         .then((res) => res.json())
         .then((data) => {
           if (data?.clientSecret) {
+            console.log("payment intent created")
             setClientSecret(data.clientSecret);
           } else {
             toast.error("Unable to initialize payment");

@@ -224,6 +224,7 @@ export function calculatePrices(
     start: dateRange?.from,
     end: dateRange?.to,
   });
+
   const formattedDays = days.map((d) => {
     return format(d, "yyyy-MM-dd");
   });
@@ -232,7 +233,8 @@ export function calculatePrices(
 
   for (const day of formattedDays.slice(0, formattedDays.length - 1)) {
     const data = dataMap[day];
-    total = total + data.day_rate;
+    const dayRate = data ? data?.day_rate : lodge?.price
+    total = total + dayRate;
   }
 
   return total;

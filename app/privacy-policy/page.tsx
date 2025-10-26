@@ -1,6 +1,31 @@
 import { PageHeader } from "@/components/page-header";
 import { Footer } from "react-day-picker";
 
+export const metadata = {
+  title: "Privacy Policy | Windermere Lodges",
+  description:
+    "Read Windermere Lodges' privacy policy to understand how we collect, use, and protect your personal information while you enjoy our luxury lodges.",
+    
+  openGraph: {
+    title: "Privacy Policy | Windermere Lodges",
+    description:
+      "Learn about how Windermere Lodges manages your personal data securely and responsibly, ensuring your privacy while booking and staying with us.",
+    url: "https://windermerelodges.co.uk/privacy-policy",
+    images: [
+      {
+        url: "https://windermerelodges.co.uk/og-image-privacy-policy.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Privacy Policy at Windermere Lodges",
+      },
+    ],
+  },
+  alternates: {
+    canonical: "https://windermerelodges.co.uk/privacy-policy",
+  },
+};
+
+
 export default function PrivacyPolicies() {
   type Booking = {
     title: string;
@@ -140,6 +165,8 @@ export default function PrivacyPolicies() {
       ],
     },
   ];
+
+  
   return (
     <main className="min-h-screen bg-white">
       <PageHeader

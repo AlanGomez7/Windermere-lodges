@@ -196,8 +196,6 @@ export const checkAvailableLodges = async (
     const response = await checkAvailability(
       checkInStr,
       checkOutStr,
-      // minStay,
-      // maxStay,
       totalGuests
     );
 

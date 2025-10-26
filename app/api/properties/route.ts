@@ -8,6 +8,6 @@ export async function GET() {
     return NextResponse.json({ lodges: response, ok: true }, { status: 200 });
   } catch (err) {
     const message = getErrorMessage(err);
-    return NextResponse.json({ message, ok: false }, { status: 400 });
+    return NextResponse.json({ message, ok: false }, { status: 500 });
   }
 }

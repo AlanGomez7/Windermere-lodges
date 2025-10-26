@@ -6,6 +6,32 @@ import { ChatbotButton } from "@/components/chatbot/chatbot-button"
 import contactBanner from "@/public/contact.jpg"
 import { auth } from "@/auth"
 
+export const metadata = {
+  title: "Contact Us | Windermere Lodges",
+  description:
+    "Get in touch with Windermere Lodges for inquiries, bookings, or assistance. We're here to help you plan your perfect Lake District getaway.",
+    
+  openGraph: {
+    title: "Contact Us | Windermere Lodges",
+    description:
+      "Reach out to Windermere Lodges to ask questions, request information, or manage your bookings. Luxury lodges and exceptional service await you.",
+    url: "https://windermerelodges.co.uk/contact",
+    images: [
+      {
+        url: "https://windermerelodges.co.uk/og-image-contact.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Contact Windermere Lodges",
+      },
+    ],
+  },
+  alternates: {
+    canonical: "https://windermerelodges.co.uk/contact",
+  },
+};
+
+
+
 export default async function ContactPage() {
   const session = await auth();
   return (

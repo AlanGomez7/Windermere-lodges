@@ -5,6 +5,30 @@ import { SocialLogin } from "@/components/auth/social-login"
 import { ChatbotButton } from "@/components/chatbot/chatbot-button"
 import { RegisterForm } from "@/components/auth/register-form"
 
+export const metadata = {
+  title: "Register | Windermere Lodges",
+  description:
+    "Create your Windermere Lodges account to manage bookings, preferences, and enjoy seamless access to our luxury lodges in the Lake District.",
+    
+  openGraph: {
+    title: "Register | Windermere Lodges",
+    description:
+      "Sign up for a Windermere Lodges account to book your ideal Lake District retreat and manage your stays with ease.",
+    url: "https://windermerelodges.co.uk/register",
+    images: [
+      {
+        url: "https://windermerelodges.co.uk/og-image-register.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Register at Windermere Lodges",
+      },
+    ],
+  },
+  alternates: {
+    canonical: "https://windermerelodges.co.uk/register",
+  },
+};
+
 
 export default  async function RegisterPage() {
 

@@ -3,7 +3,31 @@ import Footer from "@/components/footer"
 import { PageHeader } from "@/components/page-header"
 import { LoginForm } from "@/components/auth/login-form"
 import { SocialLogin } from "@/components/auth/social-login"
-import { ChatbotButton } from "@/components/chatbot/chatbot-button"
+
+export const metadata = {
+  title: "Login | Windermere Lodges",
+  description:
+    "Access your Windermere Lodges account to manage bookings, preferences, and personal details securely.",
+    
+  openGraph: {
+    title: "Login | Windermere Lodges",
+    description:
+      "Log in to your Windermere Lodges account to view and manage your bookings and preferences for a seamless Lake District experience.",
+    url: "https://windermerelodges.co.uk/login",
+    images: [
+      {
+        url: "https://windermerelodges.co.uk/og-image-login.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Login to Windermere Lodges",
+      },
+    ],
+  },
+  alternates: {
+    canonical: "https://windermerelodges.co.uk/login",
+  },
+};
+
 
 export default function LoginPage() {
 

@@ -80,11 +80,13 @@ export function StripePayment({
         bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
   }
 
-  if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
+  if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
     throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
   }
 
-  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+  console.log(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
   if (!orderDetails) {
     return null;

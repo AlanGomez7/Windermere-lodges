@@ -6,11 +6,11 @@ import NavbarWrapper from "@/components/navbar-wrapper";
 import { AppWrapper } from "./context/context";
 import { SessionProvider } from "next-auth/react";
 import { ChatbotButton } from "@/components/chatbot/chatbot-button";
+import 'hacktimer';
+
 
 export const metadata: Metadata = {
   title: "Windermere Lodges",
-  description: "Created by coffee_coders",
-  generator: "Ketan Kumar Shrivastava",
 };
 
 export default async function RootLayout({

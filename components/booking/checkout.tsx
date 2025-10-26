@@ -136,7 +136,7 @@ const CheckoutPage = ({
         </div>
       </div>
     );
-  }
+  } 
 
   return (
     <>

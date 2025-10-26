@@ -134,7 +134,6 @@ export function GuestInformation({
       return;
     }
 
-    console.log(contactInfo);
 
     localStorage.setItem("userInfo", JSON.stringify(contactInfo));
     setOrderDetails(contactInfo);

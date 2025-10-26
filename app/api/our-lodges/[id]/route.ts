@@ -6,15 +6,13 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request, { params }: any) {
   const { id } = await params;
 
-  console.log(id)
   if (!id) {
-    throw new Error("id not valid");
+    return NextResponse.json({ message: "Invalid lodge ID", ok: false }, { status: 400 });
   }
 
 
   try {
     const response = await getLodgeDetails(id);
-    console.log(response)
     
     if (!response) {
       return notFound();
@@ -25,6 +23,6 @@ export async function GET(request: Request, { params }: any) {
   } catch (err) {
 
     const message = getErrorMessage(err);
-    return NextResponse.json({ message: message, ok: false }, { status: 200 });
+    return NextResponse.json({ message: message, ok: false }, { status: 500 });
   }
 }

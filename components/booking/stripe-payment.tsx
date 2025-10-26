@@ -52,6 +52,7 @@ export function StripePayment({
   auth,
   setCurrentStep,
 }: GuestInformationProps) {
+  
   const { orderDetails, searchParams, appliedCoupon } = useAppContext();
 
   const nights = findDays(searchParams?.dates?.from, searchParams?.dates?.to);
@@ -83,8 +84,6 @@ export function StripePayment({
   if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
     throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
   }
-
-  console.log(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 

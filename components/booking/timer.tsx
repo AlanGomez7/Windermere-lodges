@@ -1,13 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function BookingTimer({ isActive, id }: { isActive: boolean, id:string }) {
+export default function BookingTimer({
+  isActive,
+  id,
+}: {
+  isActive: boolean;
+  id: string;
+}) {
   const TIMER_DURATION = 5 * 60; // 5 minutes in seconds
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const [expired, setExpired] = useState(false);
   const router = useRouter();
+
+  // store start time and interval reference between renders
+  const startTimeRef = useRef<number | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
@@ -18,31 +28,47 @@ export default function BookingTimer({ isActive, id }: { isActive: boolean, id:s
   };
 
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      return;
+    }
+
+    // store timestamp when the timer starts
+    startTimeRef.current = Date.now();
     setTimeLeft(TIMER_DURATION);
     setExpired(false);
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setExpired(true);
-          return 0;
-        }
-        return prev - 1;
-      });
+
+    intervalRef.current = setInterval(() => {
+      if (!startTimeRef.current) return;
+
+      // calculate elapsed time since start in seconds
+      const elapsedSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      const remaining = TIMER_DURATION - elapsedSeconds;
+
+      if (remaining <= 0) {
+        clearInterval(intervalRef.current!);
+        setTimeLeft(0);
+        setExpired(true);
+      } else {
+        setTimeLeft(remaining);
+      }
     }, 1000);
-    return () => clearInterval(interval);
+
+    // cleanup
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [isActive]);
 
-  // Redirect a few seconds after expired
+  // redirect after expiration
   useEffect(() => {
     if (expired) {
       const timeout = setTimeout(() => {
-        router.replace(`/our-lodges/${id}`); // go home
-      }, 3000); // wait 3 seconds
+        router.replace(`/our-lodges/${id}`);
+      }, 3000);
       return () => clearTimeout(timeout);
     }
-  }, [expired, router]);
+  }, [expired, router, id]);
 
   return (
     <div className="w-full flex justify-center mb-6">

@@ -170,6 +170,7 @@ export default function StripePayment({
           >
             <CheckoutPage
               auth={auth}
+              clientSecret={clientSecret}
               isActive={isActive}
               bookingDetails={bookingDetails}
               setCurrentStep={setCurrentStep}

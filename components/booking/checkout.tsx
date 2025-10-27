@@ -20,6 +20,7 @@ const CheckoutPage = ({
   bookingDetails,
   isActive,
   orderDetails,
+  clientSecret
 }: {
   amount: number;
   auth: any;
@@ -27,6 +28,7 @@ const CheckoutPage = ({
   setCurrentStep: any;
   bookingDetails: any;
   orderDetails: any;
+  clientSecret:string
 }) => {
   const { setOrderSuccess, appliedCoupon } = useAppContext();
   const stripe = useStripe();
@@ -100,7 +102,7 @@ const CheckoutPage = ({
       <BookingTimer isActive={isActive} id={bookingDetails?.lodge?.refNo} />
       <PaymentError setShowDialog={setErrorModal} showDialog={errorModal} />
       <form onSubmit={handleSubmit} className="bg-white p-2 rounded-md">
-        <PaymentElement onReady={() => setElementReady(true)} />
+        {clientSecret && <PaymentElement onReady={() => setElementReady(true)} />}
 
         {errorMessage && (
           <div className="text-red-600 text-lg mt-2">{errorMessage}</div>

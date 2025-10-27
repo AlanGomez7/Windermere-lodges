@@ -20,7 +20,10 @@ if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
-console.log(stripePromise)
+
+console.log(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, stripePromise)
+
+
 
 export default function StripePayment({
   bookingDetails,
@@ -71,9 +74,17 @@ export default function StripePayment({
     return null
   }
 
+  if (!stripePromise) {
+  return (
+    <div className="text-center p-8 text-gray-500">
+      Stripe failed to initialize. Please try again later.
+    </div>
+  );
+}
   if (!clientSecret || !orderDetails) {
     return <StripePaymentSkeleton/>;
   }
+
 
   return (
     <section

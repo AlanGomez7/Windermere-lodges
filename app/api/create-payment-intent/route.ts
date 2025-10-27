@@ -17,6 +17,8 @@ type booking = {
   propertyId: string;
 };
 
+console.log(process.env.STRIPE_SECRET_KEY)
+
 export async function POST(req: Request) {
   try {
     console.log(stripe)

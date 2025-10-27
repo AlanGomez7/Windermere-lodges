@@ -34,6 +34,7 @@ const CheckoutPage = ({
   const stripe = useStripe();
   const elements = useElements();
 
+  console.log(clientSecret, stripe, elements)
 
   const [errorMessage, setErrorMessage] = useState<string>();
   const [errorModal, setErrorModal] = useState(false);

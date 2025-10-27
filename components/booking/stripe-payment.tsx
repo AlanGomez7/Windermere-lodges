@@ -10,14 +10,17 @@ import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
 import StripePaymentSkeleton from "../ui/shimmers/stripe-shimmer";
+import toast from "react-hot-toast";
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
+  console.log("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined")
   throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
 }
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
+console.log(stripePromise)
 
 export default function StripePayment({
   bookingDetails,
@@ -57,6 +60,9 @@ export default function StripePayment({
         .then((res) => res.json())
         .then((data) => {
           if (data?.clientSecret)setClientSecret(data.clientSecret);
+          else toast.error("Something went wrong, couldn't create client secret")
+        }).catch(()=>{
+          toast.error("Something went wrong, couldn't create client secret error")
         });
     }
   }, [amount, bookingDetails, orderDetails]);

@@ -19,6 +19,7 @@ type booking = {
 
 export async function POST(req: Request) {
   try {
+    console.log(stripe)
     const { bookingDetails, orderDetails, appliedCoupon } = await req.json();
     const { guests, lodge, dates } = bookingDetails;
 
@@ -63,6 +64,8 @@ export async function POST(req: Request) {
         enabled: true,
       },
     });
+
+    console.log(paymentIntent)
 
 
     await createBooking(

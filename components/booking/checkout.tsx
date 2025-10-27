@@ -35,12 +35,10 @@ const CheckoutPage = ({
 
   const { setOrderSuccess, appliedCoupon } = useAppContext();
 
-  console.log(clientSecret, stripe, elements);
 
   const [errorMessage, setErrorMessage] = useState<string>();
   const [errorModal, setErrorModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [elementReady, setElementReady] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -117,10 +115,7 @@ const CheckoutPage = ({
         {errorMessage && (
           <div className="text-red-600 text-lg mt-2">{errorMessage}</div>
         )}
-        <button
-          disabled={!stripe || loading || !elementReady}
-          className="text-white w-full p-5 bg-button mt-2 rounded-md font-bold disabled:opacity-50 disabled:animate-pulse"
-        >
+        <button className="text-white w-full p-5 bg-button mt-2 rounded-md font-bold">
           {!loading ? `Pay £${amount}` : "Processing..."}
         </button>
       </form>

@@ -12,7 +12,6 @@ import { Badge } from "../ui/badge";
 import StripePaymentSkeleton from "../ui/shimmers/stripe-shimmer";
 import toast from "react-hot-toast";
 
-console.log("stripepublishkey", process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
   console.log("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
@@ -73,7 +72,6 @@ export default function StripePayment({
     }
   }, [amount, bookingDetails, orderDetails]);
 
-  console.log(clientSecret)
   if (!isActive) {
     return null;
   }
@@ -180,7 +178,7 @@ export default function StripePayment({
           </Card>
         </div>
 
-        <div className="flex-1 lg:pl-16">
+        {clientSecret && <div className="flex-1 lg:pl-16">
           <Elements
             stripe={stripePromise}
             options={{
@@ -199,7 +197,7 @@ export default function StripePayment({
               amount={amount}
             />
           </Elements>
-        </div>
+        </div>}
       </div>
     </section>
   );

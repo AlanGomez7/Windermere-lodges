@@ -24,7 +24,6 @@ export const createBooking = async (
   amount: number
 ) => {
   try {
-    console.log(amount);
     const session = await auth();
 
     const checkIn = new Date(bookingDetails?.dates?.from)

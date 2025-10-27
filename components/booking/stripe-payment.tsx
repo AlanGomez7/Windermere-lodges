@@ -1,94 +1,72 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./checkout";
-import { calculatePrices, findDays, findDiscountAmount } from "@/lib/utils";
 import { useAppContext } from "@/app/context/context";
+import { calculatePrices, findDays, findDiscountAmount } from "@/lib/utils";
+import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
+import Image from "next/image";
+import { Badge } from "../ui/badge";
+import StripePaymentSkeleton from "../ui/shimmers/stripe-shimmer";
 
-interface ContactInfo {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  postalCode: string;
-  country: string;
-  specialRequests: string;
+if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
+  throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
 }
 
-interface BookingDetails {
-  contactInfo?: Partial<ContactInfo>;
-  specialRequests?: string;
-  lodge: any;
-  dates: any;
-  guests: { adults: number; children: number; pets: number };
-  nights: any;
-}
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
-interface GuestInformationProps {
-  onContinue?: (contactInfo: ContactInfo) => void;
-  onBack?: () => void;
-  auth: any;
-  bookingDetails: BookingDetails;
-  isActive: boolean;
-  setCurrentStep: () => void;
-}
-
-export function StripePayment({
+export default function StripePayment({
   bookingDetails,
   isActive,
   auth,
   setCurrentStep,
-}: GuestInformationProps) {
-  
+}: {
+  bookingDetails: any;
+  isActive: boolean;
+  auth: any;
+  setCurrentStep: () => void;
+}) {
   const { orderDetails, searchParams, appliedCoupon } = useAppContext();
 
   const nights = findDays(searchParams?.dates?.from, searchParams?.dates?.to);
-
   const price = calculatePrices(bookingDetails?.dates, bookingDetails?.lodge);
 
+  let discount = appliedCoupon
+    ? price - findDiscountAmount(appliedCoupon, price)
+    : 0;
 
-  let discount = 0;
+  let amount =
+    price +
+    (bookingDetails?.lodge.cleaning_fee +
+      bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee) -
+    discount;
 
-  if (appliedCoupon) {
-    discount = price - findDiscountAmount(appliedCoupon, price);
+  const [clientSecret, setClientSecret] = useState("");
+
+  useEffect(() => {
+    if (orderDetails) {
+      fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingDetails, orderDetails, appliedCoupon }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.clientSecret)setClientSecret(data.clientSecret);
+        });
+    }
+  }, [amount, bookingDetails, orderDetails]);
+
+  if(!isActive){
+    return null
   }
 
-  let amount = 1;
-
-  if (appliedCoupon) {
-    amount =
-      price -
-      discount +
-      (bookingDetails?.lodge.cleaning_fee +
-        bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
-  } else {
-    amount =
-      price +
-      (bookingDetails?.lodge.cleaning_fee +
-        bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee);
-  }
-
-  if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
-    throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
-  }
-
-  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-
-  if (!orderDetails) {
-    return null;
+  if (!clientSecret || !orderDetails) {
+    return <StripePaymentSkeleton/>;
   }
 
   return (
@@ -185,9 +163,9 @@ export function StripePayment({
           <Elements
             stripe={stripePromise}
             options={{
-              mode: "payment",
-              amount: amount * 100,
-              currency: "gbp",
+              clientSecret,
+              appearance: { theme: "stripe" },
+              locale: "auto",
             }}
           >
             <CheckoutPage

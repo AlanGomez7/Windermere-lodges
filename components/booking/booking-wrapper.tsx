@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/page-header";
 import { GuestInformation } from "@/components/booking/guest-information";
 import { useAppContext } from "../../app/context/context";
 import { BookingConfirmation } from "@/components/booking/booking-confirmation";
-import { StripePayment } from "@/components/booking/stripe-payment";
+import StripePayment  from "@/components/booking/stripe-payment";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
@@ -114,7 +114,7 @@ export default function BookingWrapper({ auth }: { auth: any }) {
           bookingDetails={orderDetails}
           isActive={currentStep === 3}
           auth={auth}
-          onBack={() => setCurrentStep(currentStep - 1)}
+          // onBack={() => setCurrentStep(currentStep - 1)}
           setCurrentStep={() => setCurrentStep(currentStep + 1)}
         />
       )}
@@ -123,8 +123,6 @@ export default function BookingWrapper({ auth }: { auth: any }) {
         bookingDetails={searchParams}
         isActive={currentStep === 4}
       />
-      {/* <Footer />
-      <ChatbotButton /> */}
     </main>
   );
 }

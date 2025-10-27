@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 import { getLodgeDetails } from "@/app/queries/properties";
 import { calculatePrices, findDays, findDiscountAmount } from "@/lib/utils";
-import { createBooking, findLodgePriceForDays, verifyCoupon } from "@/app/queries/order";
+import { createBooking, verifyCoupon } from "@/app/queries/order";
 
 type booking = {
   id: string;
@@ -34,14 +34,6 @@ export async function POST(req: Request) {
 
     const nights = findDays(dates.from, dates.to);
     const property = await getLodgeDetails(lodge?.refNo);
-    // const availability = await findLodgePriceForDays(dates?.from, dates?.to, property?.refNo);
-
-
-    // if(availability ){
-    //   availability.map(()=>{
-        
-    //   })
-    // }
 
     if (!property) throw new Error("Lodge not found");
 
@@ -71,6 +63,7 @@ export async function POST(req: Request) {
         enabled: true,
       },
     });
+
 
     await createBooking(
       orderDetails,

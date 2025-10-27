@@ -61,7 +61,7 @@ export default function StripePayment({
       })
         .then((res) => res.json())
         .then((data) => {
-          if (data?.clientSecret) setClientSecret(data.clientSecret);
+          if (data?.clientSecret)setClientSecret(data.clientSecret);
           else
             toast.error("Something went wrong, couldn't create client secret");
         })

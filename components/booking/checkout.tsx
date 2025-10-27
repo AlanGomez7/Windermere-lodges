@@ -20,7 +20,7 @@ const CheckoutPage = ({
   bookingDetails,
   isActive,
   orderDetails,
-  clientSecret
+  clientSecret,
 }: {
   amount: number;
   auth: any;
@@ -28,13 +28,14 @@ const CheckoutPage = ({
   setCurrentStep: any;
   bookingDetails: any;
   orderDetails: any;
-  clientSecret:string
+  clientSecret: string;
 }) => {
-  const { setOrderSuccess, appliedCoupon } = useAppContext();
   const stripe = useStripe();
   const elements = useElements();
 
-  console.log(clientSecret, stripe, elements)
+  const { setOrderSuccess, appliedCoupon } = useAppContext();
+
+  console.log(clientSecret, stripe, elements);
 
   const [errorMessage, setErrorMessage] = useState<string>();
   const [errorModal, setErrorModal] = useState(false);
@@ -46,11 +47,11 @@ const CheckoutPage = ({
     if (!stripe || !elements) return;
     setLoading(true);
 
-    if (!elementReady) {
-      setErrorMessage("Payment form is still loading, please wait.");
-      setLoading(false);
-      return;
-    }
+    // if (!elementReady) {
+    //   setErrorMessage("Payment form is still loading, please wait.");
+    //   setLoading(false);
+    //   return;
+    // }
 
     const { error: submitError } = await elements.submit();
 
@@ -98,20 +99,20 @@ const CheckoutPage = ({
     }
   };
 
-  if (!stripe || !elements) {
-  return (
-    <div className="p-4 text-gray-500 text-center">
-      Payment form failed to load. Please refresh the page.
-    </div>
-  );
-}
+  //   if (!stripe || !elements) {
+  //   return (
+  //     <div className="p-4 text-gray-500 text-center">
+  //       Payment form failed to load. Please refresh the page.
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
       <BookingTimer isActive={isActive} id={bookingDetails?.lodge?.refNo} />
       <PaymentError setShowDialog={setErrorModal} showDialog={errorModal} />
       <form onSubmit={handleSubmit} className="bg-white p-2 rounded-md">
-        {clientSecret && <PaymentElement onReady={() => setElementReady(true)} />}
+        <PaymentElement />
 
         {errorMessage && (
           <div className="text-red-600 text-lg mt-2">{errorMessage}</div>

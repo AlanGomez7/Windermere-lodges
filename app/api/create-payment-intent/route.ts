@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 import { getLodgeDetails } from "@/app/queries/properties";
 import { calculatePrices, findDays, findDiscountAmount } from "@/lib/utils";
 import { createBooking, verifyCoupon } from "@/app/queries/order";
@@ -17,11 +16,13 @@ type booking = {
   propertyId: string;
 };
 
-console.log(process.env.STRIPE_SECRET_KEY)
+console.log(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req: Request) {
+  const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
   try {
-    console.log(stripe)
+    console.log(stripe);
     const { bookingDetails, orderDetails, appliedCoupon } = await req.json();
     const { guests, lodge, dates } = bookingDetails;
 
@@ -67,8 +68,7 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log(paymentIntent)
-
+    console.log(paymentIntent);
 
     await createBooking(
       orderDetails,

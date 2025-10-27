@@ -73,6 +73,7 @@ export default function StripePayment({
     }
   }, [amount, bookingDetails, orderDetails]);
 
+  console.log(clientSecret)
   if (!isActive) {
     return null;
   }

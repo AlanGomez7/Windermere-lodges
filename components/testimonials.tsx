@@ -131,7 +131,7 @@ export const Testimonials = () => {
 
   return (
     <section className="py-16 bg-white">
-      {/* <ReactCookiebot domainGroupId={reactCookiebotId} /> */}
+      <ReactCookiebot domainGroupId={reactCookiebotId} />
 
       <div className="container mx-auto px-4 overflow-hidden">
         <h2 className="text-3xl font-bold text-center mb-8">

@@ -9,6 +9,10 @@ import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { useRouter } from "next/navigation";
 import { StableStripeElements } from "./stable-stripe-wrapper";
+import { PageHeader } from "../page-header";
+import { Button } from "../ui/button";
+import { Icons } from "../ui/icons";
+import { MapPin } from "lucide-react";
 
 if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
   throw new Error("Stripe publishable key is not set in environment variables");
@@ -34,15 +38,15 @@ export default function StripePayment({ auth }: { auth: any }) {
   const { nights, price, discount, amount } = useMemo(() => {
     if (!bookingDetails) return { nights: 0, price: 0, discount: 0, amount: 0 };
 
-    const nights = findDays(bookingDetails.dates.from, bookingDetails.dates.to);
-    const price = calculatePrices(bookingDetails.dates, bookingDetails.lodge);
+    const nights = findDays(bookingDetails?.dates?.from, bookingDetails?.dates.to);
+    const price = calculatePrices(bookingDetails?.dates, bookingDetails?.lodge);
     const discount = appliedCoupon
       ? price - findDiscountAmount(appliedCoupon, price)
       : 0;
     const amount =
       price +
-      (bookingDetails.lodge.cleaning_fee +
-        bookingDetails.guests.pets * bookingDetails.lodge.pets_fee) -
+      (bookingDetails.lodge?.cleaning_fee +
+        bookingDetails.guests.pets * bookingDetails.lodge?.pets_fee) -
       discount;
 
     return { nights, price, discount, amount };
@@ -53,92 +57,127 @@ export default function StripePayment({ auth }: { auth: any }) {
   }
 
   return (
-    <section className="p-3 lg:p-16 mb-5 min-h-screen flex justify-center">
-      <div className="container flex flex-col lg:flex-row justify-between gap-8">
-        {/* Summary Card */}
-        <div className="w-[500px] hidden lg:block">
-          <Card className="p-6 bg-[#EDF6F4]">
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden">
-              <Image
-                src={bookingDetails?.lodge?.images[0]}
-                alt={bookingDetails?.lodge?.nickname}
-                fill
-                className="object-cover"
-                priority
-              />
-              {bookingDetails?.lodge.isNew && (
-                <Badge className="absolute top-4 left-4 bg-emerald-600 hover:bg-emerald-700">
-                  New
-                </Badge>
-              )}
+    <main className="min-h-screen bg-white">
+      <PageHeader
+        title="Book Your Stay"
+        description="Secure your perfect Lake District getaway"
+        backgroundImage={bookingDetails?.lodge?.images[3] || "/placeholder.jpg"}
+      />
+      <div className="p-2 lg:px-28 mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between my-8">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-10 w-10 bg-white"
+              onClick={() => router.push("/our-lodges")}
+              aria-label="Go back to our lodges"
+            >
+              <Icons.chevronLeft className="h-6 w-6" />
+            </Button>
+
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl text-gray-800">
+                {bookingDetails?.lodge?.nickname}
+              </h1>
+              <p className="text-sm text-gray-600 flex pt-4">
+                <MapPin className="mr-2 h-5 w-5 text-emerald-400 flex-shrink-0" />
+
+                {bookingDetails?.lodge?.address}
+              </p>
             </div>
-
-            <div className="flex flex-col w-full items-start gap-3 mt-3">
-              <CardTitle className="text-lg lg:text-xl font-bold">
-                {bookingDetails?.lodge.nickname}
-              </CardTitle>
-              <CardDescription>{bookingDetails?.lodge.address}</CardDescription>
-            </div>
-
-            <CardContent className="p-0 pt-6">
-              <div className="flex flex-col gap-2">
-                <div className="flex justify-between text-sm">
-                  <span>{nights} Nights</span>
-                  <span>£{price}</span>
-                </div>
-
-                {bookingDetails?.guests.pets > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span>{bookingDetails?.guests.pets} Pets</span>
-                    <span>
-                      £
-                      {bookingDetails?.guests.pets *
-                        bookingDetails?.lodge.pets_fee}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex justify-between text-sm">
-                  <span>Cleaning fee</span>
-                  <span>£{bookingDetails?.lodge.cleaning_fee}</span>
-                </div>
-
-                {appliedCoupon && (
-                  <>
-                    <div className="flex justify-between text-sm">
-                      <span>Discount</span>
-                      <span>- £{discount}</span>
-                    </div>
-                    <p className="text-green-700 text-sm py-3">
-                      Coupon <strong>{appliedCoupon.code}</strong> applied (
-                      {appliedCoupon.discountType === "PERCENTAGE"
-                        ? `${appliedCoupon.discountValue}% off`
-                        : `£${appliedCoupon.discountValue} off`}
-                      )
-                    </p>
-                  </>
-                )}
-
-                <div className="flex justify-between font-bold text-lg pt-3 border-t">
-                  <span>Total Payment</span>
-                  <span>£{amount}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Stripe Payment Form */}
-        <div className="flex-1 lg:pl-16">
-          <StableStripeElements
-            stripePromise={stripePromise}
-            auth={auth}
-            bookingDetails={bookingDetails}
-            orderDetails={orderDetails}
-            amount={amount}
-          />
+          </div>
         </div>
       </div>
-    </section>
+      <section className="p-3 lg:p-16 mb-5 min-h-screen flex justify-center">
+        <div className="container flex flex-col lg:flex-row justify-between gap-8">
+          {/* Summary Card */}
+          <div className="w-[500px] hidden lg:block">
+            <Card className="p-6 bg-[#EDF6F4]">
+              <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                <Image
+                  src={bookingDetails?.lodge?.images[0]}
+                  alt={bookingDetails?.lodge?.nickname}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                {bookingDetails?.lodge?.isNew && (
+                  <Badge className="absolute top-4 left-4 bg-emerald-600 hover:bg-emerald-700">
+                    New
+                  </Badge>
+                )}
+              </div>
+
+              <div className="flex flex-col w-full items-start gap-3 mt-3">
+                <CardTitle className="text-lg lg:text-xl font-bold">
+                  {bookingDetails?.lodge?.nickname}
+                </CardTitle>
+                <CardDescription>
+                  {bookingDetails?.lodge?.address}
+                </CardDescription>
+              </div>
+
+              <CardContent className="p-0 pt-6">
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between text-sm">
+                    <span>{nights} Nights</span>
+                    <span>£{price}</span>
+                  </div>
+
+                  {bookingDetails?.guests.pets > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span>{bookingDetails?.guests.pets} Pets</span>
+                      <span>
+                        £
+                        {bookingDetails?.guests.pets *
+                          bookingDetails?.lodge?.pets_fee}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between text-sm">
+                    <span>Cleaning fee</span>
+                    <span>£{bookingDetails?.lodge?.cleaning_fee}</span>
+                  </div>
+
+                  {appliedCoupon && (
+                    <>
+                      <div className="flex justify-between text-sm">
+                        <span>Discount</span>
+                        <span>- £{discount}</span>
+                      </div>
+                      <p className="text-green-700 text-sm py-3">
+                        Coupon <strong>{appliedCoupon.code}</strong> applied (
+                        {appliedCoupon.discountType === "PERCENTAGE"
+                          ? `${appliedCoupon.discountValue}% off`
+                          : `£${appliedCoupon.discountValue} off`}
+                        )
+                      </p>
+                    </>
+                  )}
+
+                  <div className="flex justify-between font-bold text-lg pt-3 border-t">
+                    <span>Total Payment</span>
+                    <span>£{amount}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Stripe Payment Form */}
+          <div className="flex-1 lg:pl-16">
+            <StableStripeElements
+              stripePromise={stripePromise}
+              auth={auth}
+              bookingDetails={bookingDetails}
+              orderDetails={orderDetails}
+              amount={amount}
+            />
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

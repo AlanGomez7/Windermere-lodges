@@ -4,15 +4,14 @@ import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { GuestInformation } from "@/components/booking/guest-information";
 import { useAppContext } from "../../app/context/context";
-import { BookingConfirmation } from "@/components/booking/booking-confirmation";
-import StripePayment  from "@/components/booking/stripe-payment";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { MapPin } from "lucide-react";
+import GuestInformationSkeleton from "../ui/shimmers/info-shimmer";
 
 export default function BookingWrapper({ auth }: { auth: any }) {
-  const { searchParams } = useAppContext();
+  const { searchParams, setDetails } = useAppContext();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(2);
   const [orderDetails, setOrderDetails] = useState<any>();
@@ -28,8 +27,8 @@ export default function BookingWrapper({ auth }: { auth: any }) {
   useEffect(() => {
     setLoading(true);
 
-    if (!searchParams.dates) {
-      router.back();
+    if (!searchParams?.dates) {
+      router.replace("/our-lodges");
       return;
     }
 
@@ -42,8 +41,8 @@ export default function BookingWrapper({ auth }: { auth: any }) {
       const toLocal = formatLocalDate(new Date(searchParams.dates.to));
 
       details = { ...details, dates: { from: fromLocal, to: toLocal } };
-      localStorage.setItem("order", JSON.stringify(details));
-
+      // localStorage.setItem("order", JSON.stringify(details));
+      setDetails(details);
       setOrderDetails(details);
     } catch (err) {
       console.error("Error parsing/saving order in localStorage", err);
@@ -100,7 +99,9 @@ export default function BookingWrapper({ auth }: { auth: any }) {
 
       {/* <BookingSteps currentStep={currentStep} /> */}
 
-      {orderDetails && (
+      {!orderDetails ? (
+        <GuestInformationSkeleton />
+      ) : (
         <GuestInformation
           bookingDetails={orderDetails}
           onBack={() => setCurrentStep((s) => s - 1)}
@@ -108,21 +109,6 @@ export default function BookingWrapper({ auth }: { auth: any }) {
           setCurrentStep={() => setCurrentStep(currentStep + 1)}
         />
       )}
-
-      {orderDetails && (
-        <StripePayment
-          bookingDetails={orderDetails}
-          isActive={currentStep === 3}
-          auth={auth}
-          // onBack={() => setCurrentStep(currentStep - 1)}
-          setCurrentStep={() => setCurrentStep(currentStep + 1)}
-        />
-      )}
-
-      <BookingConfirmation
-        bookingDetails={searchParams}
-        isActive={currentStep === 4}
-      />
     </main>
   );
 }

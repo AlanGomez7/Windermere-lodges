@@ -1,12 +1,14 @@
 import { auth } from "@/auth";
 import BookingWrapper from "@/components/booking/booking-wrapper";
 import Footer from "@/components/footer";
+import GuestInformationSkeleton from "@/components/ui/shimmers/info-shimmer";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Booking | Windermere Lodges",
   description:
     "Book your perfect stay at Windermere Lodges. Select your lodge, dates, and preferences for a seamless Lake District getaway.",
-    
+
   openGraph: {
     title: "Booking | Windermere Lodges",
     description:
@@ -27,10 +29,12 @@ export const metadata = {
 };
 
 export default async function BookingPage() {
-  const session = await auth()
+  const session = await auth();
   return (
     <>
-      <BookingWrapper auth={session}/>
+      <Suspense fallback={<GuestInformationSkeleton />}>
+        <BookingWrapper auth={session} />
+      </Suspense>
       <Footer />
     </>
   );

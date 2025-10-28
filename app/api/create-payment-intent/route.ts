@@ -1,7 +1,10 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import { getLodgeDetails } from "@/app/queries/properties";
 import { calculatePrices, findDays, findDiscountAmount } from "@/lib/utils";
 import { createBooking, verifyCoupon } from "@/app/queries/order";
+import Stripe from "stripe";
 
 type booking = {
   id: string;
@@ -18,7 +21,8 @@ type booking = {
 
 
 export async function POST(req: Request) {
-  const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+  console.log(process.env.STRIPE_SECRET_KEY)
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2025-06-30.basil" });
 
   try {
     const { bookingDetails, orderDetails, appliedCoupon } = await req.json();

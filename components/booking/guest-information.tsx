@@ -20,8 +20,7 @@ import Image from "next/image";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { calculatePrices, findDiscountAmount } from "@/lib/utils";
-import { Ticket } from "lucide-react";
-import Coupons from "../lodges/Coupons";
+import { useRouter } from "next/navigation";
 
 interface ContactInfo {
   firstName: string;
@@ -68,6 +67,7 @@ export function GuestInformation({
   const { data } = session;
 
   const [nights, setNights] = useState<number | undefined>(0);
+  const router = useRouter()
 
   const findDifference = () => {
     const date1 = new Date(bookingDetails?.dates.from);
@@ -139,6 +139,7 @@ export function GuestInformation({
     setOrderDetails(contactInfo);
     setError("");
     setCurrentStep();
+    router.replace("/secure-payment")
   };
 
   const total = calculatePrices(bookingDetails?.dates, bookingDetails?.lodge);

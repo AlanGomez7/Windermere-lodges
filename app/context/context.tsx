@@ -47,6 +47,7 @@ const AppContext = createContext<any>(undefined);
 export function AppWrapper({ children }: { children: ReactNode }) {
   const [properties, setProperties] = useState<any[]>();
   const [orderDetails, setOrderDetails] = useState<any>(undefined);
+  const [details, setDetails] = useState<any>(undefined);
   const [isLodgeAvailable, setIsLodgeAvailable] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState<any>(undefined);
   const [appliedCoupon, setAppliedCoupon] = useState<any>();
@@ -81,6 +82,8 @@ export function AppWrapper({ children }: { children: ReactNode }) {
         setSearchParams,
         setOrderDetails,
         orderDetails,
+        details,
+        setDetails,
         availability,
         setAvailability,
         properties,

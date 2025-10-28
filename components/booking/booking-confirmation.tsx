@@ -15,16 +15,9 @@ import { CheckCircle } from "lucide-react";
 import { findDays } from "@/lib/utils";
 import { useAppContext } from "@/app/context/context";
 
-interface BookingConfirmationProps {
-  bookingDetails: any;
-  isActive: boolean;
-}
-
-export function BookingConfirmation({
-  bookingDetails,
-  isActive,
-}: BookingConfirmationProps) {
-  const { orderSuccess } = useAppContext();
+export function BookingConfirmation() {
+  const { orderSuccess, searchParams } = useAppContext();
+  const bookingDetails = searchParams;
   const router = useRouter();
 
   const [bookingNumber, setBookingNumber] = useState<string>("");
@@ -33,13 +26,25 @@ export function BookingConfirmation({
     bookingDetails?.dates?.to
   );
 
+
+    if (!bookingDetails?.dates || !orderSuccess) {
+    return null;
+  }
+
   useEffect(() => {
+    if (bookingDetails === undefined || searchParams === undefined) {
+      router.replace("/our-lodges");
+      return;
+    }
+
     if (orderSuccess) {
-      setBookingNumber(orderSuccess.enquiryId);
+      setBookingNumber(orderSuccess?.enquiryId);
     } else {
       setBookingNumber("123");
     }
-  }, [orderSuccess]);
+  }, [orderSuccess, searchParams]);
+
+
 
   const handleBack = () => {
     localStorage.clear();
@@ -47,11 +52,7 @@ export function BookingConfirmation({
   };
 
   return (
-    <section
-      className={`p-4 mb-5 min-h-screen flex justify-center ${
-        isActive ? "block" : "hidden"
-      }`}
-    >
+    <section className={`p-4 mb-5 min-h-screen flex justify-center`}>
       <div className="container md:px-16">
         <div className="space-y-6">
           <div className="text-center">
@@ -72,7 +73,8 @@ export function BookingConfirmation({
             <CardHeader>
               <CardTitle>Booking Details</CardTitle>
               <CardDescription>
-                Reference: {orderSuccess ? orderSuccess.enquiryId : bookingNumber}
+                Reference:{" "}
+                {orderSuccess ? orderSuccess.enquiryId : bookingNumber}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -83,19 +85,29 @@ export function BookingConfirmation({
                       <h3 className="font-semibold text-lg">
                         {bookingDetails?.lodge.name}
                       </h3>
-                      {bookingDetails.dates?.from && bookingDetails.dates?.to && (
-                        <p className="text-gray-600">
-                          {new Date(bookingDetails.dates.from).toLocaleDateString()} -{" "}
-                          {new Date(bookingDetails.dates.to).toLocaleDateString()} (
-                          {nights} {nights === 1 ? "night" : "nights"})
-                        </p>
-                      )}
+                      {bookingDetails.dates?.from &&
+                        bookingDetails.dates?.to && (
+                          <p className="text-gray-600">
+                            {new Date(
+                              bookingDetails.dates.from
+                            ).toLocaleDateString()}{" "}
+                            -{" "}
+                            {new Date(
+                              bookingDetails.dates.to
+                            ).toLocaleDateString()}{" "}
+                            ({nights} {nights === 1 ? "night" : "nights"})
+                          </p>
+                        )}
                       <p className="text-gray-600">
                         {bookingDetails.guests.adults}{" "}
-                        {bookingDetails.guests.adults === 1 ? "adult" : "adults"}
+                        {bookingDetails.guests.adults === 1
+                          ? "adult"
+                          : "adults"}
                         {bookingDetails.guests.children > 0 &&
                           `, ${bookingDetails.guests.children} ${
-                            bookingDetails.guests.children === 1 ? "child" : "children"
+                            bookingDetails.guests.children === 1
+                              ? "child"
+                              : "children"
                           }`}
                         {bookingDetails.guests.teens > 0 &&
                           `, ${bookingDetails.guests.teens} ${
@@ -103,7 +115,9 @@ export function BookingConfirmation({
                           }`}
                         {bookingDetails.guests.infants > 0 &&
                           `, ${bookingDetails.guests.infants} ${
-                            bookingDetails.guests.infants === 1 ? "infant" : "infants"
+                            bookingDetails.guests.infants === 1
+                              ? "infant"
+                              : "infants"
                           }`}
                         {bookingDetails.guests.pets > 0 &&
                           `, ${bookingDetails.guests.pets} ${
@@ -113,10 +127,12 @@ export function BookingConfirmation({
                     </div>
                     <div className="bg-gray-100 rounded p-3">
                       <p className="text-sm">
-                        Check-in: <span className="font-medium">From 3:00 PM</span>
+                        Check-in:{" "}
+                        <span className="font-medium">From 3:00 PM</span>
                       </p>
                       <p className="text-sm">
-                        Check-out: <span className="font-medium">By 10:00 AM</span>
+                        Check-out:{" "}
+                        <span className="font-medium">By 10:00 AM</span>
                       </p>
                     </div>
                   </div>
@@ -135,8 +151,12 @@ export function BookingConfirmation({
                     <p>{bookingDetails.contactInfo.phone}</p>
                     {bookingDetails.specialRequests && (
                       <>
-                        <h4 className="font-medium mt-3 mb-1">Special Requests</h4>
-                        <p className="text-gray-600">{bookingDetails.specialRequests}</p>
+                        <h4 className="font-medium mt-3 mb-1">
+                          Special Requests
+                        </h4>
+                        <p className="text-gray-600">
+                          {bookingDetails.specialRequests}
+                        </p>
                       </>
                     )}
                   </div>
@@ -164,7 +184,10 @@ export function BookingConfirmation({
                     <div className="flex justify-between">
                       <span>Accommodation</span>
                       <span>
-                        £{bookingDetails.lodge ? bookingDetails.lodge.price * nights : 0}
+                        £
+                        {bookingDetails.lodge
+                          ? bookingDetails.lodge.price * nights
+                          : 0}
                       </span>
                     </div>
                     <hr />
@@ -173,7 +196,8 @@ export function BookingConfirmation({
                       <span>
                         £
                         {bookingDetails.lodge
-                          ? bookingDetails.guests.pets * bookingDetails.lodge.pets_fee
+                          ? bookingDetails.guests.pets *
+                            bookingDetails.lodge.pets_fee
                           : 0}
                       </span>
                     </div>
@@ -195,16 +219,17 @@ export function BookingConfirmation({
                         <span>Discount </span>
                         <span>
                           -£
-                          {(bookingDetails.lodge?.price * nights +
+                          {bookingDetails.lodge?.price * nights +
                             bookingDetails.lodge?.cleaning_fee +
-                            bookingDetails.guests.pets * bookingDetails.lodge.pets_fee) -
+                            bookingDetails.guests.pets *
+                              bookingDetails.lodge.pets_fee -
                             orderSuccess?.amount}
                         </span>
                       </div>
                     )}
                     <div className="flex justify-between">
                       <span>Service Fees</span>
-                      <span>£ {bookingDetails.lodge.cleaning_fee}</span>
+                      <span>£ {bookingDetails?.lodge?.cleaning_fee}</span>
                     </div>
                     <div className="flex justify-between font-bold pt-2">
                       <span>Total Paid</span>
@@ -231,7 +256,9 @@ export function BookingConfirmation({
                     <p className="font-medium">Check your email</p>
                     <p className="text-gray-600">
                       We've sent a confirmation email to{" "}
-                      {bookingDetails.contactInfo?.email || "your email address"}.
+                      {bookingDetails.contactInfo?.email ||
+                        "your email address"}
+                      .
                     </p>
                   </div>
                 </li>
@@ -241,7 +268,9 @@ export function BookingConfirmation({
                   </span>
                   <div>
                     <p className="font-medium">Prepare for your stay</p>
-                    <p className="text-gray-600">Plan your Lake District adventure.</p>
+                    <p className="text-gray-600">
+                      Plan your Lake District adventure.
+                    </p>
                   </div>
                 </li>
                 <li className="flex">
@@ -251,8 +280,8 @@ export function BookingConfirmation({
                   <div>
                     <p className="font-medium">Arrival information</p>
                     <p className="text-gray-600">
-                      Directions and check-in instructions will be sent to you 3 days
-                      before your arrival date.
+                      Directions and check-in instructions will be sent to you 3
+                      days before your arrival date.
                     </p>
                   </div>
                 </li>

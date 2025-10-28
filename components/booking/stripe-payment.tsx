@@ -1,203 +1,143 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Elements } from "@stripe/react-stripe-js";
+import { useEffect, useMemo } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import CheckoutPage from "./checkout";
 import { useAppContext } from "@/app/context/context";
 import { calculatePrices, findDays, findDiscountAmount } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
-import StripePaymentSkeleton from "../ui/shimmers/stripe-shimmer";
-import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { StableStripeElements } from "./stable-stripe-wrapper";
 
-
-if (process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === undefined) {
-  console.log("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
-  throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
+if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+  throw new Error("Stripe publishable key is not set in environment variables");
 }
-
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
+export default function StripePayment({ auth }: { auth: any }) {
+  const router = useRouter();
+  const { orderDetails, appliedCoupon, details } = useAppContext();
 
-export default function StripePayment({
-  bookingDetails,
-  isActive,
-  auth,
-  setCurrentStep,
-}: {
-  bookingDetails: any;
-  isActive: boolean;
-  auth: any;
-  setCurrentStep: () => void;
-}) {
-  const { orderDetails, searchParams, appliedCoupon } = useAppContext();
-
-  const nights = findDays(searchParams?.dates?.from, searchParams?.dates?.to);
-  const price = calculatePrices(bookingDetails?.dates, bookingDetails?.lodge);
-
-  let discount = appliedCoupon
-    ? price - findDiscountAmount(appliedCoupon, price)
-    : 0;
-
-  let amount =
-    price +
-    (bookingDetails?.lodge.cleaning_fee +
-      bookingDetails?.guests.pets * bookingDetails.lodge.pets_fee) -
-    discount;
-
-  const [clientSecret, setClientSecret] = useState("");
+  const bookingDetails = details;
 
   useEffect(() => {
-    if (orderDetails) {
-      fetch("/api/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookingDetails, orderDetails, appliedCoupon }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data?.clientSecret)setClientSecret(data.clientSecret);
-          else
-            toast.error("Something went wrong, couldn't create client secret");
-        })
-        .catch(() => {
-          toast.error(
-            "Something went wrong, couldn't create client secret error"
-          );
-        });
+    if (bookingDetails === undefined || orderDetails === undefined) {
+      router.replace("/our-lodges");
+      return;
     }
-  }, [amount, bookingDetails, orderDetails]);
+  }, [bookingDetails, orderDetails]);
+  // Initialize Stripe
 
-  if (!isActive) {
+  const { nights, price, discount, amount } = useMemo(() => {
+    if (!bookingDetails) return { nights: 0, price: 0, discount: 0, amount: 0 };
+
+    const nights = findDays(bookingDetails.dates.from, bookingDetails.dates.to);
+    const price = calculatePrices(bookingDetails.dates, bookingDetails.lodge);
+    const discount = appliedCoupon
+      ? price - findDiscountAmount(appliedCoupon, price)
+      : 0;
+    const amount =
+      price +
+      (bookingDetails.lodge.cleaning_fee +
+        bookingDetails.guests.pets * bookingDetails.lodge.pets_fee) -
+      discount;
+
+    return { nights, price, discount, amount };
+  }, [bookingDetails, appliedCoupon]);
+
+  if (!bookingDetails || !orderDetails) {
     return null;
   }
 
-  if (!stripePromise) {
-    return (
-      <div className="text-center p-8 text-gray-500">
-        Stripe failed to initialize. Please try again later.
-      </div>
-    );
-  }
-
-  if (!clientSecret || !orderDetails) {
-    return <StripePaymentSkeleton />;
-  }
-
   return (
-    <section
-      className={`p-3 lg:p-16 mb-5 min-h-screen flex justify-center ${
-        isActive ? "block" : "hidden"
-      }`}
-    >
-      <div className="container flex justify-between gap-8">
-        {/* <div className="w-[500px] shadow-lg">
-            Payment secured with stripe
-        </div> */}
+    <section className="p-3 lg:p-16 mb-5 min-h-screen flex justify-center">
+      <div className="container flex flex-col lg:flex-row justify-between gap-8">
+        {/* Summary Card */}
         <div className="w-[500px] hidden lg:block">
-          <Card className="flex-col gap-8 bg-[#EDF6F4] p-3">
-            <div className="relative h-64 w-100 p-0">
+          <Card className="p-6 bg-[#EDF6F4]">
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden">
               <Image
-                src={bookingDetails.lodge.images[0] || "/placeholder.svg"}
-                alt={bookingDetails.lodge.name}
+                src={bookingDetails?.lodge?.images[0]}
+                alt={bookingDetails?.lodge?.nickname}
                 fill
                 className="object-cover"
                 priority
               />
-              {bookingDetails.lodge.isNew && (
+              {bookingDetails?.lodge.isNew && (
                 <Badge className="absolute top-4 left-4 bg-emerald-600 hover:bg-emerald-700">
                   New
                 </Badge>
               )}
-              {/* <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
-                £{bookingDetails.lodge.price}/night
-              </div> */}
             </div>
 
             <div className="flex flex-col w-full items-start gap-3 mt-3">
               <CardTitle className="text-lg lg:text-xl font-bold">
-                {bookingDetails.lodge.nickname}
+                {bookingDetails?.lodge.nickname}
               </CardTitle>
-              <CardDescription className="">
-                {bookingDetails.lodge.address}
-              </CardDescription>
+              <CardDescription>{bookingDetails?.lodge.address}</CardDescription>
             </div>
 
             <CardContent className="p-0 pt-6">
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between text-sm">
-                  <span>{nights} Night</span>
-                  <span> &pound;{price}</span>
+                  <span>{nights} Nights</span>
+                  <span>£{price}</span>
                 </div>
-                {bookingDetails.guests.pets > 0 && (
+
+                {bookingDetails?.guests.pets > 0 && (
                   <div className="flex justify-between text-sm">
-                    <span>{bookingDetails.guests.pets} Pets</span>
+                    <span>{bookingDetails?.guests.pets} Pets</span>
                     <span>
-                      &pound;
-                      {bookingDetails.guests.pets *
-                        bookingDetails.lodge.pets_fee}
+                      £
+                      {bookingDetails?.guests.pets *
+                        bookingDetails?.lodge.pets_fee}
                     </span>
                   </div>
                 )}
+
                 <div className="flex justify-between text-sm">
                   <span>Cleaning fee</span>
-                  <span> &pound; {bookingDetails?.lodge?.cleaning_fee}</span>
+                  <span>£{bookingDetails?.lodge.cleaning_fee}</span>
                 </div>
 
                 {appliedCoupon && (
-                  <div className="flex justify-between text-sm">
-                    <span>Discount</span>
-                    <span> - &pound; {discount}</span>
-                  </div>
+                  <>
+                    <div className="flex justify-between text-sm">
+                      <span>Discount</span>
+                      <span>- £{discount}</span>
+                    </div>
+                    <p className="text-green-700 text-sm py-3">
+                      Coupon <strong>{appliedCoupon.code}</strong> applied (
+                      {appliedCoupon.discountType === "PERCENTAGE"
+                        ? `${appliedCoupon.discountValue}% off`
+                        : `£${appliedCoupon.discountValue} off`}
+                      )
+                    </p>
+                  </>
                 )}
 
-                {appliedCoupon && (
-                  <p className="text-green-700 text-sm py-3">
-                    Coupon <strong>{appliedCoupon.code}</strong> applied (
-                    {appliedCoupon.discountType === "PERCENTAGE"
-                      ? `${appliedCoupon.discountValue}% off`
-                      : `£${appliedCoupon.discountValue} off`}
-                    )
-                  </p>
-                )}
-
-                <div className="flex justify-between text-md lg:text-lg mt-2">
+                <div className="flex justify-between font-bold text-lg pt-3 border-t">
                   <span>Total Payment</span>
-                  <span className="font-bold">
-                    &pound;
-                    {amount}
-                  </span>
+                  <span>£{amount}</span>
                 </div>
               </div>
             </CardContent>
-            {/* <CardFooter></CardFooter> */}
           </Card>
         </div>
 
-        {clientSecret && <div className="flex-1 lg:pl-16">
-          <Elements
-            stripe={stripePromise}
-            options={{
-              clientSecret,
-              appearance: { theme: "stripe" },
-              locale: "auto",
-            }}
-          >
-            <CheckoutPage
-              auth={auth}
-              clientSecret={clientSecret}
-              isActive={isActive}
-              bookingDetails={bookingDetails}
-              setCurrentStep={setCurrentStep}
-              orderDetails={orderDetails}
-              amount={amount}
-            />
-          </Elements>
-        </div>}
+        {/* Stripe Payment Form */}
+        <div className="flex-1 lg:pl-16">
+          <StableStripeElements
+            stripePromise={stripePromise}
+            auth={auth}
+            bookingDetails={bookingDetails}
+            orderDetails={orderDetails}
+            amount={amount}
+          />
+        </div>
       </div>
     </section>
   );

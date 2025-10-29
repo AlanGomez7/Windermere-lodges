@@ -14,7 +14,6 @@ export default async function Home() {
   return (
     <>
       <CookieModal/>
-
       <Hero />
       <BookingSection lodges={lodges} />
       <FeaturedLodges lodges={lodges} />

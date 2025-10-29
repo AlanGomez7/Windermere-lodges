@@ -26,17 +26,17 @@ export function BookingConfirmation() {
     bookingDetails?.dates?.to
   );
 
+  useEffect(() => {
+    if (!orderSuccess || !bookingDetails?.dates) {
+      router.replace("/our-lodges"); // or "/not-found"
+    }
+  }, [orderSuccess, bookingDetails, router]);
 
-    if (!bookingDetails?.dates || !orderSuccess) {
-    return null;
+  if (!bookingDetails?.dates || !orderSuccess) {
+    return null; // Avoid flash before redirect
   }
 
   useEffect(() => {
-    if (bookingDetails === undefined || searchParams === undefined) {
-      router.replace("/our-lodges");
-      return;
-    }
-
     if (orderSuccess) {
       setBookingNumber(orderSuccess?.enquiryId);
     } else {
@@ -44,15 +44,13 @@ export function BookingConfirmation() {
     }
   }, [orderSuccess, searchParams]);
 
-
-
   const handleBack = () => {
     localStorage.clear();
     router.replace("/");
   };
 
   return (
-    <section className={`p-4 mb-5 min-h-screen flex justify-center`}>
+    <section className={`p-4 mb-5 min-h-screen flex justify-center mt-16`}>
       <div className="container md:px-16">
         <div className="space-y-6">
           <div className="text-center">
@@ -190,17 +188,21 @@ export function BookingConfirmation() {
                           : 0}
                       </span>
                     </div>
-                    <hr />
-                    <div className="flex justify-between">
-                      <span>Pets</span>
-                      <span>
-                        £
-                        {bookingDetails.lodge
-                          ? bookingDetails.guests.pets *
-                            bookingDetails.lodge.pets_fee
-                          : 0}
-                      </span>
-                    </div>
+                    {bookingDetails?.guests?.pets > 0 && (
+                      <>
+                        <hr />
+                        <div className="flex justify-between">
+                          <span>Pets</span>
+                          <span>
+                            £
+                            {bookingDetails.lodge
+                              ? bookingDetails.guests.pets *
+                                bookingDetails.lodge.pets_fee
+                              : 0}
+                          </span>
+                        </div>
+                      </>
+                    )}
                     <hr />
                     {bookingDetails.extras?.length > 0 && (
                       <div className="flex justify-between">
@@ -292,7 +294,7 @@ export function BookingConfirmation() {
           <div className="text-center">
             <Button
               onClick={handleBack}
-              className="bg-teal-600 hover:bg-teal-700"
+              className="bg-emerald-600 hover:bg-emerald-700"
               aria-label="Return to Homepage"
             >
               Return to Homepage

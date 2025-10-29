@@ -60,7 +60,7 @@ export default function BookingWrapper({ auth }: { auth: any }) {
   }
 
   if (!orderDetails) {
-    return null; // or redirect
+    return <GuestInformationSkeleton />; // or redirect
   }
 
   return (

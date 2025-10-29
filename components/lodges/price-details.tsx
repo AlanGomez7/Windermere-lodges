@@ -24,6 +24,7 @@ export default function PirceDetails({
   lodge: any;
   setShowBanner: (value: boolean) => void;
 }) {
+
   useEffect(() => {
     setSearchParams({ ...searchParams, lodge });
   }, [lodge]);
@@ -41,6 +42,7 @@ export default function PirceDetails({
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleBooking = () => {
+    setLoading(true);
     setSearchParams({ ...searchParams, dates: date });
     localStorage.setItem("order", JSON.stringify(searchParams));
     router.push("/booking");
@@ -359,10 +361,10 @@ export default function PirceDetails({
                 <div className="mt-3">
                   <Button
                     className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
-                    disabled={loading}
+                    disabled={loading || price<=0}
                     onClick={handleBooking}
                   >
-                    Reserve
+                    {loading ? "Processing..." : price<=0 ? "Price cannot be zero" : "Book Now"}
                   </Button>
                 </div>
               )}

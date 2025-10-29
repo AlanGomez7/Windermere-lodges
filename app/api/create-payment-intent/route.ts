@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     }
 
     // Validate amount
-    if (!amount || amount <= 0) {
+    if (!amount) {
       return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
     }
 

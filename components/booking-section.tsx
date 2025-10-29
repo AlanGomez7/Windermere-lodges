@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { useAppContext } from "@/app/context/context";
 import { data } from "@/data/lodges";
 import { date } from "zod";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 
 interface SearchParams {
   dates: DateRange | undefined;
@@ -64,6 +64,10 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
     setLoading(false);
   };
 
+  const clearSelectedDates = () => {
+    setSearchParams({ ...searchParams, dates: undefined });
+  };
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -79,11 +83,12 @@ export const BookingSection = ({ lodges }: { lodges: any }) => {
                   if (dates?.from && dates?.to) {
                     const from = format(dates?.from, "yyyy-MM-dd");
                     const to = format(dates?.to, "yyyy-MM-dd");
-                    setSearchParams({ ...searchParams, dates: {from, to} });
+                    setSearchParams({ ...searchParams, dates: { from, to } });
                   }
-
                 }}
+                clearDates={clearSelectedDates}
               />
+              
             </div>
 
             <div className="basis-1/4 flex-grow-0">

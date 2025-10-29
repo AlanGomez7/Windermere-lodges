@@ -6,7 +6,6 @@ export default async function PaymentWrapper() {
   const session = await auth();
   return (
     <>
-    
       <StripePayment auth={session} />
     </>
   );

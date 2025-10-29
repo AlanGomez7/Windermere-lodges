@@ -19,11 +19,13 @@ interface DateRangePickerProps {
   onChange?: (date: DateRange | undefined) => void;
   initialDateRange?: DateRange;
   disabled?: boolean;
+  clearDates?: () => void;
 }
 
 export function DateRangePicker({
   onChange,
   disabled = false,
+  clearDates,
 }: DateRangePickerProps) {
   const [date, setDate] = React.useState<DateRange | undefined>();
   const [open, setOpen] = React.useState(false);
@@ -157,6 +159,20 @@ export function DateRangePicker({
               aria-label="Calendar date picker"
             />
           </div>
+            <div className="relative">
+              {/* underline absolute right-0 bottom-3 cursor-pointer */}
+              <Button
+                variant="link"
+                aria-label="Clear selected dates"
+                className="text-sm absolute right-3 bottom-3"
+                onClick={() => {
+                  clearDates?.(); 
+                  setDate(undefined);
+                }}
+              >
+                Clear dates
+              </Button>
+            </div>
         </PopoverContent>
       </Popover>
 

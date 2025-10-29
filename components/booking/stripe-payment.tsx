@@ -167,7 +167,7 @@ export default function StripePayment({ auth }: { auth: any }) {
           </div>
 
           {/* Stripe Payment Form */}
-          <div className="flex-1 lg:pl-16">
+          {amount > 0 && <div className="flex-1 lg:pl-16">
             <StableStripeElements
               stripePromise={stripePromise}
               auth={auth}
@@ -175,7 +175,7 @@ export default function StripePayment({ auth }: { auth: any }) {
               orderDetails={orderDetails}
               amount={amount}
             />
-          </div>
+          </div>}
         </div>
       </section>
     </main>

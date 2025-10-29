@@ -2,6 +2,7 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { ElementsDebugger } from "../debugger";
 import CheckoutPage from "./checkout";
+import toast from "react-hot-toast";
 
 export function StableStripeElements({
   stripePromise,
@@ -10,7 +11,10 @@ export function StableStripeElements({
   orderDetails,
   amount,
 }: any) {
-  return (
+  return amount <= 0 ? (
+    <>
+    </>
+  ) : (
     <Elements
       stripe={stripePromise}
       options={{
@@ -20,13 +24,13 @@ export function StableStripeElements({
       }}
     >
       {/* <ElementsDebugger> */}
-        <CheckoutPage
-          auth={auth}
-          isActive={true}
-          bookingDetails={bookingDetails}
-          orderDetails={orderDetails}
-          amount={amount}
-        />
+      <CheckoutPage
+        auth={auth}
+        isActive={true}
+        bookingDetails={bookingDetails}
+        orderDetails={orderDetails}
+        amount={amount}
+      />
       {/* </ElementsDebugger> */}
     </Elements>
   );

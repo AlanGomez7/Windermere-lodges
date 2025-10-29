@@ -224,7 +224,7 @@ export default function PirceDetails({
                 >
                   {date?.from
                     ? format(date?.from, "LLL dd, yyyy")
-                    : "Pick a date"}
+                    : "Select Check In"}
                 </Button>
 
                 <Button
@@ -234,7 +234,7 @@ export default function PirceDetails({
                     !date?.to && "text-muted-foreground"
                   )}
                 >
-                  {date?.to ? format(date?.to, "LLL dd, yyyy") : "Pick a date"}
+                  {date?.to ? format(date?.to, "LLL dd, yyyy") : "Select Check Out"}
                 </Button>
               </div>
 

@@ -242,7 +242,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                   {
                     label: "House rules",
                     value: "Check in after 3 pm & check out before 10 am",
-                    showDetails:true,
+                    showDetails: true,
                     data: [
                       {
                         title: "Checking in and out",
@@ -306,7 +306,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                   {
                     label: "Safety & Property",
                     value: `Avoid surprises by looking over these important details about your Host's property.`,
-                    showDetails:true,
+                    showDetails: true,
                     data: [
                       {
                         title: "Safety considerations",
@@ -322,7 +322,6 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
                 ].map((policy: any, indx) => {
                   return <KnowMore policy={policy} key={indx} />;
                 })}
-                {/* <ListingModal /> */}
               </div>
             </div>
           </div>

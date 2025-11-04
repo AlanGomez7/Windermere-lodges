@@ -1,7 +1,7 @@
 import Footer from "@/components/footer";
 import { PageHeader } from "@/components/page-header";
 import { GalleryTabs } from "@/components/gallery/gallery-tabs";
-import { ChatbotButton } from "@/components/chatbot/chatbot-button";
+import bannerImage from "@/public/image-banner.jpg";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
 import { fetchProperties } from "@/lib/api";
@@ -41,7 +41,7 @@ export default async function GalleryPage() {
       <PageHeader
         title="Our Gallery"
         description="Experience the beauty of Windermere Lodges"
-        backgroundImage="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920&auto=format&fit=crop"
+        backgroundImage={bannerImage}
       />
 
       <section className="py-16">

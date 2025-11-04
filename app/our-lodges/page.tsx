@@ -4,6 +4,8 @@ import { LodgeList } from "@/components/lodges/lodge-list";
 import { fetchProperties } from "@/lib/api";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
+import { LodgeCardData } from "@/lib/types";
+import bannerImage from "@/public/our-lodges-banner.jpg"; 
 
 export const metadata = {
   title: "Our Lodges | Windermere Lodges",
@@ -28,24 +30,22 @@ export const metadata = {
   },
 };
 
-
 export default async function OurLodgesPage({
   searchParams,
 }: {
   searchParams: Promise<{ ids?: string }>;
 }) {
   const ids: string[] | boolean = (await searchParams).ids?.split(",") ?? [];
-  let lodges: Promise<any>;
+  let lodges: Promise<LodgeCardData[]>;
 
   lodges = fetchProperties();
-
 
   return (
     <main className="min-h-screen bg-white">
       <PageHeader
         title="Our Lodges"
         description="Discover your perfect Lake District retreat"
-        backgroundImage="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1920&auto=format&fit=crop"
+        backgroundImage={bannerImage}
       />
 
       <section className="py-16">

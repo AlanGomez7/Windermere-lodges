@@ -3,13 +3,14 @@ import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { fetchPropertyDetails } from "@/lib/api";
 import Footer from "@/components/footer";
+import { PropertyDetailsType } from "@/lib/types";
 
 export async function generateMetadata({ params }:any) {
   const { id } = await params;
 
   // Try to fetch lodge data (safe for SEO, runs server-side)
   try {
-    const lodge = await fetchPropertyDetails(id);
+    const lodge:PropertyDetailsType = await fetchPropertyDetails(id);
 
     if (!lodge) {
       return {
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }:any) {
       `Discover ${lodge.name} — a luxurious lakeside lodge at Windermere with modern comfort and breathtaking Lake District views.`;
 
     const imageUrl =
-      lodge.images?.[0]?.url ||
+      lodge.images?.[0] ||
       "https://windermerelodges.co.uk/og-lodges.jpg";
 
     return {

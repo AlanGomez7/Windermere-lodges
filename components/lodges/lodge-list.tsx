@@ -2,17 +2,18 @@
 
 import { use } from "react";
 import LandscapeLodgeCard from "../cards/landscape-lodge-card";
+import { LodgeCardData } from "@/lib/types";
 
 export function LodgeList({
   properties,
   available,
   showBadge,
 }: {
-  properties: any;
+  properties: Promise<LodgeCardData[]>;
   available: string[];
   showBadge: boolean;
 }) {
-  const lodges: any = use(properties);
+  const lodges: LodgeCardData[] = use(properties);
 
   if (lodges.length === 0) {
     return <>No lodges found</>;
@@ -37,7 +38,7 @@ export function LodgeList({
       <div className="flex flex-col justify-center items-center w-full pt-8 gap-4">
         {sortedLodges.map((lodge: any) => (
           <LandscapeLodgeCard
-            key={lodge.id}
+            key={lodge?.id}
             lodge={lodge}
             needsButton={true}
             available={available.includes(lodge?.refNo)}

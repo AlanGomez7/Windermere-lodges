@@ -1,28 +1,40 @@
-"use server"
+"use server";
 import prisma from "@/lib/prisma";
-import {
-  eachDayOfInterval,
-  format,
-  parse,
-
-} from "date-fns";
+import { eachDayOfInterval, format, parse } from "date-fns";
 import { cache } from "react";
 
 export const getProperties = cache(async () => {
   try {
     const response = await prisma.property.findMany({
-      include: {
-        comments: true,
-      },
       where: {
         status: "active",
       },
+      select: {
+        id: true,
+        refNo: true,
+        name: true,
+        nickname: true,
+        address: true,
+        features: true,
+        images: true,
+        price: true,
+        guests: true,
+        bedrooms: true,
+        bathrooms: true,
+        comments: {
+          select: {
+            rating: true
+          }
+        }
+      },
+      
     });
     return response;
   } catch (err) {
     throw err;
   }
 });
+
 export async function getLodgeDetails(id: string) {
   try {
     const response = prisma.property.findUnique({
@@ -37,7 +49,7 @@ export async function getLodgeDetails(id: string) {
             date: true,
             available: true,
             closed_for_arrival: true,
-            day_rate: true
+            day_rate: true,
           },
         },
       },
@@ -47,10 +59,6 @@ export async function getLodgeDetails(id: string) {
     throw err;
   }
 }
-
-
-
-
 
 export async function getAllLodgeComments() {
   try {
@@ -154,7 +162,6 @@ export const checkAvailability = async (
   checkOut: string,
   guestsNo: number
 ) => {
-  
   try {
     const start = parse(checkIn, "yyyy-MM-dd", new Date());
     const end = parse(checkOut, "yyyy-MM-dd", new Date());
@@ -197,8 +204,8 @@ export const checkAvailability = async (
       },
     });
 
-    const data = lodgesRefs.map((l)=>l.refNo)
-    
+    const data = lodgesRefs.map((l) => l.refNo);
+
     return { data, included: [], message: "", ok: true };
   } catch (err) {
     throw err;

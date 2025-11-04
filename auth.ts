@@ -61,17 +61,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
     async signIn({ user, profile, account }) {
       try {
-        // ✅ Let credentials provider handle separately
+        // Let credentials provider handle separately
         if (account?.provider === "credentials") {
           return true;
         }
 
-        // ✅ Check if user already exists in DB
+        // Check if user already exists in DB
         const dbUser = await checkUser(profile);
 
         if (dbUser) {
           if (dbUser.isBlocked) {
-            // ❌ Deny login for blocked users
+            // Deny login for blocked users
             throw new Error("BlockedUser");
           }
 
@@ -80,7 +80,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           return true;
         }
 
-        // ✅ Create new user if not found
+        // Create new user if not found
         const result = await createUser({
           avatar: profile?.picture,
           email: profile?.email,

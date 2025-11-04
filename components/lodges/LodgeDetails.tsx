@@ -20,7 +20,6 @@ import { Info, MapPin, Ticket } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import PirceDetails from "./price-details";
 import Gallery from "../gallery/lodge-gallery";
-import Coupons from "./Coupons";
 
 export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const { searchParams } = useAppContext();
@@ -46,7 +45,7 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
   const [openCalendar, setOpenCalendar] = React.useState<
     "checkin" | "checkout" | null
   >(null);
-  const [avgRating, totalNoOfReviews] = ratingsInfo(lodge.comments);
+  const [avgRating, totalNoOfReviews] = ratingsInfo(lodge?.comments);
 
   const params = useSearchParams();
   const value1 = params.get("available");
@@ -240,10 +239,90 @@ export function LodgeDetails({ lodge, session }: { lodge: any; session: any }) {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
-                  // ... same policy array as before ...
-                ].map((policy: any, indx) => (
-                  <KnowMore policy={policy} key={indx} />
-                ))}
+                  {
+                    label: "House rules",
+                    value: "Check in after 3 pm & check out before 10 am",
+                    showDetails:true,
+                    data: [
+                      {
+                        title: "Checking in and out",
+                        data: [
+                          "Check in after 15:00",
+                          "Check out before 10:00",
+                          "Self check-in with lockbox",
+                        ],
+                      },
+
+                      {
+                        title: "During your stay",
+
+                        data: [
+                          "Pets allowed",
+                          "No parties or events",
+                          "No commercial photography",
+                          "No smoking",
+                          // "Before you leave",
+                          // "Throw rubbish away",
+                        ],
+                      },
+                      {
+                        title: "Before you leave",
+                        data: [
+                          "Throw rubbish away",
+                          "Turn things off",
+                          "Lock up",
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    label: "Cancellation Policy",
+                    value: "Free cancellation for 48 hours.",
+                    data: [
+                      {
+                        title: "Within 48 hours of booking",
+
+                        data: [
+                          "Get back 100% of what you paid.Partial refund if you cancel before 3:00 pm on 11 November. Get back 50% of every night. No refund of the service fee..Before",
+                        ],
+                      },
+                      {
+                        title: `Before ${formatDate(dates?.to)} 3 pm`,
+                        data: [
+                          "Partial refund",
+                          "Get back 50% of every night. No refund of the service fee.",
+                        ],
+                      },
+
+                      {
+                        title: `After ${formatDate(dates?.from)} 3 pm`,
+
+                        data: [
+                          "No refund if you cancel after 3:00 pm on 11 November. This reservation is non-refundable..",
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    label: "Safety & Property",
+                    value: `Avoid surprises by looking over these important details about your Host's property.`,
+                    showDetails:true,
+                    data: [
+                      {
+                        title: "Safety considerations",
+                        data: ["Not suitable for infants (under 2 years)"],
+                      },
+
+                      {
+                        title: "Safety devices",
+                        data: ["Carbon monoxide alarm", "Smoke alarm"],
+                      },
+                    ],
+                  },
+                ].map((policy: any, indx) => {
+                  return <KnowMore policy={policy} key={indx} />;
+                })}
+                {/* <ListingModal /> */}
               </div>
             </div>
           </div>

@@ -1,9 +1,10 @@
 import { getLodgeDetails } from "@/app/queries/properties";
 import { getErrorMessage } from "@/lib/utils";
+import { NextApiRequest } from "next";
 import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }: any) {
+export async function GET(_request: Request, { params }: {params: Promise<{id:string}>}) {
   const { id } = await params;
 
   if (!id) {

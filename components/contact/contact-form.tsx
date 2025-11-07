@@ -134,8 +134,8 @@ export function ContactForm({ email, name }: { email: string; name: string }) {
                 <SelectValue placeholder="Select a subject" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="booking">Booking Inquiry</SelectItem>
-                <SelectItem value="info">General Information</SelectItem>
+                <SelectItem value="Booking Inquiry">Booking Inquiry</SelectItem>
+                <SelectItem value="General Information">General Information</SelectItem>
                 <SelectItem value="support">Customer Support</SelectItem>
                 <SelectItem value="feedback">Feedback</SelectItem>
                 <SelectItem value="other">Other</SelectItem>

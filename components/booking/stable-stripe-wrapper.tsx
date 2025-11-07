@@ -1,8 +1,6 @@
 "use client";
 import { Elements } from "@stripe/react-stripe-js";
-import { ElementsDebugger } from "../debugger";
 import CheckoutPage from "./checkout";
-import toast from "react-hot-toast";
 
 export function StableStripeElements({
   stripePromise,

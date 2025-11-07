@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
     const response = await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: "alangomez0047@gmail.com",
+      to: process.env.TO_EMAIL,
       subject: `New Contact Form Submission: ${subject}`,
       html,
     });

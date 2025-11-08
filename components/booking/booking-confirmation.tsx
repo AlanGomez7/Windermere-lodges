@@ -126,11 +126,11 @@ export function BookingConfirmation() {
                     <div className="bg-gray-100 rounded p-3">
                       <p className="text-sm">
                         Check-in:{" "}
-                        <span className="font-medium">From 3:00 PM</span>
+                        <span className="font-medium">From {bookingDetails?.lodge?.checkInTime}</span>
                       </p>
                       <p className="text-sm">
                         Check-out:{" "}
-                        <span className="font-medium">By 10:00 AM</span>
+                        <span className="font-medium">By {bookingDetails?.lodge?.checkOutTime}</span>
                       </p>
                     </div>
                   </div>

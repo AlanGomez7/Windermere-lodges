@@ -133,6 +133,9 @@ export const findDays = (
 };
 
 export const ratingsInfo = (comments: Record<any, string>[]) => {
+  if (!comments || comments.length === 0) {
+    return [0, 0];
+  }
   const numberOfReviews = comments.length;
   const sum = comments.reduce((acc: number, curr: any) => {
     acc = curr.rating + acc;

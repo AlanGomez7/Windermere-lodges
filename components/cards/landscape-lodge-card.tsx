@@ -23,7 +23,7 @@ export default function LandscapeLodgeCard({
   const remainingCount =
     lodge.features.length > 6 ? lodge.features.length - 6 : 0;
 
-  const [avgRating] = ratingsInfo(lodge.comments);
+  const [avgRating] = ratingsInfo(lodge?.comments);
 
   const router = useRouter();
   return (

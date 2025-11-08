@@ -16,6 +16,7 @@ import { useAppContext } from "@/app/context/context";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import Coupons from "./Coupons";
+import { is } from "date-fns/locale";
 
 export default function PirceDetails({
   lodge,
@@ -142,12 +143,9 @@ export default function PirceDetails({
       end: DateRange.to,
     });
 
-    const isAvailable = days.map((day) => {
-      if (!getDisabled(day)) {
-        return false;
-      }
-    });
+    const isAvailable = days.every((day) => !getDisabled(day));
 
+    console.log(isAvailable);
     return isAvailable;
   };
 

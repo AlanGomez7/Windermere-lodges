@@ -111,7 +111,7 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
           ].map(({ label, key, min, max }) => (
             <div key={key} className="grid grid-cols-3 items-center gap-4">
               <Label htmlFor={key}>{label}</Label>
-              <div className="col-span-2 flex items-center gap-2">
+              {max > 0 ? (<div className="col-span-2 flex items-center gap-2">
                 <Button
                   type="button"
                   variant="outline"
@@ -156,7 +156,7 @@ export function GuestSelector({ onChange, lodge }: GuestSelectorProps) {
                 >
                   +
                 </Button>
-              </div>
+              </div>) : (<p className="col-span-2 flex items-center gap-2 text-sm text-gray-500 pl-16">Not allowed</p>)}
             </div>
           ))}
 

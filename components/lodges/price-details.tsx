@@ -10,7 +10,7 @@ import {
   findDiscountAmount,
   findDiscountValue,
 } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, eachDayOfInterval } from "date-fns";
 import { GuestSelector } from "../booking/guest-selector";
 import { useAppContext } from "@/app/context/context";
 import toast from "react-hot-toast";
@@ -24,7 +24,6 @@ export default function PirceDetails({
   lodge: any;
   setShowBanner: (value: boolean) => void;
 }) {
-
   useEffect(() => {
     setSearchParams({ ...searchParams, lodge });
   }, [lodge]);
@@ -135,6 +134,23 @@ export default function PirceDetails({
     return false;
   }
 
+  const isAvailableOnDays = (DateRange: DateRange) => {
+    if (!DateRange?.from || !DateRange?.to) return false;
+
+    const days = eachDayOfInterval({
+      start: DateRange.from,
+      end: DateRange.to,
+    });
+
+    const isAvailable = days.map((day) => {
+      if (!getDisabled(day)) {
+        return false;
+      }
+    });
+
+    return isAvailable;
+  };
+
   // Style classes
   const modifiersClassNames = {
     unavailable: "text-gray-400 line-through cursor-not-allowed",
@@ -236,7 +252,9 @@ export default function PirceDetails({
                     !date?.to && "text-muted-foreground"
                   )}
                 >
-                  {date?.to ? format(date?.to, "LLL dd, yyyy") : "Select Check Out"}
+                  {date?.to
+                    ? format(date?.to, "LLL dd, yyyy")
+                    : "Select Check Out"}
                 </Button>
               </div>
 
@@ -356,15 +374,18 @@ export default function PirceDetails({
 
           {diff >= lodge?.minStay && (
             <div>
-              {((date?.from && !getDisabled(date.from)) ||
-                (date?.to && !getDisabled(date.to))) && (
+              {isAvailableOnDays(searchParams?.dates) && (
                 <div className="mt-3">
                   <Button
                     className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2"
-                    disabled={loading || price<=0}
+                    disabled={loading || price <= 0}
                     onClick={handleBooking}
                   >
-                    {loading ? "Processing..." : price<=0 ? "Price cannot be zero" : "Book Now"}
+                    {loading
+                      ? "Processing..."
+                      : price <= 0
+                      ? "Price cannot be zero"
+                      : "Book Now"}
                   </Button>
                 </div>
               )}

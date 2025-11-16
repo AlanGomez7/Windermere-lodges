@@ -16,7 +16,6 @@ import { useAppContext } from "@/app/context/context";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import Coupons from "./Coupons";
-import { is } from "date-fns/locale";
 
 export default function PirceDetails({
   lodge,
@@ -351,7 +350,10 @@ export default function PirceDetails({
                 <div className="flex justify-between text-sm text-emerald-600">
                   <span>Discount</span>
                   <span className="font-bold">
-                    - &pound;{findDiscountValue(appliedCoupon, total)}
+                    - &pound;
+                    {appliedCoupon?.discountType === "FIXED"
+                      ? total - findDiscountValue(appliedCoupon, total)
+                      : findDiscountValue(appliedCoupon, total)}
                   </span>
                 </div>
               )}
@@ -359,9 +361,12 @@ export default function PirceDetails({
               {date?.from !== date?.to && (
                 <>
                   <hr className="my-3" />
-                  <div className="flex justify-between text-lg text-emerald-600">
+                  <div className="flex justify-between text-lg">
                     <span>Total Payment</span>
-                    <span className="font-bold"> &pound;{price}</span>
+                    <div>
+                      {appliedCoupon && <span className="font-bold line-through text-sm text-gray-400 mr-1"> &pound;{total + lodge?.cleaning_fee}</span>}
+                      <span className="font-bold  text-emerald-600"> &pound;{price}</span>
+                    </div>
                   </div>
                 </>
               )}

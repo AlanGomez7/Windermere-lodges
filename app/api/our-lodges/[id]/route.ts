@@ -18,6 +18,7 @@ export async function GET(_request: Request, { params }: {params: Promise<{id:st
     if (!response) {
       return notFound();
     }
+    response.images = [...response.images, ...response.PropertyGalleryImage.map(img=>img.url)];
 
     return NextResponse.json({ result: response, ok: true }, { status: 200 });
     
@@ -27,3 +28,6 @@ export async function GET(_request: Request, { params }: {params: Promise<{id:st
     return NextResponse.json({ message: message, ok: false }, { status: 500 });
   }
 }
+
+
+

@@ -23,11 +23,10 @@ export const getProperties = cache(async () => {
         bathrooms: true,
         comments: {
           select: {
-            rating: true
-          }
-        }
+            rating: true,
+          },
+        },
       },
-      
     });
     return response;
   } catch (err) {
@@ -44,6 +43,11 @@ export async function getLodgeDetails(id: string) {
       },
       include: {
         comments: true,
+        PropertyGalleryImage: {
+          select: {
+            url: true,
+          },
+        },
         calendar: {
           select: {
             date: true,
@@ -54,6 +58,7 @@ export async function getLodgeDetails(id: string) {
         },
       },
     });
+
     return response;
   } catch (err) {
     throw err;
@@ -111,8 +116,6 @@ export async function getUserReviews(userId: string) {
             name: true,
             email: true,
             address: true,
-            //  DO NOT include password
-            // add other visitor fields you actually need
           },
         },
         property: true,
@@ -124,6 +127,8 @@ export async function getUserReviews(userId: string) {
     throw err;
   }
 }
+
+
 
 export const getPropertyReviews = async (lodgeId: string) => {
   try {

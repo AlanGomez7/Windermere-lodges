@@ -16,7 +16,7 @@ import KnowMore from "../ui/know-more";
 
 import { Icons } from "../ui/icons";
 import ListingModal from "../ui/listings-modal";
-import { Info, MapPin, Ticket } from "lucide-react";
+import { Info, MapPin } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import PirceDetails from "./price-details";
 import Gallery from "../gallery/lodge-gallery";

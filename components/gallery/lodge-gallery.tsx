@@ -4,7 +4,8 @@ import { VisuallyHidden } from "../ui/visually-hidden";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { X } from "lucide-react";
+import { X, Search } from "lucide-react";
+
 
 export default function Gallery({
   images,
@@ -14,7 +15,7 @@ export default function Gallery({
   lodgeId: string;
   images: string[];
   lodgeName: string;
-}) {
+}) {  
   const [current, setCurrent] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const total = images.length;
@@ -42,7 +43,7 @@ export default function Gallery({
     <div className="flex flex-col gap-0">
       <div className="relative flex-1 min-w-0">
         <Image
-          src={images[current]}
+          src={images[current] }
           alt={lodgeName}
           width={800}
           height={500}
@@ -76,7 +77,7 @@ export default function Gallery({
           onClick={() => openModal(current)}
           aria-label="View larger image"
         >
-          {/* SVG */}
+          <Search size={16} />
         </button>
 
         {/* Show All Images */}
@@ -91,7 +92,7 @@ export default function Gallery({
 
         {/* Modal / Lightbox */}
         <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-          <DialogContent className="max-w-5xl p-0 bg-black/95 border-none flex flex-col items-center justify-center">
+          <DialogContent className="max-w-5xl max-h-dvh p-0 bg-black/95 border-none flex flex-col items-center justify-center">
             <button
               className="text-white cursor-pointer mt-5 ml-5 mr-auto"
               onClick={() => setModalOpen(false)}
@@ -104,7 +105,10 @@ export default function Gallery({
               <DialogTitle>Gallery images for {lodgeName}</DialogTitle>
             </VisuallyHidden>
 
-            <div className="relative w-full flex items-center justify-center" style={{ minHeight: 500 }}>
+            <div
+              className="relative w-full flex items-center justify-center"
+              style={{ minHeight: 500 }}
+            >
               {/* Left Arrow */}
               {total > 1 && (
                 <button
@@ -139,11 +143,15 @@ export default function Gallery({
             </div>
 
             {/* Thumbnails */}
-            <div className="flex gap-2 mt-4 max-w-full overflow-x-auto pb-2">
+            <div className="flex flex-nowrap gap-2 mt-4 max-w-full overflow-x-auto pb-2">
               {images.map((img, idx) => (
                 <button
                   key={img + idx}
-                  className={`relative rounded overflow-hidden border-2 ${idx === current ? "border-emerald-600" : "border-transparent"}`}
+                  className={`relative rounded overflow-hidden border-2 flex-shrink-0 ${
+                    idx === current
+                      ? "border-emerald-600"
+                      : "border-transparent"
+                  }`}
                   onClick={() => handleThumbClick(idx)}
                   aria-label={`Show image ${idx + 1}`}
                 >
@@ -152,9 +160,13 @@ export default function Gallery({
                     alt={lodgeName + " thumbnail"}
                     width={80}
                     height={60}
-                    className={`object-cover w-20 h-14 ${idx === current ? "" : "opacity-80"}`}
+                    className={`object-cover w-20 h-14 ${
+                      idx === current ? "" : "opacity-80"
+                    }`}
                   />
-                  {idx === current && <span className="absolute inset-0 ring-2 ring-emerald-600 rounded pointer-events-none"></span>}
+                  {idx === current && (
+                    <span className="absolute inset-0 ring-2 ring-emerald-600 rounded pointer-events-none"></span>
+                  )}
                 </button>
               ))}
             </div>
@@ -163,11 +175,13 @@ export default function Gallery({
       </div>
 
       {/* Vertical Thumbnails */}
-      <div className="flex gap-2 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent w-full pr-3 py-2">
+      <div className="flex gap-2 max-h-[400px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent w-full  lg:w-[800px] pr-3 py-2">
         {images.map((img, idx) => (
           <button
             key={img + idx}
-            className={`relative rounded overflow-hidden border-2 w-full min-h-[100px] aspect-[4/3] ${idx === current ? "border-emerald-600" : "border-transparent"}`}
+            className={`relative shrink-0 rounded bg-gray-200 overflow-hidden border-2 w-[120px] h-[90px] ${
+              idx === current ? "border-emerald-600" : "border-transparent"
+            }`}
             onClick={() => handleThumbClick(idx)}
             aria-label={`Show image ${idx + 1}`}
           >
@@ -176,10 +190,17 @@ export default function Gallery({
               alt={lodgeName + " thumbnail"}
               width={120}
               height={90}
-              className={`object-cover w-full h-full ${idx === current ? "" : "opacity-80"}`}
-              onError={(e) => ((e.target as HTMLImageElement).src = "/placeholder.jpg")}
+              loading="lazy"
+              className={`object-cover w-full h-full ${
+                idx === current ? "" : "opacity-80"
+              }`}
+              onError={(e) =>
+                ((e.target as HTMLImageElement).src = "../../public/placeholder.svg")
+              }
             />
-            {idx === current && <span className="absolute inset-0 ring-2 ring-emerald-600 rounded pointer-events-none"></span>}
+            {idx === current && (
+              <span className="absolute inset-0 ring-2 ring-emerald-600 rounded pointer-events-none"></span>
+            )}
           </button>
         ))}
       </div>

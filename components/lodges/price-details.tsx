@@ -144,7 +144,6 @@ export default function PirceDetails({
 
     const isAvailable = days.every((day) => !getDisabled(day));
 
-    console.log(isAvailable);
     return isAvailable;
   };
 

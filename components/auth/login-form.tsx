@@ -26,7 +26,7 @@ const formSchema = z.object({
   }),
 });
 
-type loginType = Zod.infer<typeof formSchema>;
+type loginType = z.infer<typeof formSchema>;
 export function LoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);

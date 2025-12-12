@@ -4,8 +4,7 @@ import { VisuallyHidden } from "../ui/visually-hidden";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { X, Search } from "lucide-react";
-
+import { X, Search, MoveLeft, MoveRight } from "lucide-react";
 
 export default function Gallery({
   images,
@@ -15,7 +14,7 @@ export default function Gallery({
   lodgeId: string;
   images: string[];
   lodgeName: string;
-}) {  
+}) {
   const [current, setCurrent] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const total = images.length;
@@ -23,6 +22,7 @@ export default function Gallery({
   const handlePrev = () => setCurrent((prev) => (prev - 1 + total) % total);
   const handleNext = () => setCurrent((prev) => (prev + 1) % total);
   const handleThumbClick = (idx: number) => setCurrent(idx);
+
   const openModal = (idx: number) => {
     setCurrent(idx);
     setModalOpen(true);
@@ -35,19 +35,30 @@ export default function Gallery({
       if (e.key === "ArrowRight") handleNext();
       if (e.key === "Escape") setModalOpen(false);
     };
+
+
+
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [modalOpen, current]);
+
+  useEffect(()=>{
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, [current])
 
   return (
     <div className="flex flex-col gap-0">
       <div className="relative flex-1 min-w-0">
         <Image
-          src={images[current] }
+          src={images[current]}
           alt={lodgeName}
           width={800}
           height={500}
-          className="object-cover w-full h-[400px] rounded-md"
+          className="object-cover w-full h-[400px] rounded-md inset-0 transition-opacity duration-1000"
           onClick={() => openModal(current)}
         />
 
@@ -55,18 +66,18 @@ export default function Gallery({
         {total > 1 && (
           <>
             <button
-              className="absolute left-3 top-1/2 -translate-y-1/2 shadow-lg text-white rounded-full p-3 z-10"
+              className="absolute left-3 top-1/2 -translate-y-1/2 shadow-lg text-black bg-white rounded-full p-2 z-10"
               onClick={handlePrev}
               aria-label="Previous image"
             >
-              {/* SVG */}
+              <MoveLeft size={16}/>
             </button>
             <button
-              className="absolute right-3 top-1/2 -translate-y-1/2 shadow-lg text-white rounded-full p-3 z-10"
+              className="absolute right-3 top-1/2 -translate-y-1/2 shadow-lg text-black bg-white rounded-full p-2 z-10"
               onClick={handleNext}
               aria-label="Next image"
             >
-              {/* SVG */}
+              <MoveRight size={16}/>
             </button>
           </>
         )}
@@ -195,7 +206,8 @@ export default function Gallery({
                 idx === current ? "" : "opacity-80"
               }`}
               onError={(e) =>
-                ((e.target as HTMLImageElement).src = "../../public/placeholder.svg")
+                ((e.target as HTMLImageElement).src =
+                  "../../public/placeholder.svg")
               }
             />
             {idx === current && (

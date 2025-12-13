@@ -1,10 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 import { VisuallyHidden } from "../ui/visually-hidden";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { X, Search, MoveLeft, MoveRight } from "lucide-react";
+import {
+  X,
+  Search,
+  MoveLeft,
+  MoveRight,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { DialogOverlay } from "@radix-ui/react-dialog";
 
 export default function Gallery({
@@ -16,8 +23,12 @@ export default function Gallery({
   images: string[];
   lodgeName: string;
 }) {
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const [current, setCurrent] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const thumbNailRef = useRef<HTMLDivElement | null>(null);
+
   const total = images.length;
 
   const handlePrev = () => setCurrent((prev) => (prev - 1 + total) % total);
@@ -49,6 +60,36 @@ export default function Gallery({
 
     return () => clearInterval(interval);
   }, [current]);
+
+  const scrollByLeft = () => {
+    thumbNailRef.current?.scrollBy({ left: -300, behavior: "smooth" });
+  };
+
+  const scrollByRight = () => {
+    thumbNailRef.current?.scrollBy({ left: 300, behavior: "smooth" });
+  };
+
+  const updateScrollButtons = () => {
+    const el = thumbNailRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  };
+
+  useEffect(() => {
+    const el = thumbNailRef.current;
+    if (!el) return;
+
+    updateScrollButtons();
+
+    el.addEventListener("scroll", updateScrollButtons);
+    window.addEventListener("resize", updateScrollButtons);
+
+    return () => {
+      el.removeEventListener("scroll", updateScrollButtons);
+      window.removeEventListener("resize", updateScrollButtons);
+    };
+  }, []);
 
   return (
     <>
@@ -134,13 +175,13 @@ export default function Gallery({
 
       <div className="flex flex-col gap-0">
         <div className="relative flex-1 bg-green-500p py-56 min-w-0 max-h-[450px]">
-          
           {images.map((img, idx) => (
-            <div 
-                key={img + idx}
-             className={`absolute inset-0 transition-opacity duration-700 ${
-                  idx === current ? "opacity-100" : "opacity-0"
-                }`}>
+            <div
+              key={img + idx}
+              className={`absolute inset-0 transition-opacity duration-700 ${
+                idx === current ? "opacity-100" : "opacity-0"
+              }`}
+            >
               <Image
                 src={images[idx]}
                 alt={lodgeName}
@@ -156,6 +197,7 @@ export default function Gallery({
           ))}
 
           {/* Previous / Next Arrows */}
+
           {total > 1 && (
             <>
               <button
@@ -163,68 +205,94 @@ export default function Gallery({
                 onClick={handlePrev}
                 aria-label="Previous image"
               >
-                <MoveLeft size={16} />
+                <ChevronLeft size={16} />
               </button>
               <button
                 className="absolute right-3 top-1/2 -translate-y-1/2 shadow-lg text-black bg-white rounded-full p-2 z-10"
                 onClick={handleNext}
                 aria-label="Next image"
               >
-                <MoveRight size={16} />
+                <ChevronRight size={16} />
               </button>
             </>
           )}
 
           {/* View Larger Button */}
-          <button
+          {/* <button
             className="absolute left-3 bottom-3 bg-white opacity-65 text-gray-800 rounded shadow px-3 py-2 text-sm flex items-center gap-2 border border-gray-200 hover:bg-gray-100 z-10 hover:opacity-80"
             onClick={() => openModal(current)}
             aria-label="View larger image"
           >
             <Search size={16} />
-          </button>
+          </button> */}
 
           {/* Show All Images */}
-          <Link href={`/gallery?id=${lodgeId}`} passHref>
-            <Button
-              className="absolute right-3 bottom-3 bg-gray-100 hover:bg-gray-200 text-black rounded px-3 text-sm z-10 font-light"
-              aria-label="Show all images in gallery"
-            >
-              Show all images
-            </Button>
-          </Link>
+          {/* <Link href={`/gallery?id=${lodgeId}`} passHref> */}
+          <Button
+            className="absolute right-3 bottom-3 bg-gray-100 hover:bg-gray-200 text-black rounded px-3 text-sm z-10 font-light"
+            aria-label="Show all images in gallery"
+            onClick={() => openModal(current)}
+          >
+            Show all images
+          </Button>
+          {/* </Link> */}
         </div>
 
         {/* Vertical Thumbnails */}
-        <div className="flex gap-2 max-h-[400px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent w-full  lg:w-[800px] pr-3 py-2">
-          {images.map((img, idx) => (
-            <button
-              key={img + idx}
-              className={`relative shrink-0 rounded bg-gray-200 overflow-hidden border-2 w-[120px] h-[90px] ${
-                idx === current ? "border-emerald-600" : "border-transparent"
-              }`}
-              onClick={() => handleThumbClick(idx)}
-              aria-label={`Show image ${idx + 1}`}
-            >
-              <Image
-                src={img}
-                alt={lodgeName + " thumbnail"}
-                width={120}
-                height={90}
-                loading="lazy"
-                className={`object-cover w-full h-full ${
-                  idx === current ? "" : "opacity-80"
+        <div className="relative">
+          <div
+            className="flex gap-2 max-h-[400px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent w-full  lg:w-[800px] pr-3 py-2"
+            ref={thumbNailRef}
+          >
+            {images.map((img, idx) => (
+              <button
+                key={img + idx}
+                className={`relative shrink-0 rounded bg-gray-200 overflow-hidden border-2 w-[120px] h-[90px] ${
+                  idx === current ? "border-emerald-600" : "border-transparent"
                 }`}
-                onError={(e) =>
-                  ((e.target as HTMLImageElement).src =
-                    "../../public/placeholder.svg")
-                }
-              />
-              {idx === current && (
-                <span className="absolute inset-0 ring-2 ring-emerald-600 rounded pointer-events-none"></span>
-              )}
-            </button>
-          ))}
+                onClick={() => handleThumbClick(idx)}
+                aria-label={`Show image ${idx + 1}`}
+              >
+                <Image
+                  src={img}
+                  alt={lodgeName + " thumbnail"}
+                  width={120}
+                  height={90}
+                  loading="lazy"
+                  className={`object-cover w-full h-full ${
+                    idx === current ? "" : "opacity-80"
+                  }`}
+                  onError={(e) =>
+                    ((e.target as HTMLImageElement).src =
+                      "../../public/placeholder.svg")
+                  }
+                />
+                {idx === current && (
+                  <span className="absolute inset-0 ring-2 ring-emerald-600 rounded pointer-events-none"></span>
+                )}
+              </button>
+            ))}
+          </div>
+          <button
+            className={`absolute left-3 top-1/2 transition-opacity duration-300 delay-75
+ -translate-y-1/2 shadow-lg text-black bg-white rounded-full p-2 z-10  ${
+   canScrollLeft ? "opacity-100" : "opacity-0 pointer-events-none"
+ }`}
+            onClick={scrollByLeft}
+            aria-label="Previous image"
+          >
+            <MoveLeft size={16} />
+          </button>
+          <button
+            className={`absolute right-3 top-1/2 transition-opacity duration-300 delay-75
+ -translate-y-1/2 shadow-lg text-black bg-white rounded-full p-2 z-10 ${
+   canScrollRight ? "opacity-100" : "opacity-0 pointer-events-none"
+ }`}
+            onClick={scrollByRight}
+            aria-label="Next image"
+          >
+            <MoveRight size={16} />
+          </button>
         </div>
       </div>
     </>
